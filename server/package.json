@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "mongod && nodemon ./bin/www",
+    "predev": "mongod --dbpath=./database &",
+    "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
   },
