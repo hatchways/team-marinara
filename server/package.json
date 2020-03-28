@@ -6,7 +6,8 @@
     "predev": "mongod --dbpath=./database &",
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
+    "stop": "mongo admin --eval \"db.shutdownServer()\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
