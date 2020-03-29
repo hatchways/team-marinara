@@ -10,11 +10,13 @@
 
 ## Installation
 
+### App setup
+
 1. Clone the repository from gitHub: `git clone https://github.com/hatchways/team-marinara.git`
 
-2. Run `npm init` from the `/server/` and `/client/` directories to install required packages.
+2. Run `npm init` from the `/server` and `/client` directories to install required packages.
 
-### mongoDB
+### mongoDB setup
 
 3. If you do not have mongoDB installed, install mongoDB Community Edition on your machine by following the instructions [here](https://docs.mongodb.com/manual/installation/)
 
@@ -22,6 +24,10 @@
 
 ### Run the app
 
-5. Run `npm run dev` from the `/server/` directory. This will start the mongoDB server and the app server
+1. Run `npm run dev` from the `/server` directory. This will start the mongoDB server and the app server
 
-6. Run `npm start` from the `/client/` directory. This will start the React front-end app.
+2. Run `npm start` from the `/client` directory. This will start the React front-end app.
+
+### Stop the app
+
+1. Run `npm stop` from the `/server` directory to stop the mongoDB server
