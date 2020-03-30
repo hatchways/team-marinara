@@ -14,6 +14,7 @@ const Landing = props => (
     container 
     direction='column'
     alignItems='center'
+    wrap='nowrap'
   >
     <Switch>
       <Route path='/register'>
