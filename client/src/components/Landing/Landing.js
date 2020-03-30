@@ -6,6 +6,7 @@ import styles from '../../styles/Landing/LandingStyles';
 
 import Navbar from './LandingNavbar';
 import Login from './Login';
+import Register from './Register';
 
 const Landing = props => (
   <Grid 
@@ -17,6 +18,7 @@ const Landing = props => (
     <Switch>
       <Route path='/register'>
         <Navbar variant='register'></Navbar>
+        <Register />
       </Route>
 
       <Route path={['/', '/login']}>
