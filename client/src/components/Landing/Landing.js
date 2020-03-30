@@ -5,6 +5,7 @@ import { Route, Switch } from "react-router-dom";
 import styles from '../../styles/Landing/LandingStyles';
 
 import Navbar from './LandingNavbar';
+import Login from './Login';
 
 const Landing = props => (
   <Grid 
@@ -20,6 +21,7 @@ const Landing = props => (
 
       <Route path={['/', '/login']}>
         <Navbar variant='login'></Navbar>
+        <Login />
       </Route>
     </Switch>
   </Grid>
