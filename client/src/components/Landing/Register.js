@@ -5,7 +5,18 @@ import styles from '../../styles/Landing/LandingFormStyles';
 import StyledButton from '../../styles/Buttons/StyledButton';
 
 class Register extends Component {
-  state = {  }
+  state = { 
+    email: '',
+    name: '',
+    password: ''
+  }
+
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   render() {
     return (
       <Grid 
@@ -35,6 +46,8 @@ class Register extends Component {
               type='email'
               variant='outlined'
               fullWidth
+              onChange={this.onChange}
+              value={this.state.email}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -44,6 +57,8 @@ class Register extends Component {
               type='text'
               variant='outlined'
               fullWidth
+              onChange={this.onChange}
+              value={this.state.name}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -53,6 +68,8 @@ class Register extends Component {
               type='password'
               variant='outlined'
               fullWidth
+              onChange={this.onChange}
+              value={this.state.password}
             />
           </Grid>
         </Grid>

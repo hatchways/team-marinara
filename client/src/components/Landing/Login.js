@@ -5,7 +5,17 @@ import styles from '../../styles/Landing/LandingFormStyles';
 import StyledButton from '../../styles/Buttons/StyledButton';
 
 class Login extends Component {
-  state = {  }
+  state = { 
+    email: '',
+    password: ''
+  }
+
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   render() {
     return (
       <Grid 
@@ -35,6 +45,8 @@ class Login extends Component {
               type='email'
               variant='outlined'
               fullWidth
+              onChange={this.onChange}
+              value={this.state.email}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -44,6 +56,8 @@ class Login extends Component {
               type='password'
               variant='outlined'
               fullWidth
+              onChange={this.onChange}
+              value={this.state.password}
             />
           </Grid>
         </Grid>
