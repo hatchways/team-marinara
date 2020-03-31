@@ -63,6 +63,10 @@ router.put("/:id", (req, res) => {
 
   const { errors, isValid } = validateProspectInput(req.body); 
 
+  if (!isValid) {
+    return res.status(400).json(errors);
+}
+
   Prospect.findById(id, function(err, prospect) {
     if (!prospect) {
       res.status(404).send({id : `Prospect with id ${id} is not found`});  
@@ -97,7 +101,7 @@ router.delete("/:id", (req, res) => {
 
   prospect = Prospect.findOneAndDelete({_id: id}, function(err, removeResult) {
     if(err) {
-      res.status(500).send(err);
+      res.status(400).send(err);
     }
     if(!removeResult) {
       res.status(404).send({id:`Prospect with id ${id} not found.`})
