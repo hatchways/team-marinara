@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 
-// Load input validation
 const validateProspectInput = require("../../validation/prospect");
-
-// Load Prospect model
 const Prospect = require("../../models/Prospect");
 
 // @route POST /api/prospects
@@ -12,9 +10,9 @@ const Prospect = require("../../models/Prospect");
 // @access Authenticated Users
 router.post("/", (req, res) => {
     
-    //Object validation
+    //Prospect field validation
     const { errors, isValid } = validateProspectInput(req.body);
-    // Check validation
+
     if (!isValid) {
         return res.status(400).json(errors);
     }
@@ -23,6 +21,9 @@ router.post("/", (req, res) => {
           return res.status(400).json({ email: "Prospect with this email address already exists" });
         } else {
           var dateVar = new Date();
+          if(req.body.owned_by !== null && !mongoose.Types.ObjectId.isValid(req.body.owned_by)){
+            return res.status(400).json({ owned_by: "Invalid user id provided for owned_by"});
+          }
           const newProspect = new Prospect({
             first_name: req.body.first_name,
             last_name: req.body.last_name,
@@ -88,16 +89,17 @@ router.put("/:id", (req, res) => {
   });
 })
 
+// @route DELETE /api/prospects/{id}
+// @desc Delete a Prospect object
+// @access Authenticated Users
 router.delete("/:id", (req, res) => {
   let id = req.params.id;
 
   prospect = Prospect.findOneAndDelete({_id: id}, function(err, removeResult) {
     if(err) {
-      res.status(400).send(err);
+      res.status(500).send(err);
     }
-    console.log(removeResult);
     if(!removeResult) {
-      console.log("none found");
       res.status(404).send({id:`Prospect with id ${id} not found.`})
     } else {
       res.json({id: id});
