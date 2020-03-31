@@ -28,6 +28,7 @@ router.get("/success", processToken);
 
 /*
  * Generate url to authorize user on Google and get new token.
+ * @param: oAuth2Client Auth object
  */
 function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
@@ -51,7 +52,7 @@ async function authorize(req, res, next) {
 
       // Redirect back to user home page
       // next(oAuth2Client); OR res.redirect('/')
-      sendEmail(oAuth2Client);
+      readEmail(oAuth2Client);
     } else {
       console.log("no token");
       res.redirect(getNewToken(oAuth2Client));
@@ -68,7 +69,6 @@ async function authorize(req, res, next) {
 async function processToken(req, res, next) {
   try {
     const { tokens } = await oAuth2Client.getToken(req.query.code);
-    console.log("tokens: ", tokens);
     oAuth2Client.setCredentials(tokens);
 
     // Store the token to disk for later program executions
@@ -78,7 +78,7 @@ async function processToken(req, res, next) {
 
     // Redirect back to user home page
     // res.redirect('/');
-    sendEmail(oAuth2Client);
+    readEmail(oAuth2Client);
   } catch (error) {
     console.error("Error retrieving access token", error);
   }
@@ -88,11 +88,13 @@ async function processToken(req, res, next) {
 
 /*
  * Test function to show send email functionality
+ * @param: oAuth2Client - Auth object with valid gmail credentials attached
+ * @param: mail - nodemailer mailComposer object with to, subject, text and textEncoding properties
  */
-async function sendEmail(oAuth2Client) {
+async function sendEmail(oAuth2Client, mail) {
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
-  let mail = new mailComposer({
+  mail = new mailComposer({
     to: "darren@darrengreenfield.com",
     text: "This is a test email",
     subject: "OMG it worked!",
@@ -122,12 +124,29 @@ async function sendEmail(oAuth2Client) {
           return console.log("NODEMAILER - The API returned an error: " + err);
         }
 
+        // TODO: Save result.data.threadId to database so can track later
+
         console.log("NODEMAILER - Sending email reply from server:", result.data);
       },
     );
   });
 }
 
-function readEmail() {}
+/*
+ * Test function to show read email functionality
+ * @param: oAuth2Client - Auth object with valid gmail credentials attached
+ * @param {string} threadId - id of gmail email thread to read
+ */
+async function readEmail(oAuth2Client, threadId) {
+  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+
+  // get list of email threads
+  const threads = await gmail.users.threads.list({ userId: "me" });
+  threadId = threads.data.threads[0].id;
+
+  // get latest thread details
+  const thread = await gmail.users.threads.get({ userId: "me", id: threadId });
+  console.log(thread.data.messages[0]);
+}
 
 module.exports = router;
