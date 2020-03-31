@@ -5,10 +5,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const config = require("./config.js");
-
-const indexRouter = require("./routes/index");
-const pingRouter = require("./routes/ping");
-const gmailAuthRouter = require("./routes/gmail-auth");
+const routes = require("./routes/index");
 
 // Connect to the database
 const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
@@ -28,9 +25,7 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/ping", pingRouter);
-app.use("/api/gmail-auth", gmailAuthRouter);
+app.use("/", routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

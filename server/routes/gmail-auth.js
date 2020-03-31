@@ -1,5 +1,3 @@
-const express = require("express");
-const router = express.Router();
 const { google } = require("googleapis");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../models/user.js");
@@ -20,9 +18,6 @@ const SCOPES = [
  **************/
 const userId = "5e827c5ed999b93a267ef847";
 
-router.get("/", checkForToken);
-router.get("/success", processToken); // Google redirects here once user has authorised Mail-Sender
-
 /*
  * Generate url to redirect user to for authorization on Google and get new token.
  */
@@ -40,7 +35,7 @@ function getNewTokenUrl() {
 /**
  * Check if gmail authorization token exists for the user, if not, get a new one
  */
-async function checkForToken(req, res, next) {
+exports.checkForToken = async (req, res, next) => {
   try {
     const loggedInUser = await User.findById(userId);
 
@@ -48,9 +43,9 @@ async function checkForToken(req, res, next) {
       console.log("Token exists");
 
       /***********
-       * Redirect back to user home page
+       * TODO: Redirect back to user home page
        ***********/
-      next(); // OR res.redirect('/')
+      res.redirect("/"); // OR next(req);
     } else {
       console.log("no token");
       res.redirect(getNewTokenUrl());
@@ -58,13 +53,13 @@ async function checkForToken(req, res, next) {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 /*
  * When user has authorized Mail Sender with Gmail, user is redirected here
  * Saves new token to database under that user
  */
-async function processToken(req, res) {
+exports.processToken = async (req, res) => {
   try {
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
     const { tokens } = await oAuth2Client.getToken(req.query.code);
@@ -80,14 +75,14 @@ async function processToken(req, res) {
     });
 
     /***********
-     * Redirect back to user home page
+     * TODO: Redirect back to user home page
      ***********/
     res.redirect("/");
   } catch (error) {
     console.error("Error retrieving access token", error);
     res.status(500).redirect("/");
   }
-}
+};
 
 /*
  * Test function to show send email functionality
@@ -130,7 +125,7 @@ async function sendEmail(mail) {
           return console.log("gmail send returned an error: " + err);
         }
 
-        // TODO: Save result.data.threadId to database so can track later
+        // In app we'd save result.data.threadId to database so can track later
 
         console.log("Send email success. Reply from server:", result.data);
       },
@@ -155,5 +150,3 @@ async function readEmail(threadId) {
   const thread = await gmail.users.threads.get({ userId: "me", id: threadId });
   console.log(thread.data.messages[0]);
 }
-
-module.exports = router;
