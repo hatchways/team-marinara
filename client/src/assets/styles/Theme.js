@@ -1,10 +1,10 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: "'Open Sans', sans-serif",
     button: {
-      textTransform: 'none'
+      textTransform: "none"
     }
   }
 });

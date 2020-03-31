@@ -2,9 +2,9 @@ import React from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-import StyledButtonOutline from "styles/Buttons/StyledButtonOutline";
+import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 
-import logo from "assets/logo.png";
+import logo from "Assets/logo.png";
 
 const styles = () => ({
   root: {

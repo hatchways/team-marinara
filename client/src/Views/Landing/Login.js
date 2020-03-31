@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 
-import styles from "styles/Landing/LandingFormStyles";
-import StyledButton from "styles/Buttons/StyledButton";
+import styles from "Components/Form/LandingFormStyles";
+import StyledButton from "Components/Button/StyledButton";
 
 class Login extends Component {
   state = {
