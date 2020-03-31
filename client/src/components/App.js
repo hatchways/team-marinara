@@ -4,7 +4,7 @@ import { ThemeProvider } from "@material-ui/styles";
 
 import Home from "./Home/Home";
 import Landing from "./Landing/Landing";
-import theme from "../styles/Theme";
+import theme from "styles/Theme";
 
 const App = () => {
   return (
