@@ -3,9 +3,23 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 import StyledButtonOutline from "styles/Buttons/StyledButtonOutline";
-import styles from "styles/Landing/LandingNavbarStyles";
 
 import logo from "assets/logo.png";
+
+const styles = () => ({
+  root: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    padding: "16px 48px"
+  },
+  bold: {
+    fontWeight: "bold",
+    fontSize: 14
+  },
+  toggle: {
+    width: "auto"
+  }
+});
 
 const LandingNavbar = props => (
   <Grid

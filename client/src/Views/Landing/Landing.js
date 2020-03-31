@@ -2,11 +2,18 @@ import React from "react";
 import { Grid, withStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 
-import styles from "styles/Landing/LandingStyles";
-
 import Navbar from "./LandingNavbar";
 import Login from "./Login";
 import Register from "./Register";
+
+const styles = () => ({
+  root: {
+    height: "100vh",
+    width: "100%",
+    backgroundColor: "#F4F6FC",
+    overflow: "auto"
+  }
+});
 
 const Landing = props => (
   <Grid
