@@ -13,20 +13,20 @@ async function main() {
 
   dummyUsers = [
     {
-      firstname: "User",
-      lastname: "One",
+      first_name: "User",
+      last_name: "One",
       email: "a@a.com",
       password: "password",
     },
     {
-      firstname: "User",
-      lastname: "Two",
+      first_name: "User",
+      last_name: "Two",
       email: "b@b.com",
       password: "password",
     },
     {
-      firstname: "User",
-      lastname: "Three",
+      first_name: "User",
+      last_name: "Three",
       email: "c@c.com",
       password: "password",
     },
