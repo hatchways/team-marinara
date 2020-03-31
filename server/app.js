@@ -10,7 +10,7 @@ const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 
 // Connect to the database
-const mongoDB = config.mongoURI + ":" + config.mongoPort + "/" + config.mongoDB;
+const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
   console.log("Connected to database...");
 });
