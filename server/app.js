@@ -4,12 +4,14 @@ const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+const config = require("./config.js");
 
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
+const gmailAuthRouter = require("./routes/gmail-auth");
 
 // Connect to the database
-const mongoDB = "mongodb://127.0.0.1/mail-sender-dev";
+const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
   console.log("Connected to database...");
 });
@@ -18,7 +20,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 const { json, urlencoded } = express;
 
-var app = express();
+const app = express();
 
 app.use(logger("dev"));
 app.use(json());
@@ -28,6 +30,7 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use("/gmail-auth", gmailAuthRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
