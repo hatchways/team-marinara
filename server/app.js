@@ -6,11 +6,15 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 
 const indexRouter = require("./routes/index");
+const prospectRouter = require("./routes/api/prospects");
 const pingRouter = require("./routes/ping");
 
 // Connect to the database
 const mongoDB = "mongodb://127.0.0.1/mail-sender-dev";
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect(mongoDB, { useNewUrlParser: true,
+   useUnifiedTopology: true,
+   useCreateIndex: true })
+   .then(() => {
   console.log("Connected to database...");
 });
 const db = mongoose.connection;
@@ -28,6 +32,7 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use("/api/prospects", prospectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
