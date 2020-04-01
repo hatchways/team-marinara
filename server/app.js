@@ -4,7 +4,7 @@ const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-const config = require("./config.js");
+const config = require("./config/config.js");
 const routes = require("./routes/index");
 
 // Connect to the database
