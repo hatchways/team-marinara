@@ -1,7 +1,7 @@
 const { google } = require("googleapis");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
-const User = require("../models/user.js");
-const { client_secret, client_id, redirect_uris } = require("../gmail-secret.json");
+const User = require("../../models/user.js");
+const { client_secret, client_id } = require("../../gmail-secret.json");
 
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
@@ -13,6 +13,10 @@ const SCOPES = [
   "https://www.googleapis.com/auth/gmail.send",
 ];
 
+// Url user redirected to after Google authorization
+// If modified it also needs to be changed at https://console.developers.google.com/apis/credentials?project=mail-sender-1
+const SUCCESS_REDIRECT_URL = "http://lvh.me:3001/api/gmail-auth/success";
+
 /*************
  * TODO: Get UID of current logged in user, likely from req.header
  **************/
@@ -22,7 +26,7 @@ const userId = "5e827c5ed999b93a267ef847";
  * Generate url to redirect user to for authorization on Google and get new token.
  */
 function getNewTokenUrl() {
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, SUCCESS_REDIRECT_URL);
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
@@ -61,7 +65,7 @@ exports.checkForToken = async (req, res, next) => {
  */
 exports.processToken = async (req, res) => {
   try {
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, SUCCESS_REDIRECT_URL);
     const { tokens } = await oAuth2Client.getToken(req.query.code);
 
     // Store the token to db under user
@@ -90,7 +94,7 @@ exports.processToken = async (req, res) => {
  */
 async function sendEmail(mail) {
   const loggedInUser = await User.findById(userId);
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, SUCCESS_REDIRECT_URL);
   oAuth2Client.setCredentials({ refresh_token: loggedInUser.gmail_token });
 
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
@@ -138,7 +142,7 @@ async function sendEmail(mail) {
  * @param {string} threadId - id of gmail email thread to read
  */
 async function readEmail(threadId) {
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, SUCCESS_REDIRECT_URL);
   oAuth2Client.setCredentials(tokens);
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
