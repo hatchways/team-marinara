@@ -31,8 +31,3 @@
 ### Stop the app
 
 1. Run `npm stop` from the `/server` directory to stop the mongoDB server
-
-## Gmail API
-
-Project id: mail-sender-1
-Authorized url: lvh.me which is a public domain pointing to 127.0.0.1
