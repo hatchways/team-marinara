@@ -3,7 +3,7 @@ const Validator = require("validator");
 const { STATUS } = require("../models/Prospect")
 
 module.exports = function validateProspectInput(data) {
-  let errors = {};
+  const errors = {};
 
 // Convert empty fields to an empty string so we can use validator functions
   data.firstName = (!data.firstName) ? "" : data.firstName;
@@ -30,9 +30,8 @@ if (!Object.values(STATUS).includes(data.status)) {
     errors.status = "Invalid Prospect status";
 }
 
-
 return {
     errors,
-    isValid: isEmpty(errors)
+    isValid: (!Object.keys(errors).length > 0)
   };
 };
