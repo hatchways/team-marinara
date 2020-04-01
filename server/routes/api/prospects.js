@@ -21,14 +21,14 @@ router.post("/", (req, res) => {
           return res.status(400).json({ email: "Prospect with this email address already exists" });
         } else {
           var dateVar = new Date();
-          if(req.body.owned_by !== null && !mongoose.Types.ObjectId.isValid(req.body.owned_by)){
-            return res.status(400).json({ owned_by: "Invalid user id provided for owned_by"});
+          if(req.body.ownedBy !== null && !mongoose.Types.ObjectId.isValid(req.body.ownedBy)){
+            return res.status(400).json({ ownedBy: "Invalid user id provided for ownedBy"});
           }
           const newProspect = new Prospect({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             email: req.body.email,
-            owned_by: req.body.owned_by,
+            ownedBy: req.body.ownedBy,
             created: dateVar,
             status: req.body.status,
           });   
@@ -72,17 +72,17 @@ router.put("/:id", (req, res) => {
       res.status(404).send({id : `Prospect with id ${id} is not found`});  
     } else {
       //if updating email field, check if Prospect with new email alredy exists
-      if(req.body.email!==prospect.email) {
-        Prospect.findOne({ email: req.body.email }).then(prospect_email_check => {
-          if (prospect_email_check) {
+      if(req.body.email !== prospect.email) {
+        Prospect.findOne({ email: req.body.email }).then(prospectEmailCheck => {
+          if (prospectEmailCheck) {
             return res.status(400).json({ email: "Cannot update email address. Email address already exists" });
           }
         });
       }
-      prospect.first_name = req.body.first_name;
-      prospect.last_name = req.body.last_name;
-      prospect.last_contacted = req.body.last_contacted;
-      prospect.owned_by = req.body.owned_by;
+      prospect.firstName = req.body.firstName;
+      prospect.lastName = req.body.lastName;
+      prospect.lastContacted = req.body.lastContacted;
+      prospect.ownedBy = req.body.ownedBy;
       prospect.status = req.body.status;
       prospect.email = req.body.email;
 
