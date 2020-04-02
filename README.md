@@ -22,7 +22,7 @@
 
 4. Create a database directory at `/server/database`. This will hold the database files and should not be committed to git as it will be a 300MB+ directory.
 
-### Run the app
+## Run the app
 
 1. Run `npm run dev` from the `/server` directory. This will start the mongoDB server and the app server
 
