@@ -1,3 +1,8 @@
+/*
+ * Google authorisation process redirects here. Checks for success.
+ * Sends authorisation code to back-end
+ */
+
 import React, { Component } from "react";
 import {
   CircularProgress,

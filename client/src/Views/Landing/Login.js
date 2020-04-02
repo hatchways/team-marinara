@@ -27,6 +27,7 @@ class Login extends Component {
     const tokenExists = await checkForGmailToken(userId);
 
     /*
+     *  Skip dialog
      *  TO DO: Goto user's home page instead of returning true
      */
     if (tokenExists) return true;
