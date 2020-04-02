@@ -1,4 +1,8 @@
-import React from "react";
+/*
+ * Displays prompt to authorise MailSender to access their gmail
+ */
+
+import React, { useEffect, useState } from "react";
 import {
   DialogTitle,
   Dialog,
@@ -10,6 +14,7 @@ import {
 } from "@material-ui/core";
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
+import { getAuthUrl } from "./gmailAuth";
 
 const styles = () => ({
   btn: {
@@ -20,7 +25,21 @@ const styles = () => ({
 });
 
 const GmailDialog = (props) => {
-  const { onClose, open, classes, gmailAuthUrl } = props;
+  const { onClose, open, classes } = props;
+
+  const [gmailAuthUrl, setGmailAuthUrl] = useState("");
+
+  useEffect(() => {
+    async function getData() {
+      const authUrl = await getAuthUrl();
+      if (authUrl) {
+        setGmailAuthUrl(authUrl);
+      } else {
+        onclose();
+      }
+    }
+    getData();
+  }, [onClose]);
 
   const handleClose = () => {
     onClose();
