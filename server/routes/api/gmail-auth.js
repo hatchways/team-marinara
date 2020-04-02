@@ -4,7 +4,7 @@ const router = express.Router();
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
 const { client_secret, client_id } = require("../../config/gmail-secret.json");
-const cors = require("cors");
+
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
  * If modifying these scopes, existing tokens will need to be deleted

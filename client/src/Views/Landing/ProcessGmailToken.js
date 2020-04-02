@@ -7,9 +7,18 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  withStyles,
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { postCode } from "./gmailAuth";
+
+const styles = {
+  // center the spinner
+  spinner: {
+    display: "block",
+    margin: "auto",
+  },
+};
 
 class ProcessToken extends Component {
   state = {
@@ -17,6 +26,11 @@ class ProcessToken extends Component {
     tokenSaved: false,
   };
 
+  /*
+   * When component mounts following redirect from Google authorisation
+   * get the auth code from URL, post to back-end to exchange for token,
+   * save to db and return authorised email address
+   */
   async componentDidMount() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has("error")) {
@@ -49,6 +63,7 @@ class ProcessToken extends Component {
   };
 
   render() {
+    const { classes } = this.props;
     return this.state.displayModal ? (
       <Dialog open={this.state.displayModal} onClose={this.handleClose}>
         <DialogTitle id="simple-dialog-title">Success</DialogTitle>
@@ -64,9 +79,9 @@ class ProcessToken extends Component {
         </DialogActions>
       </Dialog>
     ) : (
-      <CircularProgress />
+      <CircularProgress className={classes.spinner} />
     );
   }
 }
 
-export default withRouter(ProcessToken);
+export default withRouter(withStyles(styles)(ProcessToken));
