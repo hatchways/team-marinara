@@ -51,20 +51,22 @@ class ProcessToken extends Component {
         displayModal: true,
         tokenSaved: true,
         emailAddr: emailAddr,
+        endRoute: decodeURIComponent(searchParams.get("state")),
       });
     } else {
       this.setState({
         displayModal: true,
         tokenSaved: false,
+        endRoute: decodeURIComponent(searchParams.get("state")),
       });
     }
   }
 
   handleClose = (e) => {
     /*
-     * TO DO: Change routing to push to home page or route passed through props
+     * TO DO: Change routing to get destination from google redirect query
      */
-    this.props.history.push("/login");
+    this.props.history.push(this.state.endRoute);
   };
 
   render() {

@@ -25,9 +25,9 @@ exports.checkForGmailToken = async (userId) => {
  * Gets a Google URL to send user to to authorise Mail Sender to access their
  * gmail account
  */
-exports.getAuthUrl = async () => {
+exports.getAuthUrl = async (endRoute) => {
   const response = await axios
-    .get(`${SERVER_ADDRESS}/api/gmail-auth/getAuthUrl`)
+    .get(`${SERVER_ADDRESS}/api/gmail-auth/getAuthUrl?endRoute=${endRoute}`)
     .catch((err) => {
       console.log("Error occurred getting Google Auth URL:", err);
       return false;

@@ -48,12 +48,15 @@ router.get("/getAuthUrl", (req, res) => {
     client_secret,
     SUCCESS_REDIRECT_URL
   );
+  console.log(req.query.endRoute);
 
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
     // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
     ...(!process.env.NODE_ENV && { prompt: "consent" }),
+    // pass route that success/failure dialog will redirect to on close
+    state: encodeURIComponent(req.query.endRoute),
   });
 
   res.status(200).json({ authUrl: authUrl });

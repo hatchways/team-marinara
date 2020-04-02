@@ -25,13 +25,13 @@ const styles = () => ({
 });
 
 const GmailDialog = (props) => {
-  const { onClose, open, classes } = props;
+  const { onClose, open, classes, endRoute } = props;
 
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");
 
   useEffect(() => {
     async function getData() {
-      const authUrl = await getAuthUrl();
+      const authUrl = await getAuthUrl(encodeURIComponent(endRoute));
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {
@@ -39,7 +39,7 @@ const GmailDialog = (props) => {
       }
     }
     getData();
-  }, [onClose]);
+  }, [endRoute, onClose]);
 
   const handleClose = () => {
     onClose();

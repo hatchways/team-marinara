@@ -115,6 +115,7 @@ class Register extends Component {
         <GmailDialog
           open={this.state.gmailDialogOpen}
           onClose={this.handleClose}
+          endRoute="/login"
         />
       </span>
     );
