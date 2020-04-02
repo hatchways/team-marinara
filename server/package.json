@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.6",
     "morgan": "~1.9.1",
+    "validator": "^13.0.0",
     "nodemailer": "^6.4.6",
     "nodemon": "^1.19.1",
     "passport": "^0.4.1",

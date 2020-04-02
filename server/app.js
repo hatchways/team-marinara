@@ -13,9 +13,12 @@ require("./config/passport")(passport);
 
 // Connect to the database
 const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
-
 mongoose
-  .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  })
   .then(() => {
     console.log("Connected to database...");
   });
