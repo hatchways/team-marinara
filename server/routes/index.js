@@ -8,4 +8,6 @@ router.get("/", (req, res, next) => {
 router.get("/api/gmail-auth", gmailAuth.checkForToken);
 router.get("/api/gmail-auth/success", gmailAuth.processToken);
 
+router.use("/api/gmail-auth", gmailAuth);
+
 module.exports = router;

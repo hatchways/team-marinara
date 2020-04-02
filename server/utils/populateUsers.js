@@ -3,30 +3,33 @@ const User = require("../models/user.js");
 const config = require("../config.js");
 
 async function main() {
-  const mongoDB = config.mongoURI + ":" + config.mongoPort + "/" + config.mongoDB;
-  mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
-    console.log("Connected to database...");
-  });
+  const mongoDB =
+    config.mongoURI + ":" + config.mongoPort + "/" + config.mongoDB;
+  mongoose
+    .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log("Connected to database...");
+    });
 
   const db = mongoose.connection;
   db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
   dummyUsers = [
     {
-      first_name: "User",
-      last_name: "One",
+      firstName: "User",
+      lastName: "One",
       email: "a@a.com",
       password: "password",
     },
     {
-      first_name: "User",
-      last_name: "Two",
+      firstName: "User",
+      lastName: "Two",
       email: "b@b.com",
       password: "password",
     },
     {
-      first_name: "User",
-      last_name: "Three",
+      firstName: "User",
+      lastName: "Three",
       email: "c@c.com",
       password: "password",
     },
