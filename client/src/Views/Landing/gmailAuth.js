@@ -5,7 +5,7 @@
 const axios = require("axios");
 
 // TO DO: Get from .env
-const SERVER_ADDRESS = "http://localhost:3001";
+const SERVER_ADDRESS = "http://localhost:3000";
 
 /*
  * Check if current user has given permission for Mail Sender to access their

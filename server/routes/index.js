@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const prospect = require("./api/prospects");
 const gmailAuth = require("./api/gmail-auth");
-const cors = require("cors");
+const users = require("./api/users");
 
-router.use(cors());
-
-router.get("/", (req, res, next) => {
-  res.status(200).send("Home Page");
-});
-
+router.use("/api/users", users);
+router.use("/api/prospects", prospect);
 router.use("/api/gmail-auth", gmailAuth);
 
 module.exports = router;
