@@ -6,7 +6,7 @@ module.exports = function validateProspectInput(data) {
   const errors = {};
 
 // Name checks
-  if ((!data.firstName)) {
+  if (!data.firstName) {
     errors.firstName = "First name is required";
   }
   if (!data.lastName) {
@@ -29,6 +29,6 @@ if (!data.status) {
 
 return {
     errors,
-    isValid: (!Object.keys(errors).length > 0)
+    isValid: !Object.keys(errors).length > 0
   };
 };
