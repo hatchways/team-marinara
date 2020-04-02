@@ -17,8 +17,7 @@ const SCOPES = [
 
 // Url user redirected to after Google authorization
 // If modified it also needs to be changed at https://console.developers.google.com/apis/credentials?project=mail-sender-1
-const SUCCESS_REDIRECT_URL =
-  "http://localhost:3001/api/gmail-auth/processToken";
+const SUCCESS_REDIRECT_URL = "http://localhost:3000/processGmailToken";
 
 /*************
  * TODO: Get UID of current logged in user, likely from req.header
@@ -65,7 +64,7 @@ router.get("/getAuthUrl", (req, res) => {
  * Saves new token to database under that user
  * @param req.query.code {String} expected
  */
-router.get("/processToken", async (req, res) => {
+router.post("/processToken", async (req, res) => {
   try {
     if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
@@ -91,7 +90,15 @@ router.get("/processToken", async (req, res) => {
       }
     });
 
-    res.status(200).json({ tokenSaved: true });
+    oAuth2Client.setCredentials(tokens);
+    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+    let emailAddr = await gmail.users
+      .getProfile({ userId: "me" })
+      .then((response) => {
+        return response.data.emailAddress;
+      });
+
+    res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
   } catch (error) {
     console.error("Error retrieving access token", error);
     res.status(500).send("Error processing token");

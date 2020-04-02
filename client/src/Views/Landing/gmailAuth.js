@@ -2,6 +2,8 @@
  * Contains functions involved in checking and getting gmail authorisation for user
  */
 
+const axios = require("axios");
+
 // TO DO: Get from .env
 const SERVER_ADDRESS = "http://localhost:3001";
 
@@ -10,18 +12,13 @@ const SERVER_ADDRESS = "http://localhost:3001";
  * gmail account
  */
 exports.checkForGmailToken = async (userId) => {
-  const response = await fetch(`${SERVER_ADDRESS}/api/gmail-auth/checkToken`)
-    .then((res) => {
-      if (!res.ok)
-        throw new Error(`Server responded with status ${res.status}`);
-      return res;
-    })
-    .then((res) => res.json())
+  const response = await axios
+    .get(`${SERVER_ADDRESS}/api/gmail-auth/checkToken`)
     .catch((err) => {
       console.log("Error occurred checking gmail token:", err);
       return { tokenExists: false };
     });
-  return response.tokenExists;
+  return response.data.tokenExists;
 };
 
 /*
@@ -29,45 +26,27 @@ exports.checkForGmailToken = async (userId) => {
  * gmail account
  */
 exports.getAuthUrl = async () => {
-  const response = await fetch(`${SERVER_ADDRESS}/api/gmail-auth/getAuthUrl`)
-    .then((res) => {
-      if (!res.ok)
-        throw new Error(`Server responded with status ${res.status}`);
-      return res;
-    })
-    .then((res) => res.json())
+  const response = await axios
+    .get(`${SERVER_ADDRESS}/api/gmail-auth/getAuthUrl`)
     .catch((err) => {
       console.log("Error occurred getting Google Auth URL:", err);
       return false;
     });
 
-  return response.authUrl;
+  return response.data.authUrl;
 };
 
 /*
  * Posts received gmail auth code to back-end, where it is exchanged
  * for a token and saved in User collection
  */
-exports.postCode = async (query) => {
-  // If user denied authorisation
-  if (query.error) return false;
-
-  const code = query.code;
-
-  const response = await fetch(
-    `${SERVER_ADDRESS}/api/gmail-auth/processToken?code=${code}`,
-    { method: "POST" }
-  )
-    .then((res) => {
-      if (!res.ok)
-        throw new Error(`Server responded with status ${res.status}`);
-      return res;
-    })
-    .then((res) => res.json())
+exports.postCode = async (code) => {
+  const response = await axios
+    .post(`${SERVER_ADDRESS}/api/gmail-auth/processToken?code=${code}`)
     .catch((err) => {
       console.log("Error occurred processing token:", err);
       return false;
     });
 
-  return response.tokenSaved;
+  return response.data;
 };

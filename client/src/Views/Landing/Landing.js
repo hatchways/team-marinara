@@ -5,7 +5,7 @@ import { Route, Switch } from "react-router-dom";
 import Navbar from "./LandingNavbar";
 import Login from "./Login";
 import Register from "./Register";
-import ProcessToken from "./ProcessToken";
+import ProcessGmailToken from "./ProcessGmailToken";
 
 const styles = () => ({
   root: {
@@ -30,13 +30,13 @@ const Landing = (props) => (
         <Register />
       </Route>
 
+      <Route path="/processGmailToken">
+        <ProcessGmailToken />
+      </Route>
+
       <Route path={["/", "/login"]}>
         <Navbar variant="login"></Navbar>
         <Login />
-      </Route>
-
-      <Route path="/processToken">
-        <ProcessToken />
       </Route>
     </Switch>
   </Grid>

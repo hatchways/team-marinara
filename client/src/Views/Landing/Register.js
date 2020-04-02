@@ -45,6 +45,12 @@ class Register extends Component {
     }
   };
 
+  onClose = () => {
+    this.setState({
+      gmailDialogOpen: false,
+    });
+  };
+
   render() {
     return (
       <span>
