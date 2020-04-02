@@ -66,10 +66,14 @@ class ProcessToken extends Component {
     const { classes } = this.props;
     return this.state.displayModal ? (
       <Dialog open={this.state.displayModal} onClose={this.handleClose}>
-        <DialogTitle id="simple-dialog-title">Success</DialogTitle>
+        <DialogTitle id="simple-dialog-title">
+          {this.state.tokenSaved ? "Success" : "Failed"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Connected Gmail account: {this.state.emailAddr}
+            {this.state.tokenSaved
+              ? `Connected Gmail account: ${this.state.emailAddr}`
+              : "Gmail connection failed. Please try again"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
