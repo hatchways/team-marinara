@@ -4,6 +4,7 @@ import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
 import GmailDialog from "./GmailDialog";
+import { checkForGmailToken, getAuthUrl } from "./gmailAuth";
 
 class Login extends Component {
   state = {
@@ -19,58 +20,27 @@ class Login extends Component {
     });
   };
 
-  onClick = (e) => {
+  onClick = async (e) => {
     /*
-     * Get user ID from login process
+     * TO DO: Get user ID from login process
      */
     const userId = "5e84b3101bd834092a28464f";
-    this.checkForGmailToken(userId);
-  };
+    const tokenExists = await checkForGmailToken(userId);
 
-  checkForGmailToken = async (userId) => {
-    // CHANGE URL
-    let response = await fetch(
-      "http://localhost:3001/api/gmail-auth/checkToken"
-    )
-      .then((res) => {
-        if (!res.ok)
-          throw new Error(`Server responded with status ${res.status}`);
-        return res;
-      })
-      .then((res) => res.json())
-      .catch((err) => {
-        console.log("Error occurred checking gmail token:", err);
-        return { tokenExists: false };
+    /*
+     *  TO DO: Goto user's home page instead of returning true
+     */
+    if (tokenExists) return true;
+
+    // If the user hasn't authorised gmail access, launch dialog
+    // to prompt them to do it
+    const authUrl = await getAuthUrl();
+    if (authUrl) {
+      this.setState({
+        gmailDialogOpen: true,
+        gmailAuthUrl: authUrl,
       });
-
-    // If the user hasn't authorised gmail access, prompt them to do it
-    if (!response.tokenExists) {
-      let authUrl = await this.getAuthUrl();
-      if (authUrl) {
-        this.setState({
-          gmailDialogOpen: true,
-          gmailAuthUrl: authUrl,
-        });
-      }
     }
-  };
-
-  getAuthUrl = async () => {
-    let response = await fetch(
-      "http://localhost:3001/api/gmail-auth/getAuthUrl"
-    )
-      .then((res) => {
-        if (!res.ok)
-          throw new Error(`Server responded with status ${res.status}`);
-        return res;
-      })
-      .then((res) => res.json())
-      .catch((err) => {
-        console.log("Error occurred getting Google Auth URL:", err);
-        return false;
-      });
-
-    return response.authUrl;
   };
 
   handleClose = () => {
@@ -81,7 +51,7 @@ class Login extends Component {
 
   render() {
     return (
-      <div>
+      <span>
         <Grid
           item
           container
@@ -136,7 +106,7 @@ class Login extends Component {
           onClose={this.handleClose}
           gmailAuthUrl={this.state.gmailAuthUrl}
         />
-      </div>
+      </span>
     );
   }
 }
