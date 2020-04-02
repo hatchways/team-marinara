@@ -9,7 +9,11 @@ const routes = require("./routes/index");
 
 // Connect to the database
 const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+mongoose.connect(mongoDB, { 
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true })
+  .then(() => {
   console.log("Connected to database...");
 });
 const db = mongoose.connection;
