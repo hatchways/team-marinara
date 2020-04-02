@@ -3,11 +3,9 @@ const router = express.Router();
 const prospect = require("./api/prospects");
 
 const gmailAuth = require("./api/gmail-auth");
+const users = require("./api/users");
 
-router.get("/", (req, res, next) => {
-  res.status(200).send("Home Page");
-});
-
+router.use("/api/users", users);
 router.use("/api/prospects", prospect);
 router.use("/api/gmail-auth", gmailAuth);
 
