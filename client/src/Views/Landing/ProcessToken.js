@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { CircularProgress } from "@material-ui/core";
-import { useLocation } from "react-router-dom";
 import { postCode } from "./gmailAuth";
 
 class ProcessToken extends Component {
@@ -9,7 +8,7 @@ class ProcessToken extends Component {
   };
 
   async componentDidMount() {
-    const query = new URLSearchParams(useLocation().search);
+    const query = new URLSearchParams(window.location.search);
     const x = await postCode(query);
   }
 
