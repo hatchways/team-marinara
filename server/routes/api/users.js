@@ -1,8 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const User = require("../../models/user");
+const secret = require("../../config/config").secretOrKey;
 
 const {
   validateRegisterInput,
@@ -33,7 +35,11 @@ router.post("/register", (req, res) => {
             newUser.password = hash;
           })
           .then(() => newUser.save())
-          .then(() => res.send("Registration successful"));
+          .then(user => {
+            jwt.sign({ id: user._id }, secret, (err, token) => {
+              res.json({ token });
+            });
+          });
       }
     });
   }
@@ -46,7 +52,26 @@ router.post("/login", (req, res) => {
     res.status(400).json(errors);
   } else {
     //Validation passed
-    res.send("login attempted");
+    const { email, password } = req.body;
+
+    User.findOne({ email }).then(user => {
+      if (!user) {
+        errors.msg = "Email or password is incorrect";
+        res.status(400).json(errors);
+      } else {
+        //Compare password with hash
+        bcrypt.compare(password, user.password).then(isMatch => {
+          if (!isMatch) {
+            errors.msg = "Email or password is incorrect";
+            res.status(400).json(errors);
+          } else {
+            jwt.sign({ id: user._id }, secret, (err, token) => {
+              res.json({ token });
+            });
+          }
+        });
+      }
+    });
   }
 });
 
