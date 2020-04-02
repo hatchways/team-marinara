@@ -48,7 +48,6 @@ router.get("/getAuthUrl", (req, res) => {
     client_secret,
     SUCCESS_REDIRECT_URL
   );
-  console.log(req.query.endRoute);
 
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
