@@ -4,7 +4,10 @@ const router = express.Router();
 
 const User = require("../../models/user");
 
-const validateRegisterInput = require("../../validation/users");
+const {
+  validateRegisterInput,
+  validateLoginInput
+} = require("../../validation/users");
 
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -37,9 +40,14 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  console.log(req.body);
-  res.send("login attempted");
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    res.status(400).json(errors);
+  } else {
+    //Validation passed
+    res.send("login attempted");
+  }
 });
 
 module.exports = router;

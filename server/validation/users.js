@@ -1,6 +1,6 @@
 const Validator = require("validator");
 
-module.exports = data => {
+exports.validateRegisterInput = data => {
   const { firstName, lastName, email, password, password2 } = data;
   const errors = {};
 
@@ -32,6 +32,28 @@ module.exports = data => {
     errors.password2 = "Please confirm your password";
   } else if (!Validator.equals(password, password2)) {
     errors.password2 = "Passwords do not match";
+  }
+
+  return {
+    errors,
+    isValid: !Object.keys(errors).length > 0
+  };
+};
+
+exports.validateLoginInput = data => {
+  const { email, password } = data;
+  const errors = {};
+
+  //Validate email
+  if (!email) {
+    errors.email = "Email is required";
+  } else if (!Validator.isEmail(email)) {
+    errors.email = "Invalid Email Address";
+  }
+
+  //Validate password
+  if (!password) {
+    errors.password = "Password is required";
   }
 
   return {
