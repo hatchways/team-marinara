@@ -67,8 +67,7 @@ router.get("/getAuthUrl", (req, res) => {
  */
 router.get("/processToken", async (req, res) => {
   try {
-    // TO DO: handle user declining gmail access in Google process
-    if (req.query.error) res.status(400).send("Error: ", req.query.error);
+    if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
     const oAuth2Client = new google.auth.OAuth2(
       client_id,
@@ -92,7 +91,7 @@ router.get("/processToken", async (req, res) => {
       }
     });
 
-    res.status(200);
+    res.status(200).json({ tokenSaved: true });
   } catch (error) {
     console.error("Error retrieving access token", error);
     res.status(500).send("Error processing token");

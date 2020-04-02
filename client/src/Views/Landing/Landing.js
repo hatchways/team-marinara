@@ -5,17 +5,18 @@ import { Route, Switch } from "react-router-dom";
 import Navbar from "./LandingNavbar";
 import Login from "./Login";
 import Register from "./Register";
+import ProcessToken from "./ProcessToken";
 
 const styles = () => ({
   root: {
     height: "100vh",
     width: "100%",
     backgroundColor: "#F4F6FC",
-    overflow: "auto"
-  }
+    overflow: "auto",
+  },
 });
 
-const Landing = props => (
+const Landing = (props) => (
   <Grid
     className={props.classes.root}
     container
@@ -32,6 +33,10 @@ const Landing = props => (
       <Route path={["/", "/login"]}>
         <Navbar variant="login"></Navbar>
         <Login />
+      </Route>
+
+      <Route path="/processToken">
+        <ProcessToken />
       </Route>
     </Switch>
   </Grid>

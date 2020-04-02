@@ -43,3 +43,31 @@ exports.getAuthUrl = async () => {
 
   return response.authUrl;
 };
+
+/*
+ * Posts received gmail auth code to back-end, where it is exchanged
+ * for a token and saved in User collection
+ */
+exports.postCode = async (query) => {
+  // If user denied authorisation
+  if (query.error) return false;
+
+  const code = query.code;
+
+  const response = await fetch(
+    `${SERVER_ADDRESS}/api/gmail-auth/processToken?code=${code}`,
+    { method: "POST" }
+  )
+    .then((res) => {
+      if (!res.ok)
+        throw new Error(`Server responded with status ${res.status}`);
+      return res;
+    })
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log("Error occurred processing token:", err);
+      return false;
+    });
+
+  return response.tokenSaved;
+};
