@@ -10,6 +10,7 @@ class Login extends Component {
     email: "",
     password: "",
     gmailDialogOpen: false,
+    gmailAuthUrl: "",
   };
 
   onChange = (e) => {
@@ -28,10 +29,48 @@ class Login extends Component {
 
   checkForGmailToken = async (userId) => {
     // CHANGE URL
-    await fetch("http://localhost:3001/gmail-auth/checkToken");
-    this.setState({
-      gmailDialogOpen: true,
-    });
+    let response = await fetch(
+      "http://localhost:3001/api/gmail-auth/checkToken"
+    )
+      .then((res) => {
+        if (!res.ok)
+          throw new Error(`Server responded with status ${res.status}`);
+        return res;
+      })
+      .then((res) => res.json())
+      .catch((err) => {
+        console.log("Error occurred checking gmail token:", err);
+        return { tokenExists: false };
+      });
+
+    // If the user hasn't authorised gmail access, prompt them to do it
+    if (!response.tokenExists) {
+      let authUrl = await this.getAuthUrl();
+      if (authUrl) {
+        this.setState({
+          gmailDialogOpen: true,
+          gmailAuthUrl: authUrl,
+        });
+      }
+    }
+  };
+
+  getAuthUrl = async () => {
+    let response = await fetch(
+      "http://localhost:3001/api/gmail-auth/getAuthUrl"
+    )
+      .then((res) => {
+        if (!res.ok)
+          throw new Error(`Server responded with status ${res.status}`);
+        return res;
+      })
+      .then((res) => res.json())
+      .catch((err) => {
+        console.log("Error occurred getting Google Auth URL:", err);
+        return false;
+      });
+
+    return response.authUrl;
   };
 
   handleClose = () => {
@@ -95,6 +134,7 @@ class Login extends Component {
         <GmailDialog
           open={this.state.gmailDialogOpen}
           onClose={this.handleClose}
+          gmailAuthUrl={this.state.gmailAuthUrl}
         />
       </div>
     );

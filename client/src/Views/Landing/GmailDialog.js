@@ -20,7 +20,7 @@ const styles = () => ({
 });
 
 const GmailDialog = (props) => {
-  const { onClose, open, classes } = props;
+  const { onClose, open, classes, gmailAuthUrl } = props;
 
   const handleClose = () => {
     onClose();
@@ -35,7 +35,7 @@ const GmailDialog = (props) => {
         <DialogContentText>
           Connect a gmail account to access all of MailSender's features.
         </DialogContentText>
-        <a href="">
+        <a href={`${gmailAuthUrl}`}>
           <img
             className={classes.btn}
             src={googleSignInImg}

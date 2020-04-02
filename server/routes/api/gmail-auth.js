@@ -4,7 +4,7 @@ const router = express.Router();
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
 const { client_secret, client_id } = require("../../config/gmail-secret.json");
-
+const cors = require("cors");
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
  * If modifying these scopes, existing tokens will need to be deleted
@@ -17,7 +17,8 @@ const SCOPES = [
 
 // Url user redirected to after Google authorization
 // If modified it also needs to be changed at https://console.developers.google.com/apis/credentials?project=mail-sender-1
-const SUCCESS_REDIRECT_URL = "http://localhost:3001/api/gmail-auth/success";
+const SUCCESS_REDIRECT_URL =
+  "http://localhost:3001/api/gmail-auth/processToken";
 
 /*************
  * TODO: Get UID of current logged in user, likely from req.header
@@ -64,7 +65,7 @@ router.get("/getAuthUrl", (req, res) => {
  * Saves new token to database under that user
  * @param req.query.code {String} expected
  */
-router.post("/processToken", async (req, res) => {
+router.get("/processToken", async (req, res) => {
   try {
     // TO DO: handle user declining gmail access in Google process
     if (!req.query.code) res.status(400).send("Missing code");
