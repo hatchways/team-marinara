@@ -1,9 +1,9 @@
 const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
 
-const secret = require("./config").secretOrKey;
+const secret = require("./config").appSecret;
 const User = require("../models/user");
 
-exports = passport => {
+module.exports = passport => {
   passport.use(
     new JwtStrategy(
       {

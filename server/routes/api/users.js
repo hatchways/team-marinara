@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const User = require("../../models/user");
-const secret = require("../../config/config").secretOrKey;
+const secret = require("../../config/config").appSecret;
 
 const {
   validateRegisterInput,
@@ -37,7 +37,7 @@ router.post("/register", (req, res) => {
           .then(() => newUser.save())
           .then(user => {
             jwt.sign({ id: user._id }, secret, (err, token) => {
-              res.json({ token });
+              res.status(201).json({ token });
             });
           });
       }

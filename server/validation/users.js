@@ -1,7 +1,7 @@
 const Validator = require("validator");
 
 exports.validateRegisterInput = data => {
-  const { firstName, lastName, email, password, password2 } = data;
+  const { firstName, lastName, email, password, confirmPassword } = data;
   const errors = {};
 
   //Validate name fields
@@ -27,11 +27,11 @@ exports.validateRegisterInput = data => {
     errors.password = "Password must be at least 6 characters long";
   }
 
-  //Validate password2
-  if (!password2) {
-    errors.password2 = "Please confirm your password";
-  } else if (!Validator.equals(password, password2)) {
-    errors.password2 = "Passwords do not match";
+  //Validate confirmPassword
+  if (!confirmPassword) {
+    errors.confirmPassword = "Please confirm your password";
+  } else if (!Validator.equals(password, confirmPassword)) {
+    errors.confirmPassword = "Passwords do not match";
   }
 
   return {
