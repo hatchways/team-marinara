@@ -68,7 +68,7 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.email}
-              error={this.state.errors.email}
+              error={"email" in this.state.errors}
               helperText={this.state.errors.email}
             />
           </Grid>
@@ -81,7 +81,7 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.firstName}
-              error={this.state.errors.firstName}
+              error={"firstName" in this.state.errors}
               helperText={this.state.errors.firstName}
             />
           </Grid>
@@ -94,7 +94,7 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.lastName}
-              error={this.state.errors.lastName}
+              error={"lastName" in this.state.errors}
               helperText={this.state.errors.lastName}
             />
           </Grid>
@@ -107,7 +107,7 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.password}
-              error={this.state.errors.password}
+              error={"password" in this.state.errors}
               helperText={this.state.errors.password}
             />
           </Grid>
@@ -120,7 +120,7 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.confirmPassword}
-              error={this.state.errors.confirmPassword}
+              error={"confirmPassword" in this.state.errors}
               helperText={this.state.errors.confirmPassword}
             />
           </Grid>

@@ -9,7 +9,8 @@ import { login } from "Utils/api";
 class Login extends Component {
   state = {
     email: "",
-    password: ""
+    password: "",
+    errors: {}
   };
 
   onChange = e => {
@@ -25,7 +26,9 @@ class Login extends Component {
       const res = await login(fields);
       console.log(res);
     } catch (error) {
-      console.log(error.response.data);
+      this.setState({
+        errors: { ...error.response.data }
+      });
     }
   };
 
@@ -60,6 +63,8 @@ class Login extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.email}
+              error={"email" in this.state.errors}
+              helperText={this.state.errors.email}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -71,6 +76,8 @@ class Login extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.password}
+              error={"password" in this.state.errors}
+              helperText={this.state.errors.password}
             />
           </Grid>
         </Grid>
