@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
-import { getAuthUrl } from "./gmailAuth";
+import { getAuthUrl } from "Utils/api";
 
 const styles = () => ({
   btn: {
@@ -24,7 +24,7 @@ const styles = () => ({
   },
 });
 
-const GmailDialog = (props) => {
+const GmailDialog = props => {
   const { onClose, open, classes, endRoute } = props;
 
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");

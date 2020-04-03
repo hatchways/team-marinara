@@ -15,7 +15,7 @@ import {
   withStyles,
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
-import { postCode } from "./gmailAuth";
+import { postCode } from "Utils/api";
 
 const styles = {
   // center the spinner
@@ -62,7 +62,7 @@ class ProcessToken extends Component {
     }
   }
 
-  handleClose = (e) => {
+  handleClose = e => {
     /*
      * TO DO: Change routing to get destination from google redirect query
      */
