@@ -2,28 +2,35 @@ const Validator = require("validator");
 
 const { STATUS } = require("../models/Prospect")
 
-module.exports = function validateProspectInput(data) {
+function validateProspectInput(data) {
   const errors = {};
-
+  const {firstName, lastName, ownedBy, email, status} = data;
 // Name checks
-  if (!data.firstName) {
+  if (!firstName) {
     errors.firstName = "First name is required";
   }
-  if (!data.lastName) {
+  if (!lastName) {
     errors.lastName = "Last name is required";
+  }
+
+  if(ownedBy) {
+    var mongoIdTest = new RegExp("^[0-9a-fA-F]{24}$");
+    if(!mongoIdTest.test(ownedBy)) {
+      errors.ownedBy = "OwnedBy is not a valid id"
+    }
   }
   
 // Email checks
-  if (!data.email) {
+  if (!email) {
     errors.email = "Email field is required";
-  } else if (!Validator.isEmail(data.email)) {
+  } else if (!Validator.isEmail(email)) {
     errors.email = "Email is invalid";
   }
 
 // Status checks  
-if (!data.status) {
+if (!status) {
     errors.status = "Status is required";
-} else if (!Object.values(STATUS).includes(data.status)) {
+} else if (!Object.values(STATUS).includes(status)) {
     errors.status = "Invalid Prospect status";
 }
 
@@ -32,3 +39,61 @@ return {
     isValid: !Object.keys(errors).length > 0
   };
 };
+
+function validateFile(file) {
+    
+  const errors = {};
+
+  if (!file) {
+      errors.file = "No file uploaded";
+      return {
+          errors,
+          isValid: false
+      };
+  }
+  
+  if(file.size > 1000000){
+      errors.size = "File size too large";
+  }
+  if(file.mimetype !== 'text/csv') {
+      errors.filetype = "File is not of type .csv";
+  }
+  
+  return {
+      errors,
+      isValid: !Object.keys(errors).length > 0
+  };
+}
+
+/*function validateCsvRow(row) {
+  const errors = {};
+
+  // Name checks
+  if ((!row.firstName)) {
+      errors.firstName = "First name is required";
+  }
+  if (!row.lastName) {
+      errors.lastName = "Last name is required";
+  }
+  
+  // Email checks
+  if (!row.email) {
+      errors.email = "Email field is required";
+  } else if (!Validator.isEmail(row.email)) {
+      errors.email = "Email is invalid";
+  }
+
+  // Status checks  
+  if (!row.status) {
+      errors.status = "Status is required";
+  } else if (!Object.values(STATUS).includes(row.status)) {
+      errors.status = "Invalid Prospect status";
+  }
+
+  return {
+      errors,
+      isValid: !Object.keys(errors).length > 0
+  };
+}*/
+
+module.exports = {validateProspectInput, validateFile };
