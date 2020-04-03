@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
+import {
+  Grid,
+  withStyles,
+  Typography,
+  TextField,
+  Snackbar,
+  IconButton
+} from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
@@ -33,6 +41,12 @@ class Register extends Component {
         errors: { ...error.response.data }
       });
     }
+  };
+
+  closeSnackbar = () => {
+    this.setState({
+      errors: {}
+    });
   };
 
   render() {
@@ -129,6 +143,20 @@ class Register extends Component {
         <Grid item>
           <StyledButton onClick={this.onSubmit}>Create</StyledButton>
         </Grid>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          open={"msg" in this.state.errors}
+          message={this.state.errors.msg}
+          action={
+            <IconButton onClick={this.closeSnackbar} color="inherit">
+              <Close />
+            </IconButton>
+          }
+        />
       </Grid>
     );
   }
