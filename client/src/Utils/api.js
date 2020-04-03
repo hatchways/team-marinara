@@ -1,7 +1,11 @@
 import axios from "axios";
 
-const register = async fields => {
+const register = fields => {
   return axios.post("/api/users/register", fields);
 };
 
-export { register };
+const login = fields => {
+  return axios.post("/api/users/login", fields);
+};
+
+export { register, login };

@@ -22,12 +22,11 @@ class Register extends Component {
   };
 
   onSubmit = async () => {
-    const fields = {
-      ...this.state
-    };
+    const fields = { ...this.state };
 
     try {
-      await register(fields);
+      const res = await register(fields);
+      console.log(res);
     } catch (error) {
       console.log(error.response.data);
     }

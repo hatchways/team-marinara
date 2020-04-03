@@ -4,6 +4,8 @@ import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
 
+import { login } from "Utils/api";
+
 class Login extends Component {
   state = {
     email: "",
@@ -14,6 +16,17 @@ class Login extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+  };
+
+  onSubmit = async () => {
+    const fields = { ...this.state };
+
+    try {
+      const res = await login(fields);
+      console.log(res);
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
 
   render() {
@@ -63,7 +76,7 @@ class Login extends Component {
         </Grid>
 
         <Grid item>
-          <StyledButton>Login</StyledButton>
+          <StyledButton onClick={this.onSubmit}>Login</StyledButton>
         </Grid>
       </Grid>
     );
