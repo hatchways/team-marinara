@@ -12,7 +12,8 @@ class Register extends Component {
     firstName: "",
     lastName: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    errors: {}
   };
 
   onChange = e => {
@@ -28,7 +29,9 @@ class Register extends Component {
       const res = await register(fields);
       console.log(res);
     } catch (error) {
-      console.log(error.response.data);
+      this.setState({
+        errors: { ...error.response.data }
+      });
     }
   };
 
@@ -65,28 +68,34 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.email}
+              error={this.state.errors.email}
+              helperText={this.state.errors.email}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
             <TextField
-              label="First Name"
+              label="First name"
               name="firstName"
               type="text"
               variant="outlined"
               fullWidth
               onChange={this.onChange}
               value={this.state.firstName}
+              error={this.state.errors.firstName}
+              helperText={this.state.errors.firstName}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
             <TextField
-              label="Last Name"
+              label="Last name"
               name="lastName"
               type="text"
               variant="outlined"
               fullWidth
               onChange={this.onChange}
               value={this.state.lastName}
+              error={this.state.errors.lastName}
+              helperText={this.state.errors.lastName}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -98,17 +107,21 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.password}
+              error={this.state.errors.password}
+              helperText={this.state.errors.password}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
             <TextField
-              label="Confirm Password"
+              label="Confirm password"
               name="confirmPassword"
               type="password"
               variant="outlined"
               fullWidth
               onChange={this.onChange}
               value={this.state.confirmPassword}
+              error={this.state.errors.confirmPassword}
+              helperText={this.state.errors.confirmPassword}
             />
           </Grid>
         </Grid>
