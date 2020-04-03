@@ -65,35 +65,4 @@ function validateFile(file) {
   };
 }
 
-/*function validateCsvRow(row) {
-  const errors = {};
-
-  // Name checks
-  if ((!row.firstName)) {
-      errors.firstName = "First name is required";
-  }
-  if (!row.lastName) {
-      errors.lastName = "Last name is required";
-  }
-  
-  // Email checks
-  if (!row.email) {
-      errors.email = "Email field is required";
-  } else if (!Validator.isEmail(row.email)) {
-      errors.email = "Email is invalid";
-  }
-
-  // Status checks  
-  if (!row.status) {
-      errors.status = "Status is required";
-  } else if (!Object.values(STATUS).includes(row.status)) {
-      errors.status = "Invalid Prospect status";
-  }
-
-  return {
-      errors,
-      isValid: !Object.keys(errors).length > 0
-  };
-}*/
-
 module.exports = {validateProspectInput, validateFile };

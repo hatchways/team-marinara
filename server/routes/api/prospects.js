@@ -124,7 +124,7 @@ router.delete("/:id", (req, res) => {
 // @route POST /api/prospects/upload
 // @desc Upload Prospects with a csv file
 // @access Authenticated Users
-router.post("/upload", upload.single(/*the name of the file input on form*/'file'), (req, res) => {
+router.post("/upload", upload.single('file'), (req, res) => {
   const csvData = [];
   let count = {};
   const file = req.file;
