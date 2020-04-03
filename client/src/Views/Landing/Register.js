@@ -4,17 +4,33 @@ import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
 
+import { register } from "Utils/api";
+
 class Register extends Component {
   state = {
     email: "",
-    name: "",
-    password: ""
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: ""
   };
 
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     });
+  };
+
+  onSubmit = async () => {
+    const fields = {
+      ...this.state
+    };
+
+    try {
+      await register(fields);
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
 
   render() {
@@ -54,13 +70,24 @@ class Register extends Component {
           </Grid>
           <Grid item className={this.props.classes.input}>
             <TextField
-              label="Name"
-              name="name"
+              label="First Name"
+              name="firstName"
               type="text"
               variant="outlined"
               fullWidth
               onChange={this.onChange}
-              value={this.state.name}
+              value={this.state.firstName}
+            />
+          </Grid>
+          <Grid item className={this.props.classes.input}>
+            <TextField
+              label="Last Name"
+              name="lastName"
+              type="text"
+              variant="outlined"
+              fullWidth
+              onChange={this.onChange}
+              value={this.state.lastName}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -74,10 +101,21 @@ class Register extends Component {
               value={this.state.password}
             />
           </Grid>
+          <Grid item className={this.props.classes.input}>
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              variant="outlined"
+              fullWidth
+              onChange={this.onChange}
+              value={this.state.confirmPassword}
+            />
+          </Grid>
         </Grid>
 
         <Grid item>
-          <StyledButton>Create</StyledButton>
+          <StyledButton onClick={this.onSubmit}>Create</StyledButton>
         </Grid>
       </Grid>
     );
