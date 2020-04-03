@@ -141,8 +141,17 @@ router.post("/upload", upload.single('file'), (req, res) => {
       })
       .on("end", async function () {
         fs.unlinkSync(file.path);
-        count = await processCsvData(csvData);
-        res.status(200).send(count);
+        try{
+          count = await processCsvData(csvData);
+          res.status(200).send(count);
+        } catch(err){
+          const error = {
+            success : false,
+            message : "CSV failed to upload",
+            details : err.message
+          }
+          res.status(400).send(error);
+        }
       })
       .on('error', function(err) {
           console.log(err);

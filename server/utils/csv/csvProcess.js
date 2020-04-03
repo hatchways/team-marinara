@@ -37,7 +37,7 @@ async function processCsvData(data) {
                 }
             });
         } catch(err) {
-            console.log(err);
+            throw new Error(err);
         }
       }
     }
