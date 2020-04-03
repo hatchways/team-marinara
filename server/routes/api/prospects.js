@@ -36,7 +36,7 @@ router.post("/", (req, res) => {
         email: req.body.email,
         ownedBy: req.body.ownedBy,
         created: dateVar,
-        status: req.body.status,
+        status: req.body.status
       });
       newProspect
         .save()
@@ -79,11 +79,11 @@ router.put("/:id", (req, res) => {
       //if updating email field, check if Prospect with new email alredy exists
       if (req.body.email !== prospect.email) {
         const emailExists = await Prospect.findOne({
-          email: req.body.email,
+          email: req.body.email
         });
         if (emailExists) {
           return res.status(400).json({
-            email: "Cannot update email address. Email address already exists",
+            email: "Cannot update email address. Email address already exists"
           });
         }
       }

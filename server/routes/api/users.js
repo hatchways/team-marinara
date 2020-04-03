@@ -10,7 +10,7 @@ const secret = require("../../config/config").appSecret;
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateUserInput,
+  validateUserInput
 } = require("../../validation/users");
 
 router.post("/register", (req, res) => {
@@ -96,13 +96,13 @@ router.get(
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
           };
           res.json({
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
           });
         }
       });
@@ -138,8 +138,7 @@ router.put(
           const emailExists = await User.findOne({ email: req.body.email });
           if (emailExists) {
             return res.status(400).json({
-              email:
-                "Cannot update email address. Email address already exists",
+              email: "Cannot update email address. Email address already exists"
             });
           }
         }
@@ -159,7 +158,7 @@ router.put(
               id: user.id,
               firstName: user.firstName,
               lastName: user.lastName,
-              email: user.email,
+              email: user.email
             });
           })
           .catch(err => console.log(err));
