@@ -41,7 +41,7 @@ class Register extends Component {
     });
   };
 
-  onClose = () => {
+  handleClose = () => {
     this.setState({
       gmailDialogOpen: false,
     });
@@ -110,13 +110,12 @@ class Register extends Component {
           <Grid item>
             <StyledButton onClick={this.onClick}>Create</StyledButton>
           </Grid>
+          <GmailDialog
+            open={this.state.gmailDialogOpen}
+            onClose={this.handleClose}
+            endRoute="/login"
+          />
         </Grid>
-
-        <GmailDialog
-          open={this.state.gmailDialogOpen}
-          onClose={this.handleClose}
-          endRoute="/login"
-        />
       </span>
     );
   }

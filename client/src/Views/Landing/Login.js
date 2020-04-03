@@ -95,13 +95,12 @@ class Login extends Component {
           <Grid item>
             <StyledButton onClick={this.onClick}>Login</StyledButton>
           </Grid>
+          <GmailDialog
+            open={this.state.gmailDialogOpen}
+            onClose={this.handleClose}
+            endRoute="/login"
+          />
         </Grid>
-
-        <GmailDialog
-          open={this.state.gmailDialogOpen}
-          onClose={this.handleClose}
-          endRoute="/login"
-        />
       </span>
     );
   }
