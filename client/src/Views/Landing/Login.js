@@ -8,6 +8,7 @@ import {
   IconButton
 } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
+import { Redirect } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
@@ -18,7 +19,8 @@ class Login extends Component {
   state = {
     email: "",
     password: "",
-    errors: {}
+    errors: {},
+    redirect: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
@@ -32,7 +34,10 @@ class Login extends Component {
 
     try {
       const res = await login(fields);
-      console.log(res);
+      localStorage.setItem("token", `Bearer ${res.data.token}`);
+      this.setState({
+        redirect: true
+      });
     } catch (error) {
       this.setState({
         errors: { ...error.response.data }
@@ -47,6 +52,9 @@ class Login extends Component {
   };
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/home" />;
+    }
     return (
       <Grid
         item
