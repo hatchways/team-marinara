@@ -11,28 +11,34 @@ async function processCsvData(data) {
     let successCount = 0;
     let uploadArray = [];
     for(let i = 0; i < data.length; i++) {
+      
       const prospect = data[i];
-      //Right now, not logging errors as discussed in standup, just counting skipped entries
       const { errors, isValid } = validateProspectInput(prospect);
-      if(errors.ownedBy !== null) {
-        //csv default value is empty string which causes mongoose objectId cast error
-        prospect.ownedBy = null; 
-      }
-      const {firstName, lastName, email, ownedBy, status} = prospect;
 
+      const {firstName, lastName, email, ownedBy, status} = prospect;
       if(!isValid) {
         skippedCount++;
       } else {
-        await Prospect.findOne({ email: email }).then(prospectFound => {
-            if (prospectFound) {
-                skippedCount++;
-            } else {
-                successCount++;
-                var created = new Date();
-                const newProspect = new Prospect({firstName, lastName, email, ownedBy, created, status});
-                uploadArray.push(newProspect);
-            }
-        });
+        try{
+            await Prospect.findOne({ email: email }).then(prospectFound => {
+                if (prospectFound) {
+                    skippedCount++;
+                } else {
+                    successCount++;
+                    var created = new Date();
+                    let newProspect = {};
+                    if(mongoose.Types.ObjectId.isValid(prospect.ownedBy)) {
+                        prospect.ownedBy = mongoose.Types.ObjectId(prospect.ownedBy);
+                        newProspect = new Prospect({firstName, lastName, email, ownedBy, created, status});
+                    } else {
+                        newProspect = new Prospect({firstName, lastName, email, created, status});
+                    }
+                    uploadArray.push(newProspect);
+                }
+            });
+        } catch(err) {
+            console.log(err);
+        }
       }
     }
     if(uploadArray.length !== 0) {

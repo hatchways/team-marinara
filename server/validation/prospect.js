@@ -13,12 +13,6 @@ function validateProspectInput(data) {
     errors.lastName = "Last name is required";
   }
 
-  if(ownedBy) {
-    var mongoIdTest = new RegExp("^[0-9a-fA-F]{24}$");
-    if(!mongoIdTest.test(ownedBy)) {
-      errors.ownedBy = "OwnedBy is not a valid id"
-    }
-  }
   
 // Email checks
   if (!email) {
