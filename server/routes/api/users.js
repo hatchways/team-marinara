@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const passport = require("passport");
 
 const User = require("../../models/user");
 const secret = require("../../config/config").appSecret;
@@ -79,75 +80,92 @@ router.post("/login", (req, res) => {
 // @route GET /api/users/{id}
 // @desc Get a User object
 // @access Authenticated User can get own record
-router.get("/:id", (req, res) => {
-  let id = req.params.id;
-  User.findById(id, function(err, user) {
-    if (!user) {
-      res.status(404).send({ id: `User with id ${id} is not found` });
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    let id = req.params.id;
+    console.log(req.user);
+
+    if (req.user.id === id) {
+      User.findById(id, function(err, user) {
+        if (!user) {
+          res.status(404).send({ id: `User with id ${id} is not found` });
+        } else {
+          const userData = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+          };
+          res.json({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+          });
+        }
+      });
     } else {
-      res.json(user);
+      res
+        .status(401)
+        .json({ error: "User not authorized to access this resource" });
     }
-  });
-});
+  }
+);
 
 // @route PUT /api/users/{id}
 // @desc Update a User object
-// @access Authenticated Users
-router.put("/:id", (req, res) => {
-  let id = req.params.id;
+// @access Authenticated User can edit own record
+router.put(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    let id = req.params.id;
 
-  // TO DO *****************
-  const { errors, isValid } = validateUserInput(req.body);
+    const { errors, isValid } = validateUserInput(req.body);
 
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
 
-  User.findById(id, function(err, user) {
-    if (!user) {
-      res.status(404).send({ id: `User with id ${id} is not found` });
-    } else {
-      //if updating email field, check if User with new email alredy exists
-      if (req.body.email !== user.email) {
-        User.findOne({ email: req.body.email }).then(userEmailCheck => {
-          if (userEmailCheck) {
+    User.findById(id, async (err, user) => {
+      if (!user) {
+        res.status(404).send({ id: `User with id ${id} is not found` });
+      } else {
+        //if updating email field, check if User with new email alredy exists
+        if (req.body.email !== user.email) {
+          const emailExists = await User.findOne({ email: req.body.email });
+          if (emailExists) {
             return res.status(400).json({
               email:
                 "Cannot update email address. Email address already exists",
             });
           }
-        });
+        }
+
+        user.firstName = req.body.firstName
+          ? req.body.firstName
+          : user.firstName;
+        user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
+        user.email = req.body.email ? req.body.email : user.email;
+        // wipe the gmail token if user is changing email address
+        user.gmailToken = req.body.email ? null : user.gmailToken;
+
+        user
+          .save()
+          .then(user => {
+            res.json({
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+            });
+          })
+          .catch(err => console.log(err));
       }
-      user.firstName = req.body.firstName ? req.body.firstName : user.firstName;
-      user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
-      user.email = req.body.email ? req.body.email : user.email;
-
-      user
-        .save()
-        .then(user => {
-          res.json(user);
-        })
-        .catch(err => console.log(err));
-    }
-  });
-});
-
-// @route DELETE /api/users/{id}
-// @desc Delete a User object
-// @access Authenticated Users
-router.delete("/:id", (req, res) => {
-  let id = req.params.id;
-
-  user = User.findOneAndDelete({ _id: id }, function(err, removeResult) {
-    if (err) {
-      res.status(400).send(err);
-    }
-    if (!removeResult) {
-      res.status(404).send({ id: `User with id ${id} not found.` });
-    } else {
-      res.json({ id: id });
-    }
-  });
-});
+    });
+  }
+);
 
 module.exports = router;
