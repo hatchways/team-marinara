@@ -78,7 +78,7 @@ router.post("/login", (req, res) => {
 
 // @route GET /api/users/{id}
 // @desc Get a User object
-// @access
+// @access Authenticated User can get own record
 router.get("/:id", (req, res) => {
   let id = req.params.id;
   User.findById(id, function(err, user) {
