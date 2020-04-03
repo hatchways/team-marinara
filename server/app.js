@@ -6,16 +6,22 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const config = require("./config/config.js");
 const routes = require("./routes/index");
+const passport = require("passport");
+
+// Passport config
+require("./config/passport")(passport);
 
 // Connect to the database
 const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
-mongoose.connect(mongoDB, { 
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true })
+mongoose
+  .connect(mongoDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  })
   .then(() => {
-  console.log("Connected to database...");
-});
+    console.log("Connected to database...");
+  });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
@@ -28,6 +34,7 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
+app.use(passport.initialize());
 
 app.use("/", routes);
 

@@ -9,6 +9,7 @@ const secret = require("../../config/config").appSecret;
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateUserInput,
 } = require("../../validation/users");
 
 router.post("/register", (req, res) => {
@@ -21,7 +22,7 @@ router.post("/register", (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
     //Check for existing user
-    User.findOne({ email }).then((user) => {
+    User.findOne({ email }).then(user => {
       if (user) {
         errors.msg = "Email is already registered";
         res.status(400).json(errors);
@@ -31,11 +32,11 @@ router.post("/register", (req, res) => {
         //Salt and hash password
         bcrypt
           .hash(password, 10)
-          .then((hash) => {
+          .then(hash => {
             newUser.password = hash;
           })
           .then(() => newUser.save())
-          .then((user) => {
+          .then(user => {
             jwt.sign({ id: user._id }, secret, (err, token) => {
               res.status(201).json({ token });
             });
@@ -54,13 +55,13 @@ router.post("/login", (req, res) => {
     //Validation passed
     const { email, password } = req.body;
 
-    User.findOne({ email }).then((user) => {
+    User.findOne({ email }).then(user => {
       if (!user) {
         errors.msg = "Email or password is incorrect";
         res.status(400).json(errors);
       } else {
         //Compare password with hash
-        bcrypt.compare(password, user.password).then((isMatch) => {
+        bcrypt.compare(password, user.password).then(isMatch => {
           if (!isMatch) {
             errors.msg = "Email or password is incorrect";
             res.status(400).json(errors);
@@ -80,78 +81,69 @@ router.post("/login", (req, res) => {
 // @access
 router.get("/:id", (req, res) => {
   let id = req.params.id;
-  User.findById(id, function(err, prospect) {
-    if (!prospect) {
-      res.status(404).send({ id: `Prospect with id ${id} is not found` });
+  User.findById(id, function(err, user) {
+    if (!user) {
+      res.status(404).send({ id: `User with id ${id} is not found` });
     } else {
-      res.json(prospect);
+      res.json(user);
     }
   });
 });
 
-// @route PUT /api/prospects/{id}
-// @desc Update a Prospect object
+// @route PUT /api/users/{id}
+// @desc Update a User object
 // @access Authenticated Users
 router.put("/:id", (req, res) => {
   let id = req.params.id;
 
-  const { errors, isValid } = validateProspectInput(req.body);
+  // TO DO *****************
+  const { errors, isValid } = validateUserInput(req.body);
 
   if (!isValid) {
     return res.status(400).json(errors);
   }
 
-  Prospect.findById(id, function(err, prospect) {
-    if (!prospect) {
-      res.status(404).send({ id: `Prospect with id ${id} is not found` });
+  User.findById(id, function(err, user) {
+    if (!user) {
+      res.status(404).send({ id: `User with id ${id} is not found` });
     } else {
-      //if updating email field, check if Prospect with new email alredy exists
-      if (req.body.email !== prospect.email) {
-        Prospect.findOne({ email: req.body.email }).then(
-          (prospectEmailCheck) => {
-            if (prospectEmailCheck) {
-              return res
-                .status(400)
-                .json({
-                  email:
-                    "Cannot update email address. Email address already exists",
-                });
-            }
+      //if updating email field, check if User with new email alredy exists
+      if (req.body.email !== user.email) {
+        User.findOne({ email: req.body.email }).then(userEmailCheck => {
+          if (userEmailCheck) {
+            return res.status(400).json({
+              email:
+                "Cannot update email address. Email address already exists",
+            });
           }
-        );
+        });
       }
-      prospect.firstName = req.body.firstName;
-      prospect.lastName = req.body.lastName;
-      prospect.lastContacted = req.body.lastContacted;
-      prospect.ownedBy = req.body.ownedBy;
-      prospect.status = req.body.status;
-      prospect.email = req.body.email;
+      user.firstName = req.body.firstName ? req.body.firstName : user.firstName;
+      user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
+      user.email = req.body.email ? req.body.email : user.email;
 
-      prospect
+      user
         .save()
-        .then((prospect) => {
-          res.json(prospect);
+        .then(user => {
+          res.json(user);
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
     }
   });
 });
 
-// @route DELETE /api/prospects/{id}
-// @desc Delete a Prospect object
+// @route DELETE /api/users/{id}
+// @desc Delete a User object
 // @access Authenticated Users
 router.delete("/:id", (req, res) => {
   let id = req.params.id;
 
-  prospect = Prospect.findOneAndDelete({ _id: id }, function(
-    err,
-    removeResult
-  ) {
+  user = User.findOneAndDelete({ _id: id }, function(err, removeResult) {
     if (err) {
       res.status(400).send(err);
     }
     if (!removeResult) {
-      res.status(404).send({ id: `Prospect with id ${id} not found.` });
+      res.status(404).send({ id: `User with id ${id} not found.` });
     } else {
       res.json({ id: id });
     }
