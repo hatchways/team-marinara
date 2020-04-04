@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
+import { useHistory, withRouter } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
-import GmailDialog from "Views/GmailAuth/GmailSignInDialog";
 import { checkForGmailToken } from "Utils/api";
 
 class Login extends Component {
   state = {
     email: "",
-    password: "",
-    gmailDialogOpen: false
+    password: ""
   };
 
   onChange = e => {
@@ -31,18 +30,8 @@ class Login extends Component {
      *  TO DO: Goto user's home page instead of returning true
      */
     if (tokenExists) return true;
-
-    // If the user hasn't authorised gmail access, launch dialog
-    // to prompt them to do it
-    this.setState({
-      gmailDialogOpen: true
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      gmailDialogOpen: false
-    });
+    console.log(this.props);
+    this.props.history.push(`${this.props.match.path}/email-auth-dialog`);
   };
 
   render() {
@@ -104,4 +93,4 @@ class Login extends Component {
   }
 }
 
-export default withStyles(styles)(Login);
+export default withRouter(withStyles(styles)(Login));

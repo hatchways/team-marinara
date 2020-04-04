@@ -12,7 +12,7 @@ import {
   withStyles,
   Button
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
 import { getAuthUrl } from "Utils/api";
@@ -28,7 +28,7 @@ const styles = {
 const GmailDialog = props => {
   const { classes, endRoute } = props;
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");
-  const history = useHistory();
+  // const history = useHistory();
 
   useEffect(() => {
     const getData = async () => {
@@ -36,14 +36,14 @@ const GmailDialog = props => {
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {
-        history.push("/login");
+        props.history.push("/login");
       }
     };
     getData();
-  }, [endRoute, history]);
+  }, [endRoute, props.history]);
 
   const onClose = () => {
-    history.push("/login");
+    props.history.push("/login");
   };
 
   return (

@@ -69,7 +69,7 @@ const GmailAuthResultDialog = props => {
     /*
      * TO DO: Change routing to get destination from google redirect query
      */
-    history.push(endRoute);
+    history.push(props.match.url);
   };
 
   return displayModal ? (

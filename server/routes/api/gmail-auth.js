@@ -17,7 +17,8 @@ const SCOPES = [
 
 // Url user redirected to after Google authorization
 // If modified it also needs to be changed at https://console.developers.google.com/apis/credentials?project=mail-sender-1
-const SUCCESS_REDIRECT_URL = "http://localhost:3000/processGmailToken";
+const SUCCESS_REDIRECT_URL =
+  "http://localhost:3000/dashboard/email-auth-results-dialog";
 
 /*************
  * TODO: Get UID of current logged in user, likely from req.header
