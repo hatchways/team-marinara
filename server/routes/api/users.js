@@ -85,22 +85,20 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let id = req.params.id;
-    console.log(req.user);
 
     try {
       if (req.user.id === id) {
-        await User.findById(id, function(err, user) {
-          if (!user) {
-            res.status(404).send({ id: `User with id ${id} is not found` });
-          } else {
-            res.json({
-              id: user.id,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            });
-          }
-        });
+        const user = await User.findById(id);
+        if (!user) {
+          res.status(404).send({ id: `User with id ${id} is not found` });
+        } else {
+          res.json({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
+          });
+        }
       } else {
         res
           .status(401)
@@ -129,42 +127,40 @@ router.put(
     }
 
     try {
-      await User.findById(id, async (err, user) => {
-        if (!user) {
-          res.status(404).send({ id: `User with id ${id} is not found` });
-        } else {
-          //if updating email field, check if User with new email alredy exists
-          if (req.body.email !== user.email) {
-            const emailExists = await User.findOne({ email: req.body.email });
-            if (emailExists) {
-              return res.status(400).json({
-                email:
-                  "Cannot update email address. Email address already exists"
-              });
-            }
+      let user = await User.findById(id);
+      if (!user) {
+        res.status(404).send({ id: `User with id ${id} is not found` });
+      } else {
+        //if updating email field, check if User with new email alredy exists
+        if (req.body.email !== user.email) {
+          const emailExists = await User.findOne({ email: req.body.email });
+          if (emailExists) {
+            return res.status(400).json({
+              email: "Cannot update email address. Email address already exists"
+            });
           }
-
-          user.firstName = req.body.firstName
-            ? req.body.firstName
-            : user.firstName;
-          user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
-          user.email = req.body.email ? req.body.email : user.email;
-          // wipe the gmail token if user is changing email address
-          user.gmailToken = req.body.email ? null : user.gmailToken;
-
-          user
-            .save()
-            .then(user => {
-              res.json({
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email
-              });
-            })
-            .catch(err => console.log(err));
         }
-      });
+
+        user.firstName = req.body.firstName
+          ? req.body.firstName
+          : user.firstName;
+        user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
+        user.email = req.body.email ? req.body.email : user.email;
+        // wipe the gmail token if user is changing email address
+        user.gmailToken = req.body.email ? null : user.gmailToken;
+
+        user
+          .save()
+          .then(user => {
+            res.json({
+              id: user.id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email
+            });
+          })
+          .catch(err => console.log(err));
+      }
     } catch (error) {
       console.log("Error modifying user: ", error);
       res.status(500).send({ error: error });
