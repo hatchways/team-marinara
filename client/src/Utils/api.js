@@ -9,11 +9,13 @@ import axios from "axios";
  * gmail account
  */
 const checkForGmailToken = async () => {
-  const response = await axios.get(`/api/gmail-auth/checkToken`).catch(err => {
-    console.log("Error occurred checking gmail token:", err);
-    return { tokenExists: false };
-  });
-  return response.data.tokenExists;
+  try {
+    const response = await axios.get(`/api/gmail-auth/checkToken`);
+    return response.data.tokenExists;
+  } catch (error) {
+    console.log("Error occurred checking gmail token:", error);
+    return false;
+  }
 };
 
 /*
@@ -22,14 +24,15 @@ const checkForGmailToken = async () => {
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
 const getAuthUrl = async endRoute => {
-  const response = await axios
-    .get(`/api/gmail-auth/getAuthUrl?endRoute=${endRoute}`)
-    .catch(err => {
-      console.log("Error occurred getting Google Auth URL:", err);
-      return false;
-    });
-
-  return response.data.authUrl;
+  try {
+    const response = await axios.get(
+      `/api/gmail-auth/getAuthUrl?endRoute=${endRoute}`
+    );
+    return response.data.authUrl;
+  } catch (error) {
+    console.log("Error occurred getting Google Auth URL:", error);
+    return false;
+  }
 };
 
 /*
@@ -39,14 +42,15 @@ const getAuthUrl = async endRoute => {
  * to access their Gmail account
  */
 const postCode = async code => {
-  const response = await axios
-    .post(`/api/gmail-auth/processToken?code=${code}`)
-    .catch(err => {
-      console.log("Error occurred processing token:", err);
-      return false;
-    });
-
-  return response.data;
+  try {
+    const response = await axios.post(
+      `/api/gmail-auth/processToken?code=${code}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log("Error occurred processing token:", error);
+    return { tokenSaved: false };
+  }
 };
 
 export { checkForGmailToken, getAuthUrl, postCode };

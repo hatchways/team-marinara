@@ -10,43 +10,44 @@ import {
   DialogContentText,
   DialogActions,
   withStyles,
-  Button,
+  Button
 } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
 import { getAuthUrl } from "Utils/api";
 
-const styles = () => ({
+const styles = {
   btn: {
     display: "block",
     marginLeft: "auto",
-    marginRight: "auto",
-  },
-});
+    marginRight: "auto"
+  }
+};
 
 const GmailDialog = props => {
-  const { onClose, open, classes, endRoute } = props;
-
+  const { classes, endRoute } = props;
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");
+  const history = useHistory();
 
   useEffect(() => {
-    async function getData() {
+    const getData = async () => {
       const authUrl = await getAuthUrl(encodeURIComponent(endRoute));
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {
-        onclose();
+        history.push("/login");
       }
-    }
+    };
     getData();
-  }, [endRoute, onClose]);
+  }, [endRoute, history]);
 
-  const handleClose = () => {
-    onClose();
+  const onClose = () => {
+    history.push("/login");
   };
 
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog onClose={onClose} open={true}>
       <DialogTitle id="simple-dialog-title">
         Connect a Gmail Account
       </DialogTitle>
@@ -63,7 +64,7 @@ const GmailDialog = props => {
         </a>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={onClose} color="primary">
           Skip
         </Button>
       </DialogActions>

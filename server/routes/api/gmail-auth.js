@@ -12,7 +12,7 @@ const { client_secret, client_id } = require("../../config/gmail-secret.json");
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/gmail.compose",
-  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.send"
 ];
 
 // Url user redirected to after Google authorization
@@ -55,7 +55,7 @@ router.get("/getAuthUrl", (req, res) => {
     // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
     ...(!process.env.NODE_ENV && { prompt: "consent" }),
     // pass route that success/failure dialog will redirect to on close
-    state: encodeURIComponent(req.query.endRoute),
+    state: encodeURIComponent(req.query.endRoute)
   });
 
   res.status(200).json({ authUrl: authUrl });
@@ -64,7 +64,7 @@ router.get("/getAuthUrl", (req, res) => {
 /*
  * Called when user has authorized Mail Sender to access their Gmail account
  * Saves new token to database under that user
- * @param req.query.code {String} expected
+ * @param req.query.code {String} code provided by Google from auth process
  */
 router.post("/processToken", async (req, res) => {
   try {
@@ -96,7 +96,7 @@ router.post("/processToken", async (req, res) => {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
     let emailAddr = await gmail.users
       .getProfile({ userId: "me" })
-      .then((response) => {
+      .then(response => {
         return response.data.emailAddress;
       });
 
@@ -126,7 +126,7 @@ async function sendEmail(mail) {
     to: "darren@darrengreenfield.com",
     text: "This is a test email",
     subject: "OMG it worked!",
-    textEncoding: "base64",
+    textEncoding: "base64"
   });
 
   await mail.compile().build(async (err, msg) => {
@@ -144,8 +144,8 @@ async function sendEmail(mail) {
       {
         userId: "me",
         resource: {
-          raw: encodedMessage,
-        },
+          raw: encodedMessage
+        }
       },
       (err, result) => {
         if (err) {

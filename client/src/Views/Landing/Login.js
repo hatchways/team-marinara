@@ -3,19 +3,19 @@ import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
-import GmailDialog from "./GmailDialog";
+import GmailDialog from "Views/GmailAuth/GmailSignInDialog";
 import { checkForGmailToken } from "Utils/api";
 
 class Login extends Component {
   state = {
     email: "",
     password: "",
-    gmailDialogOpen: false,
+    gmailDialogOpen: false
   };
 
   onChange = e => {
     this.setState({
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -35,13 +35,13 @@ class Login extends Component {
     // If the user hasn't authorised gmail access, launch dialog
     // to prompt them to do it
     this.setState({
-      gmailDialogOpen: true,
+      gmailDialogOpen: true
     });
   };
 
   handleClose = () => {
     this.setState({
-      gmailDialogOpen: false,
+      gmailDialogOpen: false
     });
   };
 
@@ -94,11 +94,11 @@ class Login extends Component {
         <Grid item>
           <StyledButton onClick={this.onClick}>Login</StyledButton>
         </Grid>
-        <GmailDialog
+        {/* <GmailDialog
           open={this.state.gmailDialogOpen}
           onClose={this.handleClose}
           endRoute="/login"
-        />
+        /> */}
       </Grid>
     );
   }
