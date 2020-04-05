@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
@@ -15,6 +16,8 @@ class Login extends Component {
       [e.target.name]: e.target.value
     });
   };
+
+  onClick = async e => {};
 
   render() {
     return (
@@ -63,11 +66,11 @@ class Login extends Component {
         </Grid>
 
         <Grid item>
-          <StyledButton>Login</StyledButton>
+          <StyledButton onClick={this.onClick}>Login</StyledButton>
         </Grid>
       </Grid>
     );
   }
 }
 
-export default withStyles(styles)(Login);
+export default withRouter(withStyles(styles)(Login));

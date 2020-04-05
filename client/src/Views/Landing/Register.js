@@ -17,6 +17,8 @@ class Register extends Component {
     });
   };
 
+  onClick = async e => {};
+
   render() {
     return (
       <Grid
@@ -77,7 +79,7 @@ class Register extends Component {
         </Grid>
 
         <Grid item>
-          <StyledButton>Create</StyledButton>
+          <StyledButton onClick={this.onClick}>Create</StyledButton>
         </Grid>
       </Grid>
     );
