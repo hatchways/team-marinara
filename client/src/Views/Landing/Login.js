@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
-import { useHistory, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
@@ -20,7 +20,7 @@ class Login extends Component {
 
   onClick = async e => {
     /*
-     * TO DO: Get user ID from login process / local storage
+     * TO DO: Get user ID from context
      */
     const userId = "5e84b3101bd834092a28464f";
     const tokenExists = await checkForGmailToken(userId);
@@ -30,8 +30,9 @@ class Login extends Component {
      *  TO DO: Goto user's home page instead of returning true
      */
     if (tokenExists) return true;
-    console.log(this.props);
-    this.props.history.push(`${this.props.match.path}/email-auth-dialog`);
+    this.props.history.push(
+      `${this.props.location.pathname}/email-auth-dialog`
+    );
   };
 
   render() {

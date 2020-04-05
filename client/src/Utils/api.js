@@ -21,12 +21,13 @@ const checkForGmailToken = async () => {
 /*
  * Gets a Google URL to send user to to authorise Mail Sender to access their
  * gmail account.
+ * New redirect routes also need to be added at: https://console.developers.google.com/apis/credentials?project=mail-sender-1
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
-const getAuthUrl = async endRoute => {
+const getAuthUrl = async redirectUrl => {
   try {
     const response = await axios.get(
-      `/api/gmail-auth/getAuthUrl?endRoute=${endRoute}`
+      `/api/gmail-auth/getAuthUrl?redirectUrl=${redirectUrl}`
     );
     return response.data.authUrl;
   } catch (error) {
@@ -41,10 +42,10 @@ const getAuthUrl = async endRoute => {
  * @param code {string} - authorisation code received from Google after user authorises Mail Sender
  * to access their Gmail account
  */
-const postCode = async code => {
+const postCode = async (code, redirectUrl) => {
   try {
     const response = await axios.post(
-      `/api/gmail-auth/processToken?code=${code}`
+      `/api/gmail-auth/processToken?code=${code}&redirectUrl=${redirectUrl}`
     );
     return response.data;
   } catch (error) {

@@ -12,7 +12,6 @@ import {
   withStyles,
   Button
 } from "@material-ui/core";
-// import { useHistory } from "react-router-dom";
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
 import { getAuthUrl } from "Utils/api";
@@ -26,24 +25,28 @@ const styles = {
 };
 
 const GmailDialog = props => {
-  const { classes, endRoute } = props;
+  const { classes } = props;
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");
-  // const history = useHistory();
 
   useEffect(() => {
     const getData = async () => {
-      const authUrl = await getAuthUrl(encodeURIComponent(endRoute));
+      // redirect to parent path + /email-auth-results-dialog
+      // all redirect routes need to be added to: https://console.developers.google.com/apis/credentials?project=mail-sender-1
+      const redirectUrl = `${window.location.origin}${props.match.params[0]}/email-auth-results-dialog`;
+      const authUrl = await getAuthUrl(redirectUrl);
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {
-        props.history.push("/login");
+        // Send to parent component if error
+        props.history.push(props.match.params[0]);
       }
     };
     getData();
-  }, [endRoute, props.history]);
+  }, [props]);
 
   const onClose = () => {
-    props.history.push("/login");
+    // Clicking 'Skip' takes user to parent component
+    props.history.push(props.match.params[0]);
   };
 
   return (

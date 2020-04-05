@@ -4,15 +4,11 @@ import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
 
-import GmailDialog from "Views/GmailAuth/GmailSignInDialog";
-import { checkForGmailToken } from "Utils/api";
-
 class Register extends Component {
   state = {
     email: "",
     name: "",
-    password: "",
-    gmailDialogOpen: false
+    password: ""
   };
 
   onChange = e => {
@@ -21,31 +17,7 @@ class Register extends Component {
     });
   };
 
-  onClick = async e => {
-    /*
-     * TO DO: Get user ID from login process / local storage
-     *
-     */
-    const userId = "5e84b3101bd834092a28464f";
-    const tokenExists = await checkForGmailToken(userId);
-
-    /*
-     *  TO DO: Goto user's home page instead of returning true
-     */
-    if (tokenExists) return true;
-
-    // If the user hasn't authorised gmail access, launch dialog
-    // to prompt them to do it
-    this.setState({
-      gmailDialogOpen: true
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      gmailDialogOpen: false
-    });
-  };
+  onClick = async e => {};
 
   render() {
     return (
@@ -109,11 +81,6 @@ class Register extends Component {
         <Grid item>
           <StyledButton onClick={this.onClick}>Create</StyledButton>
         </Grid>
-        <GmailDialog
-          open={this.state.gmailDialogOpen}
-          onClose={this.handleClose}
-          endRoute="/login"
-        />
       </Grid>
     );
   }

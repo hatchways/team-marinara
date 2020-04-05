@@ -14,7 +14,6 @@ import {
   Button,
   withStyles
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 import { postCode } from "Utils/api";
 
 const styles = {
@@ -29,9 +28,7 @@ const GmailAuthResultDialog = props => {
   const [displayModal, setDisplayModal] = useState(false);
   const [tokenSaved, setTokenSaved] = useState(false);
   const [emailAddr, setEmailAddr] = useState("");
-  const [endRoute, setEndRoute] = useState("");
   const { classes } = props;
-  const history = useHistory();
 
   /*
    * When component mounts following redirect from Google authorisation
@@ -47,12 +44,12 @@ const GmailAuthResultDialog = props => {
         setDisplayModal(true);
         return;
       }
-
+      const redirectUrl = `${window.location.origin}${props.match.url}`;
       const { tokenSaved, emailAddr } = await postCode(
-        searchParams.get("code")
+        searchParams.get("code"),
+        redirectUrl
       );
       setDisplayModal(true);
-      setEndRoute(decodeURIComponent(searchParams.get("state")));
 
       if (tokenSaved === true) {
         // Show modal with 'Success'
@@ -63,13 +60,11 @@ const GmailAuthResultDialog = props => {
     };
 
     postCodeToBackEnd();
-  }, []);
+  }, [props]);
 
   const handleClose = e => {
-    /*
-     * TO DO: Change routing to get destination from google redirect query
-     */
-    history.push(props.match.url);
+    // Go to parent component on close
+    props.history.push(props.match.params[0]);
   };
 
   return displayModal ? (

@@ -1,6 +1,7 @@
 const { google } = require("googleapis");
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
 const { client_secret, client_id } = require("../../config/gmail-secret.json");
@@ -15,109 +16,114 @@ const SCOPES = [
   "https://www.googleapis.com/auth/gmail.send"
 ];
 
-// Url user redirected to after Google authorization
-// If modified it also needs to be changed at https://console.developers.google.com/apis/credentials?project=mail-sender-1
-const SUCCESS_REDIRECT_URL =
-  "http://localhost:3000/dashboard/email-auth-results-dialog";
-
-/*************
- * TODO: Get UID of current logged in user, likely from req.header
- **************/
-const userId = "5e84b3101bd834092a28464f";
-
-/**
+/*
  * Check if gmail authorization token exists for the user
+ * Access: logged in users
  */
-router.get("/checkToken", async (req, res) => {
-  /******************
-   * Get userId from req when login/reg routes finished
-   * Get user object from /users route
-   *******************/
-  const loggedInUser = await User.findById(userId);
+router.get(
+  "/checkToken",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const loggedInUser = await User.findById(req.user.id);
 
-  let tokenExists = loggedInUser.gmailToken ? true : false;
-
-  res.status(200).json({ tokenExists: tokenExists });
-});
+    let tokenExists = loggedInUser.gmailToken ? true : false;
+    res.status(200).json({ tokenExists: tokenExists });
+  }
+);
 
 /*
  * Generate url to redirect user to for authorization on Google
+ * @param req.query.redirectUrl {string} - URL to redirect to
+ * after Google auth process
+ * Access: logged in users
  */
-router.get("/getAuthUrl", (req, res) => {
-  const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    SUCCESS_REDIRECT_URL
-  );
+router.get(
+  "/getAuthUrl",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id,
+      client_secret,
+      req.query.redirectUrl
+    );
 
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
-    // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
-    ...(!process.env.NODE_ENV && { prompt: "consent" }),
-    // pass route that success/failure dialog will redirect to on close
-    state: encodeURIComponent(req.query.endRoute)
-  });
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: SCOPES,
+      // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
+      ...(!process.env.NODE_ENV && { prompt: "consent" })
+    });
 
-  res.status(200).json({ authUrl: authUrl });
-});
+    res.status(200).json({ authUrl: authUrl });
+  }
+);
 
 /*
  * Called when user has authorized Mail Sender to access their Gmail account
  * Saves new token to database under that user
  * @param req.query.code {String} code provided by Google from auth process
+ * @param req.query.redirectUrl {string} - URL to redirect to
+ * after Google auth process
+ * Access: logged in users
  */
-router.post("/processToken", async (req, res) => {
-  try {
-    if (!req.query.code) res.status(400).send("Error: ", req.query.error);
+router.post(
+  "/processToken",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
-    const oAuth2Client = new google.auth.OAuth2(
-      client_id,
-      client_secret,
-      SUCCESS_REDIRECT_URL
-    );
+      const oAuth2Client = new google.auth.OAuth2(
+        client_id,
+        client_secret,
+        req.query.redirectUrl
+      );
 
-    // Use returned code to get access tokens for user
-    const { tokens } = await oAuth2Client.getToken(req.query.code);
+      // Use returned code to get access tokens for user
+      const { tokens } = await oAuth2Client.getToken(req.query.code);
 
-    // Store the token to db under user
-    /********
-     * Change to get userId from req
-     *********/
-    const user = await User.findById(userId);
-    user.gmailToken = tokens.refresh_token;
-    await user.save().then((result, err) => {
-      if (err) {
-        console.log("Error writing token to users collection:", err);
-        res.status(500).send("Error writing to database");
-      }
-    });
-
-    oAuth2Client.setCredentials(tokens);
-    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-    let emailAddr = await gmail.users
-      .getProfile({ userId: "me" })
-      .then(response => {
-        return response.data.emailAddress;
+      // Store the token to db under user
+      /********
+       * Change to get userId from req
+       *********/
+      const user = await User.findById(req.user.id);
+      user.gmailToken = tokens.refresh_token;
+      await user.save().then((result, err) => {
+        if (err) {
+          console.log("Error writing token to users collection:", err);
+          res.status(500).send("Error writing to database");
+        }
       });
 
-    res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
-  } catch (error) {
-    console.error("Error retrieving access token", error);
-    res.status(500).send("Error processing token");
+      oAuth2Client.setCredentials(tokens);
+      const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+      let emailAddr = await gmail.users
+        .getProfile({ userId: "me" })
+        .then(response => {
+          return response.data.emailAddress;
+        });
+
+      res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
+    } catch (error) {
+      console.error("Error retrieving access token", error);
+      res.status(500).send("Error processing token");
+    }
   }
-});
+);
 
 /*
  * Test function to show send email functionality
  * @param: mail - nodemailer mailComposer object with to, subject, text and textEncoding properties
+ * @param req.query.redirectUrl {string} - URL to redirect to
+ * after Google auth process
  */
 async function sendEmail(mail) {
+  const userId = "5e84b3101bd834092a28464f";
   const loggedInUser = await User.findById(userId);
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
     client_secret,
-    SUCCESS_REDIRECT_URL
+    req.query.redirectUrl
   );
   oAuth2Client.setCredentials({ refresh_token: loggedInUser.gmailToken });
 
@@ -164,12 +170,14 @@ async function sendEmail(mail) {
 /*
  * Test function to show read email functionality
  * @param {string} threadId - id of gmail email thread to read
+ * @param req.query.redirectUrl {string} - URL to redirect to
+ * after Google auth process
  */
 async function readEmail(threadId) {
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
     client_secret,
-    SUCCESS_REDIRECT_URL
+    req.query.redirectUrl
   );
   oAuth2Client.setCredentials(tokens);
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
