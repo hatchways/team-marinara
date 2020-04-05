@@ -41,6 +41,7 @@ const getAuthUrl = async redirectUrl => {
  * for a token and saved in User collection
  * @param code {string} - authorisation code received from Google after user authorises Mail Sender
  * to access their Gmail account
+ * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
 const postCode = async (code, redirectUrl) => {
   try {

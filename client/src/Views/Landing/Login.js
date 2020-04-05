@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
-import { checkForGmailToken } from "Utils/api";
 
 class Login extends Component {
   state = {
@@ -18,22 +17,7 @@ class Login extends Component {
     });
   };
 
-  onClick = async e => {
-    /*
-     * TO DO: Get user ID from context
-     */
-    const userId = "5e84b3101bd834092a28464f";
-    const tokenExists = await checkForGmailToken(userId);
-
-    /*
-     *  Skip dialog
-     *  TO DO: Goto user's home page instead of returning true
-     */
-    if (tokenExists) return true;
-    this.props.history.push(
-      `${this.props.location.pathname}/email-auth-dialog`
-    );
-  };
+  onClick = async e => {};
 
   render() {
     return (
@@ -84,11 +68,6 @@ class Login extends Component {
         <Grid item>
           <StyledButton onClick={this.onClick}>Login</StyledButton>
         </Grid>
-        {/* <GmailDialog
-          open={this.state.gmailDialogOpen}
-          onClose={this.handleClose}
-          endRoute="/login"
-        /> */}
       </Grid>
     );
   }

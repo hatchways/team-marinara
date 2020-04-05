@@ -83,9 +83,6 @@ router.post(
       const { tokens } = await oAuth2Client.getToken(req.query.code);
 
       // Store the token to db under user
-      /********
-       * Change to get userId from req
-       *********/
       const user = await User.findById(req.user.id);
       user.gmailToken = tokens.refresh_token;
       await user.save().then((result, err) => {
@@ -96,6 +93,8 @@ router.post(
       });
 
       oAuth2Client.setCredentials(tokens);
+
+      // Get email address that was just linked to return to user
       const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
       let emailAddr = await gmail.users
         .getProfile({ userId: "me" })
