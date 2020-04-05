@@ -13,9 +13,9 @@ const withAuthentication = Component => {
     const [userId, setUserId] = useState(prevUserId);
     const [user, setUser] = useState({});
 
+    // When token or userId changes via setToken or setUserId,
+    // save to local storage, fetch the user and put in context
     useEffect(() => {
-      // When token or userId is set, save to local storage and
-      // fetch the user and put in context
       const getCurrentUser = async () => {
         window.localStorage.setItem("token", token);
         window.localStorage.setItem("userId", userId);
@@ -31,8 +31,7 @@ const withAuthentication = Component => {
       setToken,
       userId,
       setUserId,
-      user,
-      setUser
+      user
     };
 
     return (

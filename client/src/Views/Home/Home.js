@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Typography } from "@material-ui/core";
-import { AuthUserContext } from "Components/AuthUserContext";
+import { AuthUserContext } from "Components/Session/AuthUserContext";
 
 class Home extends Component {
   state = {};
