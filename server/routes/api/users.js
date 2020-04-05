@@ -39,7 +39,7 @@ router.post("/register", (req, res) => {
           .then(() => newUser.save())
           .then(user => {
             jwt.sign({ id: user._id }, secret, (err, token) => {
-              res.status(201).json({ token });
+              res.status(201).json({ token: token, userId: user._id });
             });
           });
       }
@@ -68,7 +68,7 @@ router.post("/login", (req, res) => {
             res.status(400).json(errors);
           } else {
             jwt.sign({ id: user._id }, secret, (err, token) => {
-              res.json({ token });
+              res.json({ token: token, userId: user._id });
             });
           }
         });

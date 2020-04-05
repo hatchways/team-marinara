@@ -7,7 +7,7 @@ import Landing from "./Landing/Landing";
 import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
 import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
 import theme from "Assets/styles/Theme";
-import { withAuthentication } from "Components/Session/AuthUserContext";
+import withAuthentication from "Components/Session/withAuthentication";
 
 const App = () => {
   return (
