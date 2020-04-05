@@ -14,7 +14,7 @@ import {
   Button,
   withStyles
 } from "@material-ui/core";
-import { postCode } from "Utils/api";
+import { postGmailAuthCode } from "Utils/api";
 
 const styles = {
   // center the spinner
@@ -45,7 +45,7 @@ const GmailAuthResultDialog = props => {
         return;
       }
       const redirectUrl = `${window.location.origin}${props.match.url}`;
-      const { tokenSaved, emailAddr } = await postCode(
+      const { tokenSaved, emailAddr } = await postGmailAuthCode(
         searchParams.get("code"),
         redirectUrl
       );

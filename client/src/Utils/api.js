@@ -43,7 +43,7 @@ const getAuthUrl = async redirectUrl => {
  * to access their Gmail account
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
-const postCode = async (code, redirectUrl) => {
+const postGmailAuthCode = async (code, redirectUrl) => {
   try {
     const response = await axios.post(
       `/api/gmail-auth/processToken?code=${code}&redirectUrl=${redirectUrl}`
@@ -55,4 +55,18 @@ const postCode = async (code, redirectUrl) => {
   }
 };
 
-export { checkForGmailToken, getAuthUrl, postCode };
+const getUser = async (userId, token) => {
+  try {
+    const response = await axios.get(`/api/users/${userId}`, {
+      headers: {
+        Authorization: `${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Error getting user data: ", error);
+    return null;
+  }
+};
+
+export { checkForGmailToken, getAuthUrl, postGmailAuthCode, getUser };
