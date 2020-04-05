@@ -4,6 +4,14 @@
 
 import axios from "axios";
 
+const register = fields => {
+  return axios.post("/api/users/register", fields);
+};
+
+const login = fields => {
+  return axios.post("/api/users/login", fields);
+};
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -69,4 +77,11 @@ const getUser = async (userId, token) => {
   }
 };
 
-export { checkForGmailToken, getAuthUrl, postGmailAuthCode, getUser };
+export {
+  register,
+  login,
+  checkForGmailToken,
+  getAuthUrl,
+  postGmailAuthCode,
+  getUser
+};

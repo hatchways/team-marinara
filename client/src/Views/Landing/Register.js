@@ -1,14 +1,29 @@
 import React, { Component } from "react";
-import { Grid, withStyles, Typography, TextField } from "@material-ui/core";
+import {
+  Grid,
+  withStyles,
+  Typography,
+  TextField,
+  Snackbar,
+  IconButton
+} from "@material-ui/core";
+import { Close } from "@material-ui/icons";
+import { Redirect } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
 
+import { register } from "Utils/api";
+
 class Register extends Component {
   state = {
     email: "",
-    name: "",
-    password: ""
+    firstName: "",
+    lastName: "",
+    password: "",
+    confirmPassword: "",
+    errors: {},
+    redirect: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
@@ -17,9 +32,32 @@ class Register extends Component {
     });
   };
 
-  onClick = async e => {};
+  onSubmit = async () => {
+    const fields = { ...this.state };
+
+    try {
+      const res = await register(fields);
+      localStorage.setItem("token", `Bearer ${res.data.token}`);
+      this.setState({
+        redirect: true
+      });
+    } catch (error) {
+      this.setState({
+        errors: { ...error.response.data }
+      });
+    }
+  };
+
+  closeSnackbar = () => {
+    this.setState({
+      errors: {}
+    });
+  };
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/home" />;
+    }
     return (
       <Grid
         item
@@ -52,17 +90,34 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.email}
+              error={"email" in this.state.errors}
+              helperText={this.state.errors.email}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
             <TextField
-              label="Name"
-              name="name"
+              label="First name"
+              name="firstName"
               type="text"
               variant="outlined"
               fullWidth
               onChange={this.onChange}
-              value={this.state.name}
+              value={this.state.firstName}
+              error={"firstName" in this.state.errors}
+              helperText={this.state.errors.firstName}
+            />
+          </Grid>
+          <Grid item className={this.props.classes.input}>
+            <TextField
+              label="Last name"
+              name="lastName"
+              type="text"
+              variant="outlined"
+              fullWidth
+              onChange={this.onChange}
+              value={this.state.lastName}
+              error={"lastName" in this.state.errors}
+              helperText={this.state.errors.lastName}
             />
           </Grid>
           <Grid item className={this.props.classes.input}>
@@ -74,13 +129,42 @@ class Register extends Component {
               fullWidth
               onChange={this.onChange}
               value={this.state.password}
+              error={"password" in this.state.errors}
+              helperText={this.state.errors.password}
+            />
+          </Grid>
+          <Grid item className={this.props.classes.input}>
+            <TextField
+              label="Confirm password"
+              name="confirmPassword"
+              type="password"
+              variant="outlined"
+              fullWidth
+              onChange={this.onChange}
+              value={this.state.confirmPassword}
+              error={"confirmPassword" in this.state.errors}
+              helperText={this.state.errors.confirmPassword}
             />
           </Grid>
         </Grid>
 
         <Grid item>
-          <StyledButton onClick={this.onClick}>Create</StyledButton>
+          <StyledButton onClick={this.onSubmit}>Create</StyledButton>
         </Grid>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          open={"msg" in this.state.errors}
+          message={this.state.errors.msg}
+          action={
+            <IconButton onClick={this.closeSnackbar} color="inherit">
+              <Close />
+            </IconButton>
+          }
+        />
       </Grid>
     );
   }
