@@ -4,10 +4,14 @@
 
 import axios from "axios";
 
-/*
- * Check if current user has given permission for Mail Sender to access their
- * gmail account
- */
+const register = fields => {
+  return axios.post("/api/users/register", fields);
+};
+
+const login = fields => {
+  return axios.post("/api/users/login", fields);
+};
+
 const checkForGmailToken = async () => {
   try {
     const response = await axios.get(`/api/gmail-auth/checkToken`);
@@ -55,4 +59,4 @@ const postCode = async (code, redirectUrl) => {
   }
 };
 
-export { checkForGmailToken, getAuthUrl, postCode };
+export { register, login, checkForGmailToken, getAuthUrl, postCode };
