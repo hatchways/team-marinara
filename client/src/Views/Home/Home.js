@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Typography, Grid } from "@material-ui/core";
-import { Redirect } from "react-router-dom";
 import StyledButton from "Components/Button/StyledButton";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import withAuthorization from "Components/Session/withAuthorization";
