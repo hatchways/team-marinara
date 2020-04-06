@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Typography, Grid } from "@material-ui/core";
+import { Redirect } from "react-router-dom";
 import StyledButton from "Components/Button/StyledButton";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import withAuthorization from "Components/Session/withAuthorization";
@@ -12,6 +13,10 @@ class Home extends Component {
     this.context.setUserId(null);
   };
 
+  authorizeGmail = () => {
+    this.props.history.push(`${this.props.match.url}/email-auth-dialog`);
+  };
+
   render() {
     const user = this.context.user;
     return (
@@ -20,6 +25,11 @@ class Home extends Component {
           Home Page for {user.firstName} {user.lastName}
           <Grid item>
             <StyledButton onClick={this.logOut}>Log Out</StyledButton>
+          </Grid>
+          <Grid item>
+            <StyledButton onClick={this.authorizeGmail}>
+              Authorize Gmail
+            </StyledButton>
           </Grid>
         </Typography>
       </div>
