@@ -23,7 +23,7 @@ class Register extends Component {
     password: "",
     confirmPassword: "",
     errors: {},
-    redirect: localStorage.getItem("token") ? true : false
+    loggedIn: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
@@ -39,7 +39,7 @@ class Register extends Component {
       const res = await register(fields);
       localStorage.setItem("token", `Bearer ${res.data.token}`);
       this.setState({
-        redirect: true
+        loggedIn: true
       });
     } catch (error) {
       this.setState({
@@ -55,7 +55,7 @@ class Register extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
+    if (this.state.loggedIn) {
       return <Redirect to="/home" />;
     }
     return (

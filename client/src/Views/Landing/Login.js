@@ -20,7 +20,7 @@ class Login extends Component {
     email: "",
     password: "",
     errors: {},
-    redirect: localStorage.getItem("token") ? true : false
+    loggedIn: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
@@ -36,7 +36,7 @@ class Login extends Component {
       const res = await login(fields);
       localStorage.setItem("token", `Bearer ${res.data.token}`);
       this.setState({
-        redirect: true
+        loggedIn: true
       });
     } catch (error) {
       this.setState({
@@ -52,7 +52,7 @@ class Login extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
+    if (this.state.loggedIn) {
       return <Redirect to="/home" />;
     }
     return (
@@ -126,4 +126,4 @@ class Login extends Component {
   }
 }
 
-export default withRouter(withStyles(styles)(Login));
+export default withStyles(styles)(Login);
