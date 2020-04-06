@@ -23,9 +23,8 @@ const upload = multer({ storage: storage })
 // @desc Create a Prospect object
 // @access Authenticated Users
 router.post("/", (req, res) => {
-    
-    //Prospect field validation
-    const { errors, isValid } = validateProspectInput(req.body);
+  //Prospect field validation
+  const { errors, isValid } = validateProspectInput(req.body);
 
     if (!isValid) {
         return res.status(400).json(errors);
@@ -44,19 +43,18 @@ router.post("/", (req, res) => {
         .save()
         .then(prospect => res.json(prospect))
         .catch(err => console.log(err));
-        }
-    });
+    }
+  });
 });
 
 // @route GET /api/prospects/{id}
 // @desc Get a Prospect object
 // @access Authenticated Users
-router.get("/:id", (req, res) =>{
-  
+router.get("/:id", (req, res) => {
   let id = req.params.id;
   Prospect.findById(id, function(err, prospect) {
     if (!prospect) {
-      res.status(404).send({id : `Prospect with id ${id} is not found`});  
+      res.status(404).send({ id: `Prospect with id ${id} is not found` });
     } else {
       res.json(prospect);
     }
@@ -66,7 +64,7 @@ router.get("/:id", (req, res) =>{
 // @route PUT /api/prospects/{id}
 // @desc Update a Prospect object
 // @access Authenticated Users
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   let id = req.params.id;
 
   const { errors, isValid } = validateProspectInput(req.body); 
@@ -74,33 +72,45 @@ router.put("/:id", (req, res) => {
 
   if (!isValid) {
     return res.status(400).json(errors);
-}
+  }
 
-  Prospect.findById(id, function(err, prospect) {
-    if (!prospect) {
-      res.status(404).send({id : `Prospect with id ${id} is not found`});  
-    } else {
-      //if updating email field, check if Prospect with new email alredy exists
-      if(req.body.email !== prospect.email) {
-        Prospect.findOne({ email: req.body.email }).then(prospectEmailCheck => {
-          if (prospectEmailCheck) {
-            return res.status(400).json({ email: "Cannot update email address. Email address already exists" });
+  try {
+    await Prospect.findById(id, async function(err, prospect) {
+      if (!prospect) {
+        res.status(404).send({ id: `Prospect with id ${id} is not found` });
+      } else {
+        //if updating email field, check if Prospect with new email alredy exists
+        if (req.body.email !== prospect.email) {
+          const emailExists = await Prospect.findOne({
+            email: req.body.email
+          });
+          if (emailExists) {
+            return res.status(400).json({
+              email: "Cannot update email address. Email address already exists"
+            });
           }
-        });
-      }
-      prospect.firstName = firstName;
-      prospect.lastName = lastName;
-      prospect.lastContacted = lastContacted;
-      prospect.ownedBy = ownedBy;
-      prospect.status = status;
-      prospect.email = email;
+        
+        prospect.firstName = firstName;
+        prospect.lastName = lastName;
+        prospect.lastContacted = lastContacted;
+        prospect.ownedBy = ownedBy;
+        prospect.status = status;
+        prospect.email = email;
 
-      prospect.save()
-      .then(prospect => {res.json(prospect);})
-      .catch(err => console.log(err));
+          prospect
+            .save()
+            .then(prospect => {
+              res.json(prospect);
+            })
+            .catch(err => console.log(err));
+      }
     }
-  });
-})
+    });
+  } catch (error) {
+    console.log("Error editing prospect: ", error);
+    res.status(500).send({ error: error });
+  }
+});
 
 // @route DELETE /api/prospects/{id}
 // @desc Delete a Prospect object
@@ -108,17 +118,19 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   let id = req.params.id;
 
-  prospect = Prospect.findOneAndDelete({_id: id}, function(err, removeResult) {
-    if(err) {
+  prospect = Prospect.findOneAndDelete({ _id: id }, function(
+    err,
+    removeResult
+  ) {
+    if (err) {
       res.status(400).send(err);
     }
-    if(!removeResult) {
-      res.status(404).send({id:`Prospect with id ${id} not found.`})
+    if (!removeResult) {
+      res.status(404).send({ id: `Prospect with id ${id} not found.` });
     } else {
-      res.json({id: id});
+      res.json({ id: id });
     }
   });
-  
 });
 
 // @route POST /api/prospects/upload

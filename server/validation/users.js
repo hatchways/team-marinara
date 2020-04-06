@@ -61,3 +61,18 @@ exports.validateLoginInput = data => {
     isValid: !Object.keys(errors).length > 0
   };
 };
+
+exports.validateUserInput = data => {
+  const { email } = data;
+  const errors = {};
+
+  //Validate email
+  if (email && !Validator.isEmail(email)) {
+    errors.email = "Invalid Email Address";
+  }
+
+  return {
+    errors,
+    isValid: !Object.keys(errors).length > 0
+  };
+};
