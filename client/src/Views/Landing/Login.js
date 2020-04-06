@@ -126,4 +126,4 @@ class Login extends Component {
   }
 }
 
-export default withStyles(styles)(Login);
+export default withRouter(withStyles(styles)(Login));
