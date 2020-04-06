@@ -16,9 +16,13 @@ const login = fields => {
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
  */
-const checkForGmailToken = async () => {
+const checkForGmailToken = async token => {
   try {
-    const response = await axios.get(`/api/gmail-auth/checkToken`);
+    const response = await axios.get(`/api/gmail-auth/checkToken`, {
+      headers: {
+        Authorization: token
+      }
+    });
     return response.data.tokenExists;
   } catch (error) {
     console.log("Error occurred checking gmail token:", error);
@@ -32,10 +36,15 @@ const checkForGmailToken = async () => {
  * New redirect routes also need to be added at: https://console.developers.google.com/apis/credentials?project=mail-sender-1
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
-const getAuthUrl = async redirectUrl => {
+const getAuthUrl = async (redirectUrl, token) => {
   try {
     const response = await axios.get(
-      `/api/gmail-auth/getAuthUrl?redirectUrl=${redirectUrl}`
+      `/api/gmail-auth/getAuthUrl?redirectUrl=${redirectUrl}`,
+      {
+        headers: {
+          Authorization: token
+        }
+      }
     );
     return response.data.authUrl;
   } catch (error) {
@@ -51,10 +60,16 @@ const getAuthUrl = async redirectUrl => {
  * to access their Gmail account
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
-const postGmailAuthCode = async (code, redirectUrl) => {
+const postGmailAuthCode = async (code, redirectUrl, token) => {
   try {
     const response = await axios.post(
-      `/api/gmail-auth/processToken?code=${code}&redirectUrl=${redirectUrl}`
+      `/api/gmail-auth/processToken?code=${code}&redirectUrl=${redirectUrl}`,
+      { key: "value" },
+      {
+        headers: {
+          Authorization: token
+        }
+      }
     );
     return response.data;
   } catch (error) {
@@ -67,7 +82,7 @@ const getUser = async (userId, token) => {
   try {
     const response = await axios.get(`/api/users/${userId}`, {
       headers: {
-        Authorization: `${token}`
+        Authorization: token
       }
     });
     return response.data;

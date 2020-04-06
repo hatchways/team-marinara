@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Typography, Grid } from "@material-ui/core";
 import StyledButton from "Components/Button/StyledButton";
 import AuthUserContext from "Components/Session/AuthUserContext";
+import withAuthorization from "Components/Session/withAuthorization";
 
 class Home extends Component {
   state = {};
@@ -16,9 +17,7 @@ class Home extends Component {
     return (
       <div>
         <Typography variant="h1" align="center">
-          {this.context.userId
-            ? `Home Page for ${user.firstName} ${user.lastName}`
-            : "Access Denied"}
+          Home Page for {user.firstName} {user.lastName}
           <Grid item>
             <StyledButton onClick={this.logOut}>Log Out</StyledButton>
           </Grid>
@@ -30,4 +29,4 @@ class Home extends Component {
 
 Home.contextType = AuthUserContext;
 
-export default Home;
+export default withAuthorization(Home);
