@@ -5,7 +5,7 @@
 import React, { useContext, useEffect } from "react";
 import AuthUserContext from "Components/Session/AuthUserContext";
 
-const withAuthorization = Component => {
+const requireAuth = Component => {
   const WithAuthorization = props => {
     const context = useContext(AuthUserContext);
 
@@ -14,9 +14,9 @@ const withAuthorization = Component => {
       if (!context.userId) props.history.push("/login");
     }, [context.userId, props.history]);
 
-    return <Component {...props} />;
+    return context.user ? <Component {...props} /> : null;
   };
 
   return WithAuthorization;
 };
-export default withAuthorization;
+export default requireAuth;

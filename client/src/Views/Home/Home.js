@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Typography, Grid } from "@material-ui/core";
 import StyledButton from "Components/Button/StyledButton";
 import AuthUserContext from "Components/Session/AuthUserContext";
-import withAuthorization from "Components/Session/withAuthorization";
+import requireAuth from "Components/Session/requireAuth";
 
 class Home extends Component {
   state = {};
@@ -38,4 +38,4 @@ class Home extends Component {
 
 Home.contextType = AuthUserContext;
 
-export default withAuthorization(Home);
+export default requireAuth(Home);

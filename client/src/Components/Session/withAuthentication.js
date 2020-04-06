@@ -16,7 +16,7 @@ const withAuthentication = Component => {
 
     const [token, setToken] = useState(prevToken);
     const [userId, setUserId] = useState(prevUserId);
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
 
     // When token or userId changes via setToken or setUserId,
     // save to local storage, fetch the user and put in context,

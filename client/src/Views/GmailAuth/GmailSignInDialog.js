@@ -16,6 +16,7 @@ import {
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
 import { getAuthUrl } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
+import requireAuth from "Components/Session/requireAuth";
 
 const styles = {
   btn: {
@@ -32,10 +33,11 @@ const GmailDialog = props => {
 
   useEffect(() => {
     const getData = async () => {
+      let authUrl;
       // redirect to parent path + /email-auth-results-dialog
       // all redirect routes need to be added to: https://console.developers.google.com/apis/credentials?project=mail-sender-1
       const redirectUrl = `${window.location.origin}${props.match.params[0]}/email-auth-results-dialog`;
-      const authUrl = await getAuthUrl(redirectUrl, context.token);
+      authUrl = await getAuthUrl(redirectUrl, context.token);
 
       if (authUrl) {
         setGmailAuthUrl(authUrl);
@@ -78,4 +80,4 @@ const GmailDialog = props => {
   );
 };
 
-export default withStyles(styles)(GmailDialog);
+export default withStyles(styles)(requireAuth(GmailDialog));
