@@ -11,8 +11,8 @@ const requireAuth = Component => {
 
     useEffect(() => {
       // If user is not logged in, send back to login page
-      if (!context.userId) props.history.push("/login");
-    }, [context.userId, props.history]);
+      if (!context.token) props.history.push("/login");
+    }, [context.token, props.history]);
 
     return context.user ? <Component {...props} /> : null;
   };

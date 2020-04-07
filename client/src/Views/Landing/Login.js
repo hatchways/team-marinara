@@ -36,7 +36,6 @@ class Login extends Component {
     try {
       const res = await login(fields);
       this.context.setToken(`Bearer ${res.data.token}`);
-      this.context.setUserId(res.data.userId);
       this.setState({
         redirect: true
       });

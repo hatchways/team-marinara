@@ -3,17 +3,18 @@ import { Typography, Grid } from "@material-ui/core";
 import StyledButton from "Components/Button/StyledButton";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import requireAuth from "Components/Session/requireAuth";
+import { checkForGmailToken } from "Utils/api";
 
 class Home extends Component {
   state = {};
 
-  logOut = () => {
-    this.context.setToken(null);
-    this.context.setUserId(null);
-  };
-
-  authorizeGmail = () => {
-    this.props.history.push(`${this.props.match.url}/email-auth-dialog`);
+  authorizeGmail = async () => {
+    const gmailAuthorized = await checkForGmailToken();
+    if (!gmailAuthorized) {
+      this.props.history.push(`${this.props.match.url}/email-auth-dialog`);
+    } else {
+      alert("Account already authorized with Gmail");
+    }
   };
 
   render() {
@@ -23,7 +24,7 @@ class Home extends Component {
         <Typography variant="h1" align="center">
           Home Page for {user.firstName} {user.lastName}
           <Grid item>
-            <StyledButton onClick={this.logOut}>Log Out</StyledButton>
+            <StyledButton onClick={this.context.logOut}>Log Out</StyledButton>
           </Grid>
           <Grid item>
             <StyledButton onClick={this.authorizeGmail}>

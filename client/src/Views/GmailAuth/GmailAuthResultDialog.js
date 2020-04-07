@@ -32,12 +32,15 @@ const GmailAuthResultDialog = props => {
   const context = useContext(AuthUserContext);
   const { classes } = props;
 
+  // Putting useEffect in a callback with an empty
+  // array passed, ensures useEffect only runs once on mount
+  const useMountEffect = func => useEffect(func, []);
+
   /*
    * When component mounts following redirect from Google authorisation
    * get the auth code from URL, post to back-end to exchange for token,
    * save to db and return authorised email address
    */
-  const useMountEffect = func => useEffect(func, []);
 
   useMountEffect(() => {
     const postCode = async () => {
