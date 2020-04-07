@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Grid, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 import Tabs from "./NavbarTabs";
@@ -12,6 +12,9 @@ const styles = () => ({
     backgroundColor: "#FFFFFF",
     padding: "0 48px",
     height: 100
+  },
+  tabs: {
+    height: "100%"
   }
 });
 
@@ -27,7 +30,7 @@ const HomeNavbar = props => (
       <img src={logo} alt="logo" />
     </Grid>
 
-    <Grid item>
+    <Grid item className={props.classes.tabs}>
       <Tabs />
     </Grid>
   </Grid>

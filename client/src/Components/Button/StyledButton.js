@@ -1,11 +1,13 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 
+import colors from "Components/Styles/Colors";
+
 const styles = {
   root: {
-    backgroundImage: "linear-gradient(to right, #2AA897, #4FBE75)",
+    backgroundImage: `linear-gradient(to right, ${colors.green}, ${colors.lightGreen})`,
     borderRadius: 7,
-    color: "#FFFFFF",
+    color: `${colors.white}`,
     fontWeight: "bold",
     fontSize: "1rem",
     height: 64,

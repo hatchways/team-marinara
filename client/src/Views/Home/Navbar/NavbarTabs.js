@@ -1,5 +1,7 @@
 import React from "react";
-import { Grid, Typography, withStyles, Tabs, Tab } from "@material-ui/core";
+
+import StyledTabs from "Components/Tabs/StyledTabs";
+import StyledTab from "Components/Tabs/StyledTab";
 
 const NavbarTabs = props => {
   const [active, setActive] = React.useState("campaigns");
@@ -7,14 +9,12 @@ const NavbarTabs = props => {
     setActive(value);
   };
   return (
-    <Grid item>
-      <Tabs value={active} onChange={onChange}>
-        <Tab label="Campaigns" value="campaigns" />
-        <Tab label="Prospects" value="prospects" />
-        <Tab label="Templates" value="templates" />
-        <Tab label="Reporting" value="reporting" />
-      </Tabs>
-    </Grid>
+    <StyledTabs value={active} onChange={onChange}>
+      <StyledTab label="Campaigns" value="campaigns" />
+      <StyledTab label="Prospects" value="prospects" />
+      <StyledTab label="Templates" value="templates" />
+      <StyledTab label="Reporting" value="reporting" />
+    </StyledTabs>
   );
 };
 

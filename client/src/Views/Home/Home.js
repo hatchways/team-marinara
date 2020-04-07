@@ -4,11 +4,13 @@ import { Grid, withStyles } from "@material-ui/core";
 
 import Navbar from "./Navbar/HomeNavbar";
 
+import colors from "Components/Styles/Colors";
+
 const styles = () => ({
   root: {
     height: "100vh",
     width: "100%",
-    backgroundColor: "#F4F6FC",
+    backgroundColor: `${colors.gray}`,
     overflow: "auto"
   }
 });

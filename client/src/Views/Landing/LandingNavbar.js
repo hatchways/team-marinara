@@ -3,13 +3,14 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
+import colors from "Components/Styles/Colors";
 
 import logo from "Assets/logo.png";
 
 const styles = () => ({
   root: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: `${colors.white}`,
     padding: "16px 48px"
   },
   bold: {
