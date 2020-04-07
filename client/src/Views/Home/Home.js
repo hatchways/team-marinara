@@ -1,15 +1,28 @@
-import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
+import React from "react";
+import { Grid, withStyles } from "@material-ui/core";
+// import { Route, Switch } from "react-router-dom";
 
-class Home extends Component {
-  state = {  }
-  render() {
-    return (
-      <div>
-        <Typography variant="h1" align="center">Home Page</Typography>
-      </div>
-    );
+import Navbar from "./Navbar/HomeNavbar";
+
+const styles = () => ({
+  root: {
+    height: "100vh",
+    width: "100%",
+    backgroundColor: "#F4F6FC",
+    overflow: "auto"
   }
-}
+});
 
-export default Home;
+const Home = props => (
+  <Grid
+    className={props.classes.root}
+    container
+    direction="column"
+    alignItems="center"
+    wrap="nowrap"
+  >
+    <Navbar />
+  </Grid>
+);
+
+export default withStyles(styles)(Home);
