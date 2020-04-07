@@ -3,7 +3,7 @@
  * Sends authorisation code to back-end
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   CircularProgress,
   DialogTitle,
@@ -14,7 +14,8 @@ import {
   Button,
   withStyles
 } from "@material-ui/core";
-import { postCode } from "Utils/api";
+import { postGmailAuthCode } from "Utils/api";
+import AuthUserContext from "Components/Session/AuthUserContext";
 
 const styles = {
   // center the spinner
@@ -28,39 +29,47 @@ const GmailAuthResultDialog = props => {
   const [displayModal, setDisplayModal] = useState(false);
   const [tokenSaved, setTokenSaved] = useState(false);
   const [emailAddr, setEmailAddr] = useState("");
+  const context = useContext(AuthUserContext);
   const { classes } = props;
+
+  // Putting useEffect in a callback with an empty
+  // array passed, ensures useEffect only runs once on mount
+  const useMountEffect = func => useEffect(func, []);
 
   /*
    * When component mounts following redirect from Google authorisation
    * get the auth code from URL, post to back-end to exchange for token,
    * save to db and return authorised email address
    */
-  useEffect(() => {
-    const postCodeToBackEnd = async () => {
-      const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.has("error")) {
-        // Google process returned error
-        // Show modal with 'Failed'
-        setDisplayModal(true);
-        return;
-      }
-      const redirectUrl = `${window.location.origin}${props.match.url}`;
-      const { tokenSaved, emailAddr } = await postCode(
-        searchParams.get("code"),
-        redirectUrl
-      );
-      setDisplayModal(true);
 
-      if (tokenSaved === true) {
-        // Show modal with 'Success'
-        setTokenSaved(true);
-        setEmailAddr(emailAddr);
+  useMountEffect(() => {
+    const postCode = async () => {
+      if (!tokenSaved) {
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has("error")) {
+          // Google process returned error
+          // Show modal with 'Failed'
+          setDisplayModal(true);
+          return;
+        }
+        const redirectUrl = `${window.location.origin}${props.match.url}`;
+        const { tokenSaved, emailAddr } = await postGmailAuthCode(
+          searchParams.get("code"),
+          redirectUrl,
+          context.token
+        );
+        setDisplayModal(true);
+
+        if (tokenSaved === true) {
+          // Show modal with 'Success'
+          setTokenSaved(true);
+          setEmailAddr(emailAddr);
+        }
       }
       // Else modal shows with 'Failure'
     };
-
-    postCodeToBackEnd();
-  }, [props]);
+    postCode();
+  });
 
   const handleClose = e => {
     // Go to parent component on close

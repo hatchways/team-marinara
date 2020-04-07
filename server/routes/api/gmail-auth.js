@@ -68,9 +68,11 @@ router.get(
  */
 router.post(
   "/processToken",
+  // call passport authentication passing the "local" strategy name and a callback function
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
+      console.log("Process Token running...");
       if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
       const oAuth2Client = new google.auth.OAuth2(
