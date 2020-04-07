@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef } from "react";
 import {
   Grid,
   Avatar,
@@ -43,6 +43,22 @@ const styles = () => ({
 
 const Profile = props => {
   const context = useContext(AuthUserContext);
+  const [open, setOpen] = useState(false);
+  const profileRef = useRef(null);
+  const dropdownArrowRef = useRef(null);
+
+  const toggleMenu = e => {
+    //When the menu is open, clicking anywhere on the page triggers the top-level component's onClick listener
+    //This prevents state from being changed unless the click was within the original Profile component
+    if (profileRef && profileRef.current.contains(e.target)) {
+      setOpen(prevOpen => !prevOpen);
+    }
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Grid
       item
@@ -50,6 +66,8 @@ const Profile = props => {
       className={props.classes.root}
       alignItems="center"
       spacing={1}
+      onClick={toggleMenu}
+      ref={profileRef}
     >
       <Grid item>
         <Avatar className={props.classes.avatar}>
@@ -64,8 +82,29 @@ const Profile = props => {
       </Grid>
 
       <Grid item>
-        <ArrowDropDown className={props.classes.dropdownArrow} />
+        <ArrowDropDown
+          className={props.classes.dropdownArrow}
+          ref={dropdownArrowRef}
+        />
       </Grid>
+
+      <Menu
+        anchorEl={dropdownArrowRef.current}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+        getContentAnchorEl={null}
+        open={open}
+        onClose={onClose}
+      >
+        <MenuItem onClick={onClose}>Edit Profile</MenuItem>
+        <MenuItem onClick={context.logOut}>Logout</MenuItem>
+      </Menu>
     </Grid>
   );
 };
