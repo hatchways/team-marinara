@@ -1,42 +1,55 @@
-import React, { Component } from "react";
-import { Typography, Grid } from "@material-ui/core";
-import StyledButton from "Components/Button/StyledButton";
+import React, { useContext } from "react";
+import { Grid, withStyles } from "@material-ui/core";
+import { Route, Switch } from "react-router-dom";
+
 import AuthUserContext from "Components/Session/AuthUserContext";
 import requireAuth from "Components/Session/requireAuth";
-import { checkForGmailToken } from "Utils/api";
 
-class Home extends Component {
-  state = {};
+import Navbar from "./Navbar/HomeNavbar";
+import Campaigns from "./Campaigns/Campaigns";
+import Prospects from "./Prospects/Prospects";
+import Templates from "./Templates/Templates";
+import Reporting from "./Reporting/Reporting";
 
-  authorizeGmail = async () => {
-    const gmailAuthorized = await checkForGmailToken();
-    if (!gmailAuthorized) {
-      this.props.history.push(`${this.props.match.url}/email-auth-dialog`);
-    } else {
-      alert("Account already authorized with Gmail");
-    }
-  };
+import colors from "Components/Styles/Colors";
 
-  render() {
-    const user = this.context.user;
-    return (
-      <div>
-        <Typography variant="h1" align="center">
-          Home Page for {user.firstName} {user.lastName}
-          <Grid item>
-            <StyledButton onClick={this.context.logOut}>Log Out</StyledButton>
-          </Grid>
-          <Grid item>
-            <StyledButton onClick={this.authorizeGmail}>
-              Authorize Gmail
-            </StyledButton>
-          </Grid>
-        </Typography>
-      </div>
-    );
+const styles = () => ({
+  root: {
+    height: "100vh",
+    width: "100%",
+    backgroundColor: `${colors.gray}`,
+    overflow: "auto"
   }
-}
+});
 
-Home.contextType = AuthUserContext;
+const Home = props => {
+  const context = useContext(AuthUserContext);
+  return (
+    <Grid
+      className={props.classes.root}
+      container
+      direction="column"
+      alignItems="center"
+      wrap="nowrap"
+    >
+      <Navbar />
 
-export default requireAuth(Home);
+      <Switch>
+        <Route path="/home/reporting">
+          <Reporting />
+        </Route>
+        <Route path="/home/templates">
+          <Templates />
+        </Route>
+        <Route path="/home/prospects">
+          <Prospects />
+        </Route>
+        <Route path={["/home", "/home/campaigns"]}>
+          <Campaigns />
+        </Route>
+      </Switch>
+    </Grid>
+  );
+};
+
+export default withStyles(styles)(requireAuth(Home));

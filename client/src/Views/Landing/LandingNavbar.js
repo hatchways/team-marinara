@@ -3,14 +3,16 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
+import colors from "Components/Styles/Colors";
 
 import logo from "Assets/logo.png";
 
 const styles = () => ({
   root: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
-    padding: "16px 48px"
+    backgroundColor: `${colors.white}`,
+    padding: "0px 48px",
+    height: 100
   },
   bold: {
     fontWeight: "bold",
@@ -25,7 +27,6 @@ const LandingNavbar = props => (
   <Grid
     item
     container
-    alignContent="center"
     alignItems="center"
     justify="space-between"
     className={props.classes.root}
@@ -37,7 +38,6 @@ const LandingNavbar = props => (
     <Grid
       item
       container
-      alignContent="center"
       alignItems="center"
       spacing={4}
       className={props.classes.toggle}

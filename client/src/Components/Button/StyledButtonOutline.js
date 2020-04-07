@@ -1,12 +1,14 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 
+import colors from "Components/Styles/Colors";
+
 const styles = {
   root: {
-    backgroundColor: "#FFFFFF",
-    border: "1px solid #2AA897",
+    backgroundColor: `${colors.white}`,
+    border: `1px solid ${colors.green}`,
     borderRadius: 7,
-    color: "#000000",
+    color: `${colors.black}`,
     fontWeight: "bold",
     height: 54,
     width: 140

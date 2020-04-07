@@ -6,11 +6,13 @@ import Navbar from "./LandingNavbar";
 import Login from "./Login";
 import Register from "./Register";
 
+import colors from "Components/Styles/Colors";
+
 const styles = () => ({
   root: {
     height: "100vh",
     width: "100%",
-    backgroundColor: "#F4F6FC",
+    backgroundColor: `${colors.gray}`,
     overflow: "auto"
   }
 });
