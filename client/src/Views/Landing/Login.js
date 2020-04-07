@@ -16,12 +16,14 @@ import AuthUserContext from "Components/Session/AuthUserContext";
 
 import { login } from "Utils/api";
 
+import { login } from "Utils/api";
+
 class Login extends Component {
   state = {
     email: "",
     password: "",
     errors: {},
-    redirect: localStorage.getItem("token") ? true : false
+    loggedIn: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
@@ -35,9 +37,10 @@ class Login extends Component {
 
     try {
       const res = await login(fields);
+
       this.context.setToken(`Bearer ${res.data.token}`);
       this.setState({
-        redirect: true
+        loggedIn: true
       });
     } catch (error) {
       this.setState({
@@ -53,7 +56,7 @@ class Login extends Component {
   };
 
   render() {
-    if (this.state.redirect) {
+    if (this.state.loggedIn) {
       return <Redirect to="/home" />;
     }
     return (

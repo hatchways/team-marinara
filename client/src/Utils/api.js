@@ -23,6 +23,7 @@ const login = fields => {
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
  */
+
 const checkForGmailToken = async () => {
   try {
     const response = await axios.get(`/api/gmail-auth/checkToken`);
