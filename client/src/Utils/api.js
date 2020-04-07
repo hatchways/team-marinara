@@ -4,6 +4,13 @@
 
 import axios from "axios";
 
+const token = window.localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = token;
+} else {
+  axios.defaults.headers.common["Authorization"] = null;
+}
+
 const register = fields => {
   return axios.post("/api/users/register", fields);
 };
