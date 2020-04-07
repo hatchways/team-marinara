@@ -1,15 +1,14 @@
 import React from "react";
 import { Grid, withStyles } from "@material-ui/core";
-import { Link } from "react-router-dom";
 
 import Tabs from "./NavbarTabs";
-
+import colors from "Components/Styles/Colors";
 import logo from "Assets/logo.png";
 
 const styles = () => ({
   root: {
     width: "100%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: `${colors.white}`,
     padding: "0 48px",
     height: 100
   },

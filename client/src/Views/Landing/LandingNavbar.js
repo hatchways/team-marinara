@@ -11,7 +11,8 @@ const styles = () => ({
   root: {
     width: "100%",
     backgroundColor: `${colors.white}`,
-    padding: "16px 48px"
+    padding: "0px 48px",
+    height: 100
   },
   bold: {
     fontWeight: "bold",
@@ -26,7 +27,6 @@ const LandingNavbar = props => (
   <Grid
     item
     container
-    alignContent="center"
     alignItems="center"
     justify="space-between"
     className={props.classes.root}
@@ -38,7 +38,6 @@ const LandingNavbar = props => (
     <Grid
       item
       container
-      alignContent="center"
       alignItems="center"
       spacing={4}
       className={props.classes.toggle}
