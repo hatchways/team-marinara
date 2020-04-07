@@ -60,6 +60,20 @@ router.get("/:id", (req, res) => {
   });
 });
 
+// @route GET /api/prospects?userId=xxxx
+// @desc Get a List of Prospect objects for a User
+// @access Authenticated Users
+router.get("/", async function (req, res)  {
+  let ownedById = req.query.ownedBy;
+  let results;
+
+  if(mongoose.Types.ObjectId.isValid(ownedById)) {
+    ownedById = mongoose.Types.ObjectId(ownedById);
+    results = await Prospect.find({ownedBy: ownedById});
+  }
+  res.status(200).send(results);
+});
+
 // @route PUT /api/prospects/{id}
 // @desc Update a Prospect object
 // @access Authenticated Users
