@@ -16,10 +16,6 @@ import AuthUserContext from "Components/Session/AuthUserContext";
 
 import { register } from "Utils/api";
 
-import { register } from "Utils/api";
-
-import { register } from "Utils/api";
-
 class Register extends Component {
   state = {
     email: "",
