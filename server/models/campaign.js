@@ -5,6 +5,7 @@ const CampaignSchema = new Schema({
   name: { type: String, required: true },
   created: { type: Date, default: Date.now, required: true },
   prospects: [{ type: Schema.Types.ObjectId, ref: "Prospect", index: true }],
+  // stepsSummary are counts of campaign.steps.prospects.status
   stepsSummary: {
     sent: { type: Number, default: 0, required: true },
     delivered: { type: Number, default: 0, required: true },
