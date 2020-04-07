@@ -2,7 +2,7 @@
  * Displays prompt to authorise MailSender to access their gmail
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   DialogTitle,
   Dialog,
@@ -15,6 +15,8 @@ import {
 
 import googleSignInImg from "Assets/btnGoogleSignIn.png";
 import { getAuthUrl } from "Utils/api";
+import AuthUserContext from "Components/Session/AuthUserContext";
+import requireAuth from "Components/Session/requireAuth";
 
 const styles = {
   btn: {
@@ -27,6 +29,7 @@ const styles = {
 const GmailDialog = props => {
   const { classes } = props;
   const [gmailAuthUrl, setGmailAuthUrl] = useState("");
+  const context = useContext(AuthUserContext);
 
   useEffect(() => {
     const getData = async () => {
@@ -34,6 +37,7 @@ const GmailDialog = props => {
       // all redirect routes need to be added to: https://console.developers.google.com/apis/credentials?project=mail-sender-1
       const redirectUrl = `${window.location.origin}${props.match.params[0]}/email-auth-results-dialog`;
       const authUrl = await getAuthUrl(redirectUrl);
+
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {
@@ -42,7 +46,7 @@ const GmailDialog = props => {
       }
     };
     getData();
-  }, [props]);
+  }, [props, context]);
 
   const onClose = () => {
     // Clicking 'Skip' takes user to parent component
@@ -75,4 +79,4 @@ const GmailDialog = props => {
   );
 };
 
-export default withStyles(styles)(GmailDialog);
+export default withStyles(styles)(requireAuth(GmailDialog));
