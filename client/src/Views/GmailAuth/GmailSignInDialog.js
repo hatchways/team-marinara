@@ -37,7 +37,6 @@ const GmailDialog = props => {
       // all redirect routes need to be added to: https://console.developers.google.com/apis/credentials?project=mail-sender-1
       const redirectUrl = `${window.location.origin}${props.match.params[0]}/email-auth-results-dialog`;
       const authUrl = await getAuthUrl(redirectUrl);
-
       if (authUrl) {
         setGmailAuthUrl(authUrl);
       } else {

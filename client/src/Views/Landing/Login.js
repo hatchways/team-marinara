@@ -18,6 +18,8 @@ import { login } from "Utils/api";
 
 import { login } from "Utils/api";
 
+import { login } from "Utils/api";
+
 class Login extends Component {
   state = {
     email: "",
