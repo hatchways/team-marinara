@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid, withStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
+
+import AuthUserContext from "Components/Session/AuthUserContext";
+import requireAuth from "Components/Session/requireAuth";
 
 import Navbar from "./Navbar/HomeNavbar";
 import Campaigns from "./Campaigns/Campaigns";
@@ -19,31 +22,34 @@ const styles = () => ({
   }
 });
 
-const Home = props => (
-  <Grid
-    className={props.classes.root}
-    container
-    direction="column"
-    alignItems="center"
-    wrap="nowrap"
-  >
-    <Navbar />
+const Home = props => {
+  const context = useContext(AuthUserContext);
+  return (
+    <Grid
+      className={props.classes.root}
+      container
+      direction="column"
+      alignItems="center"
+      wrap="nowrap"
+    >
+      <Navbar />
 
-    <Switch>
-      <Route path="/home/reporting">
-        <Reporting />
-      </Route>
-      <Route path="/home/templates">
-        <Templates />
-      </Route>
-      <Route path="/home/prospects">
-        <Prospects />
-      </Route>
-      <Route path={["/home", "/home/campaigns"]}>
-        <Campaigns />
-      </Route>
-    </Switch>
-  </Grid>
-);
+      <Switch>
+        <Route path="/home/reporting">
+          <Reporting />
+        </Route>
+        <Route path="/home/templates">
+          <Templates />
+        </Route>
+        <Route path="/home/prospects">
+          <Prospects />
+        </Route>
+        <Route path={["/home", "/home/campaigns"]}>
+          <Campaigns />
+        </Route>
+      </Switch>
+    </Grid>
+  );
+};
 
-export default withStyles(styles)(Home);
+export default withStyles(styles)(requireAuth(Home));

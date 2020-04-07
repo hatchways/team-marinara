@@ -12,6 +12,11 @@ import { Redirect } from "react-router-dom";
 
 import styles from "Components/Form/LandingFormStyles";
 import StyledButton from "Components/Button/StyledButton";
+import AuthUserContext from "Components/Session/AuthUserContext";
+
+import { login } from "Utils/api";
+
+import { login } from "Utils/api";
 
 import { login } from "Utils/api";
 
@@ -34,7 +39,8 @@ class Login extends Component {
 
     try {
       const res = await login(fields);
-      localStorage.setItem("token", `Bearer ${res.data.token}`);
+
+      this.context.setToken(`Bearer ${res.data.token}`);
       this.setState({
         loggedIn: true
       });
@@ -125,5 +131,7 @@ class Login extends Component {
     );
   }
 }
+
+Login.contextType = AuthUserContext;
 
 export default withStyles(styles)(Login);
