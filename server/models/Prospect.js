@@ -18,13 +18,13 @@ const ProspectSchema = new Schema({
     lastName: { type: String, required: true},
     email: { type: String, required: true},
     ownedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required : false, index: true},
-    created: {type: Date, required : true},
     lastContacted: {type: Date, required : false},
     status: {
         type: String,
         enum: Object.values(STATUS),
       }
-});
+},
+{ timestamps: { createdAt: 'created', updatedAt: 'updated' } },);
 
 Object.assign(ProspectSchema.statics, {
     STATUS,

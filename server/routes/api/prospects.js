@@ -33,12 +33,11 @@ router.post("/", (req, res) => {
         if (prospect) {
           return res.status(400).json({ email: "Prospect with this email address already exists" });
         } else {
-          var created = new Date();
           if(req.body.ownedBy !== null && !mongoose.Types.ObjectId.isValid(req.body.ownedBy)){
             return res.status(400).json({ ownedBy: "Invalid user id provided for ownedBy"});
           }
           const {firstName, lastName, email, ownedBy, status} = req.body;
-          const newProspect = new Prospect({firstName, lastName, email, ownedBy, status, created});
+          const newProspect = new Prospect({firstName, lastName, email, ownedBy, status});
     newProspect
         .save()
         .then(prospect => res.json(prospect))
@@ -138,7 +137,6 @@ router.delete("/:id", (req, res) => {
 // @access Authenticated Users
 router.post("/upload", upload.single('file'), (req, res) => {
   const csvData = [];
-  let count = {};
   const file = req.file;
 
   const { errors, isValid } = validateFile(file);
@@ -151,10 +149,10 @@ router.post("/upload", upload.single('file'), (req, res) => {
       .on('data', (row) => {
         csvData.push(row);
       })
-      .on("end", async function () {
+      .on("end",  async () => {
         fs.unlinkSync(file.path);
         try{
-          count = await processCsvData(csvData);
+          const count = await processCsvData(csvData);
           res.status(200).send(count);
         } catch(err){
           const error = {
