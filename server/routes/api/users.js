@@ -39,7 +39,7 @@ router.post("/register", (req, res) => {
           .then(() => newUser.save())
           .then(user => {
             jwt.sign({ id: user._id }, secret, (err, token) => {
-              res.status(201).json({ token });
+              res.status(201).json({ token: token, userId: user._id });
             });
           });
       }
@@ -68,7 +68,7 @@ router.post("/login", (req, res) => {
             res.status(400).json(errors);
           } else {
             jwt.sign({ id: user._id }, secret, (err, token) => {
-              res.json({ token });
+              res.json({ token: token, userId: user._id });
             });
           }
         });
@@ -77,32 +77,26 @@ router.post("/login", (req, res) => {
   }
 });
 
-// @route GET /api/users/{id}
-// @desc Get a User object
+// @route GET /api/users
+// @desc Get user object of currently logged in user
 // @access Authenticated User can get own record
 router.get(
-  "/:id",
+  "",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let id = req.params.id;
-
     try {
-      if (req.user.id === id) {
-        const user = await User.findById(id);
-        if (!user) {
-          res.status(404).send({ id: `User with id ${id} is not found` });
-        } else {
-          res.json({
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email
-          });
-        }
+      const userId = req.user.id;
+
+      const user = await User.findById(userId);
+      if (!user) {
+        res.status(404).send({ id: `User with id ${userId} is not found` });
       } else {
-        res
-          .status(401)
-          .json({ error: "User not authorized to access this resource" });
+        res.json({
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        });
       }
     } catch (error) {
       console.log("Error getting user: ", error);
@@ -111,14 +105,14 @@ router.get(
   }
 );
 
-// @route PUT /api/users/{id}
-// @desc Update a User object
+// @route PUT /api/users
+// @desc Update the User object of the currently signed in user
 // @access Authenticated User can edit own record
 router.put(
-  "/:id",
+  "",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    let id = req.params.id;
+    const userId = req.user.id;
 
     const { errors, isValid } = validateUserInput(req.body);
 
@@ -127,9 +121,9 @@ router.put(
     }
 
     try {
-      let user = await User.findById(id);
+      let user = await User.findById(userId);
       if (!user) {
-        res.status(404).send({ id: `User with id ${id} is not found` });
+        res.status(404).send({ id: `User with id ${userId} is not found` });
       } else {
         //if updating email field, check if User with new email alredy exists
         if (req.body.email !== user.email) {

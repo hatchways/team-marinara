@@ -4,10 +4,26 @@
 
 import axios from "axios";
 
+const token = window.localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = token;
+} else {
+  axios.defaults.headers.common["Authorization"] = null;
+}
+
+const register = fields => {
+  return axios.post("/api/users/register", fields);
+};
+
+const login = fields => {
+  return axios.post("/api/users/login", fields);
+};
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
  */
+
 const checkForGmailToken = async () => {
   try {
     const response = await axios.get(`/api/gmail-auth/checkToken`);
@@ -43,8 +59,10 @@ const getAuthUrl = async redirectUrl => {
  * to access their Gmail account
  * @param endRoute {string} - front-end route to load after 'Success/Failure' Dialog e.g. '/home'
  */
-const postCode = async (code, redirectUrl) => {
+const postGmailAuthCode = async (code, redirectUrl, token) => {
   try {
+    // Leaving our domain resets the axios header, need to reassign
+    axios.defaults.headers.common["Authorization"] = token;
     const response = await axios.post(
       `/api/gmail-auth/processToken?code=${code}&redirectUrl=${redirectUrl}`
     );
@@ -55,4 +73,21 @@ const postCode = async (code, redirectUrl) => {
   }
 };
 
-export { checkForGmailToken, getAuthUrl, postCode };
+const getUser = async () => {
+  try {
+    const response = await axios.get(`/api/users`);
+    return response.data;
+  } catch (error) {
+    console.log("Error getting user data: ", error);
+    return null;
+  }
+};
+
+export {
+  register,
+  login,
+  checkForGmailToken,
+  getAuthUrl,
+  postGmailAuthCode,
+  getUser
+};
