@@ -81,4 +81,36 @@ router.get(
   }
 );
 
+// @route POST /api/campaigns/addProspects
+// @desc Add prospects to a Campaign. Requires 'campaignId' and 'prospects' (array of Prospect ids)
+// @access Authenticated Users
+router.post(
+  "/addProspects",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { campaignId, prospects } = req.body;
+
+      /****************** TODO: Check prospects are valid ***************/
+
+      const campaign = await Campaign.find({
+        _id: campaignId,
+        ownedBy: userId
+      });
+      if (!campaign || campaign.length === 0) {
+        res
+          .status(404)
+          .send({ id: `Campaign with id ${campaignId} is not found` });
+      } else {
+        campaign.prospects = prospects;
+        await campaign.save();
+        res.json(campaign);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 module.exports = router;
