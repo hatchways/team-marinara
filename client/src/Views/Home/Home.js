@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Grid, withStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 
-import AuthUserContext from "Components/Session/AuthUserContext";
 import requireAuth from "Components/Session/requireAuth";
 
 import Navbar from "./Navbar/HomeNavbar";
@@ -23,7 +22,6 @@ const styles = () => ({
 });
 
 const Home = props => {
-  const context = useContext(AuthUserContext);
   return (
     <Grid
       className={props.classes.root}

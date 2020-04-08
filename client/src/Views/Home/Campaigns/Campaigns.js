@@ -1,16 +1,23 @@
 import React from "react";
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 
-const styles = () => ({
+import Header from "./CampaignsHeader";
+
+const useStyles = makeStyles({
   root: {
     flexGrow: 1
   }
 });
 
-const Campaigns = props => (
-  <Grid item container className={props.classes.root} justify="center">
-    <Typography variant="h1">Campaigns Page</Typography>
-  </Grid>
-);
+const Campaigns = () => {
+  const classes = useStyles();
+  return (
+    <Grid item container className={classes.root}>
+      <Grid item container>
+        <Header />
+      </Grid>
+    </Grid>
+  );
+};
 
-export default withStyles(styles)(Campaigns);
+export default Campaigns;
