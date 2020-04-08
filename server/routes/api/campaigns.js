@@ -103,10 +103,71 @@ router.post(
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
-        campaign.prospects = prospects;
+        campaign.prospects = prospects.map(prospectId => {
+          return {
+            prospectId: prospectId
+          };
+        });
         await campaign.save();
         res.json(campaign);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// @route GET /api/campaigns/prospects
+// @desc Get all prospects in a campaign. Requires campaignId
+// @access Authenticated Users
+router.get(
+  "/prospects",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { campaignId } = req.body;
+
+      const campaigns = await Campaign.find({
+        _id: campaignId,
+        ownedBy: userId
+      });
+
+      if (!campaign || campaign.length === 0) {
+        res
+          .status(404)
+          .send({ id: `Campaign with id ${campaignId} is not found` });
+      } else {
+        res.json(campaigns.prospects);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+// @route DELETE /api/campaigns/prospects
+// @desc Remove prospects from a campaign. Requires campaignId and an array of prospect ids
+// @access Authenticated Users
+router.delete(
+  "/prospects",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { campaignId } = req.body;
+
+      await Campaign.deleteOne(
+        {
+          _id: campaignId,
+          ownedBy: userId
+        },
+        err => {
+          if (err) res.status(404).send({ id: `${campaignId} not deleted` });
+        }
+      );
+
+      res.json({ id: `Campaign with id ${campaignId} deleted` });
     } catch (error) {
       console.log(error);
     }
