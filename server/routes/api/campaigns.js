@@ -128,7 +128,7 @@ router.get(
       const userId = req.user.id;
       const { campaignId } = req.body;
 
-      const campaigns = await Campaign.find({
+      const campaigns = await Campaign.findOne({
         _id: campaignId,
         ownedBy: userId
       });
@@ -155,19 +155,19 @@ router.delete(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId } = req.body;
+      const { campaignId, prospectIds } = req.body;
 
-      await Campaign.deleteOne(
-        {
-          _id: campaignId,
-          ownedBy: userId
-        },
-        err => {
-          if (err) res.status(404).send({ id: `${campaignId} not deleted` });
-        }
-      );
+      const campaign = await Campaign.findOne({
+        _id: campaignId,
+        ownedBy: userId
+      });
 
-      res.json({ id: `Campaign with id ${campaignId} deleted` });
+      prospectIds.forEach(async prospectId => {
+        campaign.prospects.pull({ prospectId: prospectId });
+      });
+      await Campaign.save();
+
+      res.json({ id: `Prospects removed` });
     } catch (error) {
       console.log(error);
     }
