@@ -47,6 +47,12 @@ class Login extends Component {
     }
   };
 
+  onEnterPress = e => {
+    if (e.key === "Enter") {
+      this.onSubmit();
+    }
+  };
+
   closeSnackbar = () => {
     this.setState({
       errors: {}
@@ -66,6 +72,7 @@ class Login extends Component {
         alignItems="center"
         spacing={7}
         className={this.props.classes.root}
+        onKeyPress={this.onEnterPress}
       >
         <Grid item>
           <Typography className={this.props.classes.header}>Login</Typography>
