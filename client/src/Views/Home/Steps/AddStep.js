@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   IconButton,
-  Button,
   Grid,
   Dialog,
   DialogContent,
@@ -17,6 +16,7 @@ import { Clear } from "@material-ui/icons";
 import TextEditor from "Components/TextEditor/TextEditor";
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
+import StyledButtonText from "Components/Button/StyledButtonText";
 
 import colors from "Components/Styles/Colors";
 
@@ -35,13 +35,16 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     paddingBottom: "1.5rem",
-    borderBottom: `1px solid ${colors.midGray}`
+    borderBottom: `1px solid ${colors.midGray}`,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    direction: "row"
   },
   stepName: {
     fontWeight: "bold",
     borderRight: `1px solid ${colors.midGray}`
   },
-  editTemplate: {
+  editTemplateText: {
     color: colors.darkGray,
     paddingLeft: "1rem"
   },
@@ -61,11 +64,6 @@ const useStyles = makeStyles(theme => ({
     margin: "0.2rem",
     padding: "0rem",
     borderRadius: 5
-  },
-  cancelBtn: {
-    color: colors.gray,
-    padding: "0.8rem 3rem",
-    margin: "0.5rem"
   }
 }));
 
@@ -88,19 +86,11 @@ const Step = props => {
       <DialogContent className={classes.dialogContent}>
         <Grid container spacing={2}>
           <Grid container className={classes.emailContainer}>
-            <Grid
-              container
-              item
-              xs={12}
-              className={classes.header}
-              alignItems="center"
-              justifyContent="flex-start"
-              direction="row"
-            >
+            <Grid container item xs={12} className={classes.header}>
               <Grid item className={classes.stepName} xs={2}>
                 <Typography variant="h4">Step 1</Typography>
               </Grid>
-              <Grid item container className={classes.editTemplate} xs={8}>
+              <Grid item container className={classes.editTemplateText} xs={8}>
                 <Typography variant="h6">Edit Template</Typography>
               </Grid>
               <Grid
@@ -156,7 +146,7 @@ const Step = props => {
               <StyledButtonTransparent>Variables</StyledButtonTransparent>
             </Grid>
             <Grid item xs={4}>
-              <Button className={classes.cancelBtn}>Cancel</Button>
+              <StyledButtonText>Cancel</StyledButtonText>
               <StyledButtonOutline>Save</StyledButtonOutline>
             </Grid>
           </Grid>
