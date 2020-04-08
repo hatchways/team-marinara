@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { Grid, TextField, Typography } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
@@ -10,6 +10,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import SidebarCheckbox from 'Components/Checkbox/SidebarCheckbox';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,13 @@ const useStyles = makeStyles((theme) => ({
         color: "#4FBE75"
     },
     input: {
-        color: 'black'
+        borderColor: '#000000',
+        '&:focus': {
+            borderColor: "#000000",
+          },
+          '& label.Mui-focused': {
+            color: 'green',
+          },
     },
     checkbox : {
         colorSecondary: "green",
@@ -39,10 +46,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ProspectSidebar () {
 
+    const [state, setState] = React.useState({
+        specialCheckbox: true,
+        limitCheckbox : false,
+        tadCheckbox : false,
+        importedFromCheckbox : false,
+        optedOutCheckbox : false
+      });
 
-    const handleChange = () => {
-
-    }
+    const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+    };
 
     const classes = useStyles();
     return (
@@ -68,24 +82,23 @@ function ProspectSidebar () {
                 <FormControl component="fieldset" className={classes.formControl}>
                     <FormGroup>
                     <FormControlLabel
-                        
-                        control={<Checkbox color="secondary" className="checkbox" onChange={handleChange} name="imported_from" />}
+                        control={<SidebarCheckbox disableRipple={true} checked={state.importedFromCheckbox} onChange={handleChange} name="importedFromCheckbox" />}
                         label="Imported From"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={handleChange} onChange={handleChange} name="opted_out" />}
+                        control={<SidebarCheckbox disableRipple={true} checked={state.optedOutCheckbox} onChange={handleChange} name="optedOutCheckbox" />}
                         label="Opted Out"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={handleChange} onChange={handleChange} name="bounced" />}
+                        control={<SidebarCheckbox disableRipple={true} checked={state.bouncedCheckbox} onChange={handleChange} name="bouncedCheckbox" />}
                         label="Bounced"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={handleChange} onChange={handleChange} name="tad" />}
+                        control={<SidebarCheckbox disableRipple={true} checked={state.tadCheckbox} onChange={handleChange} name="tadCheckbox" />}
                         label="Tad"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={handleChange} onChange={handleChange} name="limit" />}
+                        control={<SidebarCheckbox disableRipple={true} checked={state.limitCheckbox} onChange={handleChange} name="limitCheckbox" />}
                         label="Limit"
                     />
                 </FormGroup>

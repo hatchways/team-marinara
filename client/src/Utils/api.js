@@ -19,8 +19,8 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
-const getProspectData = () => {
-  return axios.get("/api/prospects?ownedBy=5e865ffa1b16391ba1b42b5a");
+const getProspectData = (user_id) => {
+  return axios.get("/api/prospects?ownedBy=" + user_id);
 }
 
 /*

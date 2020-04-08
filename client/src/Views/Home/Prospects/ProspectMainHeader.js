@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import MailIcon from '@material-ui/icons/Mail';
 
-//import styles from "Components/List/ProspectListStyles";
-
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
@@ -68,9 +66,7 @@ const styles = () => ({
       </Grid>
 
       <Grid item>
-        <StyledAddProspectButton
-          component={Link}
-        >
+        <StyledAddProspectButton>
           Add New Prospect
         </StyledAddProspectButton>
       </Grid>

@@ -1,66 +1,34 @@
 import React, { Component } from "react";
-import { Grid, withStyles } from "@material-ui/core";
+import { Grid, withStyles, Typography } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
-import { Route, Switch } from "react-router-dom";
-import Divider from '@material-ui/core/Divider';
-import Navbar from "../../Landing/LandingNavbar";
-import ProspectMain from "./ProspectMain";
+import { Route } from "react-router-dom";
 import ProspectSidebar from "./ProspectSidebar";
-import Paper from '@material-ui/core/Paper';
 import ProspectMainHeader from "./ProspectMainHeader";
-import ProspectList from "./ProspectList";
 import Box from '@material-ui/core/Box';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Link from '@material-ui/core/Link';
-import List from '@material-ui/core/List';
 import { getProspectData } from "Utils/api";
+import AuthUserContext from "Components/Session/AuthUserContext";
+import styles from "Components/Form/ProspectFormStyles";
+import CloudIcon from '@material-ui/icons/Cloud';
+import ProspectTableCheckbox from 'Components/Checkbox/ProspectTableCheckbox';
 
-import Checkbox from '@material-ui/core/Checkbox';
-
-const styles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-    width: "100%",
-    backgroundColor: "#F4F6FC",
-    overflow: "auto"
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  sidebar: {
-      backgroundColor : "#ffffff",
-      height: "100vh",
-      width: "100%",
-  },
-  main: {
-      backgroundColor : "#F4F6FC",
-      height: "100vh",
-      width: "100%",
-  },
-  list: {
-    width: '90%',
-    fontSize: '10px',
-    color: 'white',
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: 7,
-  }
-}));
 
 class Prospects extends Component {
-
+  
   state = {
     prospects : [],
+    user : {},
+    checked : false,
     errors: {},
     loggedIn: localStorage.getItem("token") ? true : false
   };
 
   onChange = e => {
+    console.log(e);
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -76,38 +44,65 @@ class Prospects extends Component {
 
   componentDidMount = async () => {
     try {
-      console.log("Getting prospects....");
-      const res = await getProspectData();
+      this.state.user = this.context.user;
+      let token = localStorage.getItem("token")
+      console.log(this.state.user.id);
+      const res = await getProspectData(this.state.user.id);
       this.setState({
         prospects: res.data
       });
-      console.log(this.state.prospects);
-      //console.log(context.user);
-      let token = localStorage.getItem("token")
-      console.log(token);
     } catch(error) {
-      console.log(error);
       this.setState({
-        errors: { ...error.response.data }
+        errors: { error }
       });
     }
   }
 
+  displayTable() {
+    const { prospects, user } = this.state;
+    
+    const prospectList = prospects.length ? (
+      prospects.map((row, index) => (
+        
+        <TableRow key={index} hover
+        onClick={event => this.handleClick(event, index)}>
+          <TableCell className={this.props.classes.prospect_id} align="center">{index + 1}</TableCell>
+          <TableCell className={this.props.classes.email}>{row.email}</TableCell>
+          <TableCell className={this.props.classes.email}><CloudIcon className={this.props.classes.cloud_icon_table}></CloudIcon></TableCell>
+          <TableCell className={this.props.classes.status} align="center">{row.status}</TableCell>
+          <TableCell className={this.props.classes.owner} align="center">{user.firstName + " " + user.lastName}</TableCell>
+          <TableCell className={this.props.classes.last_contacted} align="center">{"-"}</TableCell>
+          <TableCell className={this.props.classes.email_count} align="center">{0}</TableCell>
+        </TableRow>
+      ))
+    ) : 
+    (
+      
+        <Typography style= {{color: "black"}} className="this.props.empty_prospects"> No Prospects to show</Typography>
+        
+       
+                           
+        
+      
+      
+    );
+    return prospectList;
+  }
+
+  handleChange = (event) => {
+    this.setState({ ...this.state, [event.target.name]: event.target.checked });
+  };
+
+
   render() {
-    const { prospects } = this.state;
+    const { prospects, user } = this.state;    
     return (
       
-      <Route path="/prospects">
-        
-        <div className={this.props.classes.root}>
-            <Grid container spacing={0}>
-                <Grid item xs={12}>
-                    <Navbar/>
-                </Grid>
-                <Divider/>
+      <Route path="/home/prospects">
+            <Grid className={this.props.classes.root} container xs={12} spacing={0}>
                 <Grid item xs={3}>
                     <ProspectSidebar/>
-                    </Grid>
+                </Grid>
                 <Grid item xs={9}>
                   <Box className={this.props.classes.main}>
                     <Grid
@@ -134,58 +129,40 @@ class Prospects extends Component {
                             direction="column"
                             alignContent="center"
                             spacing={2}
+                            className={this.props.classes.list_entire}
                           >
                             <div className={this.props.classes.list}>
-                            <List component="nav" >
                             <React.Fragment>
-                                <Table size="small" className={this.props.classes.table}>
-                                  <TableHead >
-                                    <TableRow className={this.props.classes.table_header}>
-                                      <TableCell className={this.props.classes.table_header} align="center"><Checkbox inputProps={{ 'aria-label': 'checkbox' }} /></TableCell>
-                                      <TableCell className={this.props.classes.table_header}>Email</TableCell>
-                                      <TableCell className={this.props.classes.table_header}align="center">Status</TableCell>
-                                      <TableCell className={this.props.classes.table_header}align="center">Owner</TableCell>
-                                      <TableCell className={this.props.classes.table_header}align="center">Campaigns</TableCell>
-                                      <TableCell className={this.props.classes.table_header}align="center">Last Contacted</TableCell>
-                                      <TableCell className={this.props.classes.table_header}align="right">Emails</TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                  
-                                    {prospects.map((row, index) => (
-                                      <TableRow key={index} hover
-                                      onClick={event => this.handleClick(event, index)}>
-                                        <TableCell className={this.props.classes.prospect_id} align="center">{index + 1}</TableCell>
-                                        <TableCell className={this.props.classes.email}>{row.email}</TableCell>
-                                        <TableCell className={this.props.classes.status} align="center">{row.status}</TableCell>
-                                        <TableCell className={this.props.classes.owner} align="center">{row.ownedBy}</TableCell>
-                                        <TableCell className={this.props.classes.campaign}align="center">{row.campaigns}</TableCell>
-                                        <TableCell className={this.props.classes.last_contacted} align="center">{row.last_contacted}</TableCell>
-                                        <TableCell className={this.props.classes.email_count} align="center">{row.email_count}</TableCell>
-                                      </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                                <div className={this.props.classes.seeMore}>
-                                  <Link color="primary" href="#" onClick={this.preventDefault}>
-                                    See more orders
-                                  </Link>
-                                </div>
+                              <Table size="small" className={this.props.classes.table}>
+                                <TableHead className={this.props.classes.table_header}>
+                                  <TableRow className={this.props.classes.table_header}>
+                                    <TableCell className={this.props.classes.table_header_cell} align="center">
+                                      <ProspectTableCheckbox disableRipple={true} checked={this.checked} onChange={this.handleChange} className={this.props.classes.table_checkbox_checked}  /></TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}>Email</TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}align="center"><CloudIcon className={this.props.classes.cloud_icon}></CloudIcon></TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}align="center">Status</TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}align="center">Owner</TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}align="center">Last Contacted</TableCell>
+                                    <TableCell className={this.props.classes.table_header_cell}align="right">Emails</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                              {this.displayTable()}
+                              </TableBody>
+                              </Table>
                               </React.Fragment>
-                              </List>
-                              </div>
+                            </div>
                             </Grid>
                             </Grid>
                       </Grid>
                   </Box>
                 </Grid>
             </Grid>
-        </div>
       </Route>
     )
   }
 }
 
-
+Prospects.contextType = AuthUserContext;
 
 export default withStyles(styles)(Prospects);
