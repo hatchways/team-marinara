@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const CampaignSchema = new Schema({
   name: { type: String, required: true },
   created: { type: Date, default: Date.now, required: true },
+  ownedBy: { type: Schema.Types.ObjectId, ref: "User", index: true },
   prospects: [{ type: Schema.Types.ObjectId, ref: "Prospect", index: true }],
   // stepsSummary are counts of campaign.steps.prospects.status
   stepsSummary: {
