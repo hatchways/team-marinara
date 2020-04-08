@@ -51,8 +51,6 @@ class Prospects extends Component {
   };
 
   handleFieldChange = (elementId, value) => {
-    
-    let filteredProspectList = this.state.prospects;
     const newFilteredProspectList = this.state.prospects.filter(p => 
       p.email.toLowerCase().includes(value.toLowerCase()));
     this.setState({filteredProspects : newFilteredProspectList});
@@ -148,7 +146,7 @@ class Prospects extends Component {
                               </Table>
                               </React.Fragment>    
                             </Grid>
-                            {prospects.length==0 ? 
+                            {prospects.length === 0 ? 
                               <Typography style= {{color: "black"}} className="this.props.empty_prospects"> No Prospects to show</Typography>
                                : <p></p>}
                             </Grid>
