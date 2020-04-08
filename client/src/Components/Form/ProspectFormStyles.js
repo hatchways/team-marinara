@@ -5,11 +5,7 @@ const ProspectFormStyles = () => ({
         backgroundColor: "#F4F6FC",
         overflow: "auto"
       },
-      paper: {
-        //padding: theme.spacing(2),
-        textAlign: 'center',
-        //color: theme.palette.text.secondary,
-      },
+      
       sidebar: {
           backgroundColor : "#ffffff",
           height: "100vh",
@@ -26,6 +22,10 @@ const ProspectFormStyles = () => ({
         fontSize: '10px',
         color: 'white',
         backgroundColor: "#ffffff",
+        borderRadius: 7,
+        margin: "25px 0px 75px 0px"
+      },
+      table : {
         borderRadius: 7,
       },
       table_header_cell : {

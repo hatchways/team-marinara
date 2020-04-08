@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
 import { Route } from "react-router-dom";
 import ProspectSidebar from "./ProspectSidebar";
 import ProspectMainHeader from "./ProspectMainHeader";
@@ -35,18 +34,12 @@ class Prospects extends Component {
   };
 
   handleClick = (event, id) => {
-    console.log("Clicked");
-  }
-
-  preventDefault(event) {
-    event.preventDefault();
+    console.log(event);
   }
 
   componentDidMount = async () => {
     try {
       this.state.user = this.context.user;
-      let token = localStorage.getItem("token")
-      console.log(this.state.user.id);
       const res = await getProspectData(this.state.user.id);
       this.setState({
         prospects: res.data
@@ -58,18 +51,29 @@ class Prospects extends Component {
     }
   }
 
-  displayTable() {
+  
+
+  handleChange = (event) => {
+    this.setState({ ...this.state, [event.target.name]: event.target.checked });
+  };
+
+  handleFieldChange(fieldId, value) {
+    this.setState({ [fieldId]: value });
+    console.log(value);
+  }
+
+
+  render() {
     const { prospects, user } = this.state;
-    
     const prospectList = prospects.length ? (
-      prospects.map((row, index) => (
-        
+      
+      prospects.map((prospect, index) => (
         <TableRow key={index} hover
         onClick={event => this.handleClick(event, index)}>
           <TableCell className={this.props.classes.prospect_id} align="center">{index + 1}</TableCell>
-          <TableCell className={this.props.classes.email}>{row.email}</TableCell>
+          <TableCell className={this.props.classes.email}>{prospect.email}</TableCell>
           <TableCell className={this.props.classes.email}><CloudIcon className={this.props.classes.cloud_icon_table}></CloudIcon></TableCell>
-          <TableCell className={this.props.classes.status} align="center">{row.status}</TableCell>
+          <TableCell className={this.props.classes.status} align="center">{prospect.status}</TableCell>
           <TableCell className={this.props.classes.owner} align="center">{user.firstName + " " + user.lastName}</TableCell>
           <TableCell className={this.props.classes.last_contacted} align="center">{"-"}</TableCell>
           <TableCell className={this.props.classes.email_count} align="center">{0}</TableCell>
@@ -77,31 +81,27 @@ class Prospects extends Component {
       ))
     ) : 
     (
-      
-        <Typography style= {{color: "black"}} className="this.props.empty_prospects"> No Prospects to show</Typography>
-        
-       
-                           
-        
-      
-      
+      //print an empty row when no prospects available - looks a bit nicer
+      <TableRow >
+          <TableCell className={this.props.classes.prospect_id} align="center"></TableCell>
+          <TableCell className={this.props.classes.email}></TableCell>
+          <TableCell className={this.props.classes.email}></TableCell>
+          <TableCell className={this.props.classes.status} align="center"></TableCell>
+          <TableCell className={this.props.classes.owner} align="center"></TableCell>
+          <TableCell className={this.props.classes.last_contacted} align="center"></TableCell>
+          <TableCell className={this.props.classes.email_count} align="center"></TableCell>
+        </TableRow>
     );
-    return prospectList;
-  }
-
-  handleChange = (event) => {
-    this.setState({ ...this.state, [event.target.name]: event.target.checked });
-  };
-
-
-  render() {
-    const { prospects, user } = this.state;    
+    
+    
     return (
       
       <Route path="/home/prospects">
             <Grid className={this.props.classes.root} container xs={12} spacing={0}>
                 <Grid item xs={3}>
-                    <ProspectSidebar/>
+                    <ProspectSidebar
+                      onChange={this.handleFieldChange}
+                    />
                 </Grid>
                 <Grid item xs={9}>
                   <Box className={this.props.classes.main}>
@@ -147,12 +147,15 @@ class Prospects extends Component {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                              {this.displayTable()}
+                              {prospectList}
                               </TableBody>
                               </Table>
                               </React.Fragment>
                             </div>
                             </Grid>
+                            {prospects.length==0 ? 
+                              <Typography style= {{color: "black"}} className="this.props.empty_prospects"> No Prospects to show</Typography>
+                               : <p></p>}
                             </Grid>
                       </Grid>
                   </Box>

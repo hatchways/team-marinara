@@ -27,27 +27,13 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: 0,
         marginTop: 50,
         fontWeight: 500,
-        color: "#4FBE75"
+        color: "#4FBE75",
     },
-    input: {
-        borderColor: '#000000',
-        '&:focus': {
-            borderColor: "#000000",
-          },
-          '& label.Mui-focused': {
-            color: 'green',
-          },
-    },
-    checkbox : {
-        colorSecondary: "green",
-        colorPrimary: "red",
-    }
   }));
 
 function ProspectSidebar () {
 
     const [state, setState] = React.useState({
-        specialCheckbox: true,
         limitCheckbox : false,
         tadCheckbox : false,
         importedFromCheckbox : false,
@@ -57,6 +43,11 @@ function ProspectSidebar () {
     const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
     };
+
+    const handleInputChange = (event) => {
+        const text = event.target.value;
+        this.props.onChange(this.props.id, text);
+    }
 
     const classes = useStyles();
     return (
@@ -70,6 +61,7 @@ function ProspectSidebar () {
             >
                 <TextField 
                 className={classes.textField}
+                onChange={handleInputChange} //value={classes.props.value}
                 id="outlined-basic" label="Search" variant="outlined"
                 InputProps={{
                     startAdornment: (
