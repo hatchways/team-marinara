@@ -23,7 +23,9 @@ const CampaignsHeader = props => {
       </Grid>
 
       <Grid item>
-        <StyledButton>Create Campaign</StyledButton>
+        <StyledButton onClick={() => props.setModalOpen(true)}>
+          Create Campaign
+        </StyledButton>
       </Grid>
     </Grid>
   );
