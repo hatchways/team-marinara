@@ -22,7 +22,7 @@ const styles = () => ({
         fontSize: "1.5rem",
         fontWeight: "bold"
     },
-    main_header_icon : {
+    mainHeaderIcon : {
       color: "#A9A9A9"
     }
   });
@@ -50,10 +50,10 @@ const styles = () => ({
       className={props.classes.toggle}
     >
       <Grid item>
-        <FlashOnIcon className={props.classes.main_header_icon }/>
+        <FlashOnIcon className={props.classes.mainHeaderIcon }/>
         </Grid>
         <Grid item>
-          <MailIcon className={props.classes.main_header_icon } />  
+          <MailIcon className={props.classes.mainHeaderIcon } />  
         </Grid>
         
       <Grid item>

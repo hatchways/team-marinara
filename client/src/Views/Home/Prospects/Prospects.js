@@ -1,20 +1,16 @@
 import React, { Component } from "react";
 import { Grid, withStyles, Typography } from "@material-ui/core";
 import { Route } from "react-router-dom";
-import ProspectSidebar from "./ProspectSidebar";
-import ProspectDashboardHeader from "./ProspectDashboardHeader";
-import Box from '@material-ui/core/Box';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow }
+   from "@material-ui/core/";
 import { getProspectData } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import styles from "Components/Table/ProspectTableStyles";
-import CloudIcon from '@material-ui/icons/Cloud';
-import ProspectTableCheckbox from 'Components/Checkbox/ProspectTableCheckbox';
+import CloudIcon from "@material-ui/icons/Cloud";
+import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
 
+import ProspectSidebar from "./ProspectSidebar";
+import ProspectDashboardHeader from "./ProspectDashboardHeader";
 
 class Prospects extends Component {
   
@@ -26,9 +22,7 @@ class Prospects extends Component {
       user : {},
       checked : false,
       errors: {},
-      loggedIn: localStorage.getItem("token") ? true : false
     }
-    this.handleFieldChange = this.handleFieldChange.bind(this);
   }
   
 
@@ -56,14 +50,11 @@ class Prospects extends Component {
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
   };
 
-  handleFieldChange(elementId, value) {
+  handleFieldChange = (elementId, value) => {
     
     let filteredProspectList = this.state.prospects;
-    let newFilteredProspectList = filteredProspectList.filter((prospect) => {
-      let prospectEmail = prospect.email;
-      return prospectEmail.includes(
-        value.toLowerCase())
-    });
+    const newFilteredProspectList = this.state.prospects.filter(p => 
+      p.email.toLowerCase().includes(value.toLowerCase()));
     this.setState({filteredProspects : newFilteredProspectList});
   }
 
@@ -73,15 +64,15 @@ class Prospects extends Component {
     const filteredProspectList = filteredProspects.length ? (
       
       filteredProspects.map((prospect, index) => (
-        <TableRow key={index} hover
+        <TableRow key={prospect.id} hover
         onClick={event => this.handleClick(event, index)}>
-          <TableCell className={this.props.classes.prospect_id} align="center">{index + 1}</TableCell>
-          <TableCell className={this.props.classes.email}>{prospect.email}</TableCell>
-          <TableCell className={this.props.classes.email}><CloudIcon className={this.props.classes.cloud_icon_table}></CloudIcon></TableCell>
-          <TableCell className={this.props.classes.status} align="center">{prospect.status}</TableCell>
-          <TableCell className={this.props.classes.owner} align="center">{user.firstName + " " + user.lastName}</TableCell>
-          <TableCell className={this.props.classes.last_contacted} align="center">{"-"}</TableCell>
-          <TableCell className={this.props.classes.email_count} align="center">{0}</TableCell>
+          <TableCell className={this.props.classes.prospect_id_cell} align="center">{index + 1}</TableCell>
+          <TableCell className={this.props.classes.email_cell}>{prospect.email}</TableCell>
+          <TableCell className={this.props.classes.cloud_cell}><CloudIcon className={this.props.classes.cloud_icon_table}></CloudIcon></TableCell>
+          <TableCell className={this.props.classes.status_cell} align="center">{prospect.status}</TableCell>
+          <TableCell className={this.props.classes.owner_cell} align="center">{user.firstName + " " + user.lastName}</TableCell>
+          <TableCell className={this.props.classes.last_contacted_cell} align="center">{"-"}</TableCell>
+          <TableCell className={this.props.classes.email_count_cell} align="center">{0}</TableCell>
         </TableRow>
       ))
     ) : 
@@ -136,7 +127,7 @@ class Prospects extends Component {
                             spacing={2}
                             className={this.props.classes.list_entire}
                           >
-                            <div className={this.props.classes.list}>
+                            
                             <React.Fragment>
                               <Table size="small" className={this.props.classes.table}>
                                 <TableHead className={this.props.classes.table_header}>
@@ -155,8 +146,7 @@ class Prospects extends Component {
                               {filteredProspectList}
                               </TableBody>
                               </Table>
-                              </React.Fragment>
-                            </div>
+                              </React.Fragment>    
                             </Grid>
                             {prospects.length==0 ? 
                               <Typography style= {{color: "black"}} className="this.props.empty_prospects"> No Prospects to show</Typography>

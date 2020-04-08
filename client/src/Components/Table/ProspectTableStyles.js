@@ -29,10 +29,13 @@ const ProspectTableStyles = () => ({
       },
       table : {
         borderRadius: 7,
+        width : "800px",
+        overflow: "auto"
       },
       table_header_cell : {
         backgroundColor: `${colors.lightGreen}`,
         color : `${colors.white}`,
+        width : "50px"
       },
       table_header : {
         borderRadius: 7,
@@ -44,7 +47,8 @@ const ProspectTableStyles = () => ({
           color : `${colors.gray}`
       },
       cloud_icon_table : {
-        color : "#A9A9A9"
+        color : "#A9A9A9",
+        width : "50px"
       },
       table_checkbox_checked : {
         color: `${colors.white}`,
@@ -55,6 +59,27 @@ const ProspectTableStyles = () => ({
       },
       empty_prospects : {
           color: `${colors.black}`
+      },
+      prospect_id_cell : {
+        width : "50px"
+      },
+      email_cell : {
+        width : "50px"
+      },
+      cloud_cell : {
+        width : "50px"
+      },
+      status_cell : {
+        width : "50px"
+      },
+      owner_cell : {
+        width : "50px"
+      },
+      last_contacted_cell : {
+        width : "50px"
+      },
+      email_count_cell : {
+        width : "50px"
       }
       
   });
