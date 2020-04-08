@@ -1,8 +1,9 @@
 import React from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
-import { Link } from "react-router-dom";
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import MailIcon from '@material-ui/icons/Mail';
+import colors from "Components/Styles/Colors";
+
 
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
@@ -11,12 +12,8 @@ import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
 const styles = () => ({
     root: {
       width: "100%",
-      backgroundColor: "#F4F6FC",
+      backgroundColor: `${colors.gray}`,
       padding: "48px 56px"
-    },
-    bold: {
-      fontWeight: "bold",
-      fontSize: 14
     },
     toggle: {
       width: "auto"
@@ -31,7 +28,7 @@ const styles = () => ({
   });
 
 
-  const ProspectMainHeader = props => (
+  const ProspectDashboardHeader = props => (
     <Grid
     item
     container
@@ -74,4 +71,4 @@ const styles = () => ({
   </Grid>
   );
   
-  export default withStyles(styles)(ProspectMainHeader);
+  export default withStyles(styles)(ProspectDashboardHeader);

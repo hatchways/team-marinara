@@ -1,22 +1,20 @@
-import React, { Component } from "react";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React from "react";
+import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { Grid, TextField, Typography } from "@material-ui/core";
+import { Grid, TextField } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import SidebarCheckbox from 'Components/Checkbox/SidebarCheckbox';
+import colors from "Components/Styles/Colors";
 
 
 const useStyles = makeStyles((theme) => ({
     
     main: {
-        backgroundColor : "#ffffff",
+        backgroundColor : `${colors.white}`,
         height: "100vh",
         width: "100%",
     },
@@ -27,11 +25,10 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: 0,
         marginTop: 50,
         fontWeight: 500,
-        color: "#4FBE75",
     },
   }));
 
-function ProspectSidebar () {
+function ProspectSidebar (props) {
 
     const [state, setState] = React.useState({
         limitCheckbox : false,
@@ -46,7 +43,7 @@ function ProspectSidebar () {
 
     const handleInputChange = (event) => {
         const text = event.target.value;
-        this.props.onChange(this.props.id, text);
+        props.onChange(props.id, text);
     }
 
     const classes = useStyles();
@@ -61,7 +58,7 @@ function ProspectSidebar () {
             >
                 <TextField 
                 className={classes.textField}
-                onChange={handleInputChange} //value={classes.props.value}
+                onChange={handleInputChange} value={props.value}
                 id="outlined-basic" label="Search" variant="outlined"
                 InputProps={{
                     startAdornment: (

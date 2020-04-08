@@ -1,18 +1,20 @@
-const ProspectFormStyles = () => ({
+import colors from "Components/Styles/Colors";
+
+const ProspectTableStyles = () => ({
     root: {
         height: "100vh",
         width: "100%",
-        backgroundColor: "#F4F6FC",
+        backgroundColor: `${colors.gray}`,
         overflow: "auto"
       },
       
       sidebar: {
-          backgroundColor : "#ffffff",
+          backgroundColor : `${colors.white}`,
           height: "100vh",
           width: "100%",
       },
       main: {
-          backgroundColor : "#4FBE75",
+          backgroundColor : `${colors.lightGreen}`,
           height: "100vh",
           width: "100%",
       },
@@ -20,8 +22,8 @@ const ProspectFormStyles = () => ({
         width: 'auto',
         height: "auto",
         fontSize: '10px',
-        color: 'white',
-        backgroundColor: "#ffffff",
+        color: `${colors.white}`,
+        backgroundColor: `${colors.white}`,
         borderRadius: 7,
         margin: "25px 0px 75px 0px"
       },
@@ -29,8 +31,8 @@ const ProspectFormStyles = () => ({
         borderRadius: 7,
       },
       table_header_cell : {
-        backgroundColor: "#4FBE75",
-        color : "white",
+        backgroundColor: `${colors.lightGreen}`,
+        color : `${colors.white}`,
       },
       table_header : {
         borderRadius: 7,
@@ -39,29 +41,23 @@ const ProspectFormStyles = () => ({
         textAlign: 'center'
       },
       cloud_icon : {
-          color : "#F4F6FC"
+          color : `${colors.gray}`
       },
       cloud_icon_table : {
         color : "#A9A9A9"
       },
-      table_checkbox_unchecked : {
-        color: "#000000",
-        '&$checked': {
-        color: "#ffffff",
-        }
-      },
       table_checkbox_checked : {
-        color: "#ffffff",
+        color: `${colors.white}`,
         '&$checked': {
-        color: "#000000",
+        color: `${colors.black}`,
       },
       checked: {}
       },
       empty_prospects : {
-          color: 'black'
+          color: `${colors.black}`
       }
       
   });
   
-  export default ProspectFormStyles;
+  export default ProspectTableStyles;
   

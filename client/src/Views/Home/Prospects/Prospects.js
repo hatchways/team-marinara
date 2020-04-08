@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Grid, withStyles, Typography } from "@material-ui/core";
 import { Route } from "react-router-dom";
 import ProspectSidebar from "./ProspectSidebar";
-import ProspectMainHeader from "./ProspectMainHeader";
+import ProspectDashboardHeader from "./ProspectDashboardHeader";
 import Box from '@material-ui/core/Box';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -11,38 +11,39 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { getProspectData } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
-import styles from "Components/Form/ProspectFormStyles";
+import styles from "Components/Table/ProspectTableStyles";
 import CloudIcon from '@material-ui/icons/Cloud';
 import ProspectTableCheckbox from 'Components/Checkbox/ProspectTableCheckbox';
 
 
 class Prospects extends Component {
   
-  state = {
-    prospects : [],
-    user : {},
-    checked : false,
-    errors: {},
-    loggedIn: localStorage.getItem("token") ? true : false
-  };
-
-  onChange = e => {
-    console.log(e);
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      prospects : [],
+      filteredProspects: [],
+      user : {},
+      checked : false,
+      errors: {},
+      loggedIn: localStorage.getItem("token") ? true : false
+    }
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+  }
+  
 
   handleClick = (event, id) => {
     console.log(event);
   }
+  
 
   componentDidMount = async () => {
     try {
       this.state.user = this.context.user;
       const res = await getProspectData(this.state.user.id);
       this.setState({
-        prospects: res.data
+        prospects: res.data,
+        filteredProspects : res.data
       });
     } catch(error) {
       this.setState({
@@ -51,23 +52,27 @@ class Prospects extends Component {
     }
   }
 
-  
-
   handleChange = (event) => {
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
   };
 
-  handleFieldChange(fieldId, value) {
-    this.setState({ [fieldId]: value });
-    console.log(value);
+  handleFieldChange(elementId, value) {
+    
+    let filteredProspectList = this.state.prospects;
+    let newFilteredProspectList = filteredProspectList.filter((prospect) => {
+      let prospectEmail = prospect.email;
+      return prospectEmail.includes(
+        value.toLowerCase())
+    });
+    this.setState({filteredProspects : newFilteredProspectList});
   }
 
 
   render() {
-    const { prospects, user } = this.state;
-    const prospectList = prospects.length ? (
+    const { filteredProspects, prospects, user } = this.state;
+    const filteredProspectList = filteredProspects.length ? (
       
-      prospects.map((prospect, index) => (
+      filteredProspects.map((prospect, index) => (
         <TableRow key={index} hover
         onClick={event => this.handleClick(event, index)}>
           <TableCell className={this.props.classes.prospect_id} align="center">{index + 1}</TableCell>
@@ -112,7 +117,7 @@ class Prospects extends Component {
                           alignItems="center"
                           wrap="nowrap"
                     >
-                      <ProspectMainHeader/>
+                      <ProspectDashboardHeader/>
                       <Grid
                           item
                           container
@@ -147,7 +152,7 @@ class Prospects extends Component {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                              {prospectList}
+                              {filteredProspectList}
                               </TableBody>
                               </Table>
                               </React.Fragment>
