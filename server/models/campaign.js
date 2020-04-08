@@ -5,7 +5,26 @@ const CampaignSchema = new Schema({
   name: { type: String, required: true },
   created: { type: Date, default: Date.now, required: true },
   ownedBy: { type: Schema.Types.ObjectId, ref: "User", index: true },
-  prospects: [{ type: Schema.Types.ObjectId, ref: "Prospect", index: true }],
+  prospects: [
+    {
+      prospectId: { type: Schema.Types.ObjectId, ref: "Prospect", index: true },
+      status: {
+        type: String,
+        required: true,
+        enum: [
+          "Draft",
+          "Sent",
+          "Delivered",
+          "Opened",
+          "Clicked",
+          "Replied",
+          "Bounced",
+          "Opted out"
+        ],
+        default: "Draft"
+      }
+    }
+  ],
   // stepsSummary are counts of campaign.steps.prospects.status
   stepsSummary: {
     sent: { type: Number, default: 0, required: true },

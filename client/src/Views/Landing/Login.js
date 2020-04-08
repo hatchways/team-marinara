@@ -16,10 +16,6 @@ import AuthUserContext from "Components/Session/AuthUserContext";
 
 import { login } from "Utils/api";
 
-import { login } from "Utils/api";
-
-import { login } from "Utils/api";
-
 class Login extends Component {
   state = {
     email: "",
