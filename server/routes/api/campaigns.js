@@ -52,7 +52,7 @@ router.get(
   }
 );
 
-// @route GET /api/campaigns
+// @route GET /api/campaigns/campaign
 // @desc Get specified campaign of logged in user. Requires 'campaignId'
 // @access Authenticated Users
 router.get(
@@ -67,7 +67,14 @@ router.get(
         _id: campaignId,
         ownedBy: userId
       });
-      res.json(campaign);
+      console.log(campaign);
+      if (!campaign || campaign.length === 0) {
+        res
+          .status(404)
+          .send({ id: `Campaign with id ${campaignId} is not found` });
+      } else {
+        res.json(campaign);
+      }
     } catch (error) {
       console.log(error);
     }
