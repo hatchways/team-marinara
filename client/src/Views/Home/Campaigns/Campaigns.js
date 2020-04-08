@@ -10,7 +10,7 @@ const styles = () => ({
 
 const Campaigns = props => {
   const openTextEditor = () => {
-    props.history.push(`${props.match.url}/text-editor`);
+    props.history.push(`${props.match.url}/step`);
   };
 
   return (

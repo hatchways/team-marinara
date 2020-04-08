@@ -12,7 +12,7 @@ import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
 import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
 import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
-import TextEditor from "Components/TextEditor/TextEditor";
+import Step from "Components/TextEditor/Step";
 
 import colors from "Components/Styles/Colors";
 
@@ -50,7 +50,7 @@ const Home = props => {
         path={`*/email-auth-results-dialog`}
         component={GmailAuthResultDialog}
       />
-      <Route path={`*/text-editor`} component={TextEditor} />
+      <Route path={`*/step`} component={Step} />
     </Grid>
   );
 };
