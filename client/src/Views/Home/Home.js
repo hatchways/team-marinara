@@ -12,7 +12,7 @@ import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
 import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
 import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
-import Step from "Components/TextEditor/Step";
+import Step from "Views/Home/Steps/AddStep";
 
 import colors from "Components/Styles/Colors";
 

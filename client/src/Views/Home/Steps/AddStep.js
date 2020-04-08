@@ -16,7 +16,6 @@ import { Clear } from "@material-ui/icons";
 
 import TextEditor from "Components/TextEditor/TextEditor";
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
-import StyledButton from "Components/Button/StyledButton";
 import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
 
 import colors from "Components/Styles/Colors";
