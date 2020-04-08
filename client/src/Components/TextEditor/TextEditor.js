@@ -12,8 +12,7 @@ Object.assign(defaultTheme, {
       },
       editor: {},
       editorContainer: {
-        height: "10vh",
-        borderBottom: "1px solid gray"
+        height: "30vh"
       }
     }
   }

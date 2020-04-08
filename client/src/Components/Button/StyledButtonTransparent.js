@@ -5,19 +5,16 @@ import colors from "Components/Styles/Colors";
 
 const styles = {
   root: {
-    backgroundImage: `linear-gradient(to right, ${colors.green}, ${colors.lightGreen})`,
-    borderRadius: 7,
-    color: `${colors.white}`,
-    fontWeight: "bold",
-    fontSize: "1rem",
-    height: 64,
-    width: 180
+    color: colors.white,
+    border: `1px solid ${colors.white}`,
+    padding: "0.8rem 2rem",
+    margin: "0.5rem"
   }
 };
 
-const StyledButton = props => {
+const StyledButtonTransparent = props => {
   const { classes, ...other } = props;
   return <Button className={classes.root} {...other}></Button>;
 };
 
-export default withStyles(styles)(StyledButton);
+export default withStyles(styles)(StyledButtonTransparent);

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import {
   IconButton,
+  Button,
   Grid,
   Dialog,
   DialogContent,
   makeStyles,
   FormControl,
   Select,
-  TextField,
+  InputBase,
   MenuItem,
   Typography
 } from "@material-ui/core";
@@ -16,6 +17,7 @@ import { Clear } from "@material-ui/icons";
 import TextEditor from "Components/TextEditor/TextEditor";
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 import StyledButton from "Components/Button/StyledButton";
+import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
 
 import colors from "Components/Styles/Colors";
 
@@ -23,23 +25,43 @@ const useStyles = makeStyles(theme => ({
   root: {
     fontFamily: "'Open Sans', sans-serif"
   },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2)
-  },
   // remove scrollbars
   dialogContent: {
     overflow: "hidden",
     height: "100%",
-    padding: "3rem 1rem 1rem 1rem"
+    padding: "1rem"
+  },
+  emailContainer: {
+    margin: "1rem 2rem"
+  },
+  header: {},
+  stepName: {
+    fontWeight: "bold"
+  },
+  editTemplate: {
+    color: colors.darkGray
+  },
+  typeSubjectRows: {
+    alignItems: "center",
+    paddingTop: "1rem",
+    borderBottom: `1px solid ${colors.midGray}`
+  },
+  typeSubjectTitles: {
+    color: colors.darkGray
+  },
+  formControl: {
+    minWidth: 120
   },
   buttonBar: {
     backgroundImage: `linear-gradient(to right, ${colors.green}, ${colors.lightGreen})`,
-    margin: "1rem",
-    borderRadius: 8
+    margin: "0.2rem",
+    padding: "0rem",
+    borderRadius: 5
+  },
+  cancelBtn: {
+    color: colors.gray,
+    padding: "0.8rem 3rem",
+    margin: "0.5rem"
   }
 }));
 
@@ -60,67 +82,78 @@ const Step = props => {
       className={(classes.root, classes.dialog)}
     >
       <DialogContent className={classes.dialogContent}>
-        <Grid border={1} container spacing={6}>
-          <Grid border={1} container item xs={12}>
-            <Grid item className={classes.stepName} xs={4}>
-              <Typography variant="h4">Step 1</Typography>
-            </Grid>
-            <Grid item className={classes.editTemplate} xs={6}>
-              <Typography>Edit Template</Typography>
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid container className={classes.emailContainer}>
             <Grid
-              item
               container
-              xs={2}
-              alignItems="flex-start"
-              justify="flex-end"
+              item
+              xs={12}
+              className={classes.header}
+              alignItems="center"
+              justifyContent="flex-start"
               direction="row"
             >
-              <IconButton onClick={handleClose}>
-                <Clear />
-              </IconButton>
+              <Grid item className={classes.stepName} xs={2}>
+                <Typography variant="h4">Step 1</Typography>
+              </Grid>
+              <Grid item container className={classes.editTemplate} xs={8}>
+                <Typography variant="h6">Edit Template</Typography>
+              </Grid>
+              <Grid
+                item
+                container
+                xs={2}
+                alignItems="flex-start"
+                justify="flex-end"
+              >
+                <IconButton onClick={handleClose}>
+                  <Clear />
+                </IconButton>
+              </Grid>
+            </Grid>
+
+            <Grid container item className={classes.typeSubjectRows} xs={12}>
+              <Grid item className={classes.typeSubjectTitles} xs={1}>
+                <Typography>Type</Typography>
+              </Grid>
+              <Grid item className={classes.FormControl} xs={10}>
+                <FormControl className={classes.formControl}>
+                  <Select
+                    id="type"
+                    value={type}
+                    disableUnderline={true}
+                    onChange={e => setType(e.target.value)}
+                  >
+                    <MenuItem value="New Thread">New Thread</MenuItem>
+                    <MenuItem value="Follow-up">Follow-up</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container item className={classes.typeSubjectRows} xs={12}>
+              <Grid item className={classes.typeSubjectTitles} xs={1}>
+                <Typography>Subject</Typography>
+              </Grid>
+              <Grid item xs={10}>
+                <InputBase id="subject" autoComplete="off" fullWidth={true} />
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <TextEditor />
             </Grid>
           </Grid>
-          <Grid container alignItems="flex-start" item xs={12}>
-            <Grid item className={classes.type} xs={2}>
-              <Typography>Type</Typography>
-            </Grid>
-            <Grid item className={classes.FormControl} xs={10}>
-              <FormControl className={classes.formControl}>
-                <Select
-                  // labelId="type-select-label"
-                  // id="type-select"
-                  value={type}
-                  onChange={e => setType(e.target.value)}
-                >
-                  <MenuItem value="New Thread">New Thread</MenuItem>
-                  <MenuItem value="Follow-up">Follow-up</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-          <Grid container item xs={12}>
-            <Grid item xs={2}>
-              <Typography>Subject</Typography>
-            </Grid>
-            <Grid item xs={10}>
-              <TextField id="standard-basic" label="Enter subject" />
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <TextEditor />
-          </Grid>
+
           <Grid container item className={classes.buttonBar} xs={12}>
             <Grid item xs={8}>
-              <StyledButton>Templates</StyledButton>
-              <StyledButton>Save as Template</StyledButton>
-              <StyledButton>Variables</StyledButton>
+              <StyledButtonTransparent>Templates</StyledButtonTransparent>
+              <StyledButtonTransparent>
+                Save as Template
+              </StyledButtonTransparent>
+              <StyledButtonTransparent>Variables</StyledButtonTransparent>
             </Grid>
             <Grid item xs={4}>
-              <StyledButtonOutline>Cancel</StyledButtonOutline>
-              <StyledButtonOutline variant="contained" disableElevation>
-                Save
-              </StyledButtonOutline>
+              <Button className={classes.cancelBtn}>Cancel</Button>
+              <StyledButtonOutline>Save</StyledButtonOutline>
             </Grid>
           </Grid>
         </Grid>
