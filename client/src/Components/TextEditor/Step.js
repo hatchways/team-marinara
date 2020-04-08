@@ -34,16 +34,21 @@ const useStyles = makeStyles(theme => ({
   emailContainer: {
     margin: "1rem 2rem"
   },
-  header: {},
+  header: {
+    paddingBottom: "1.5rem",
+    borderBottom: `1px solid ${colors.midGray}`
+  },
   stepName: {
-    fontWeight: "bold"
+    fontWeight: "bold",
+    borderRight: `1px solid ${colors.midGray}`
   },
   editTemplate: {
-    color: colors.darkGray
+    color: colors.darkGray,
+    paddingLeft: "1rem"
   },
   typeSubjectRows: {
     alignItems: "center",
-    paddingTop: "1rem",
+    padding: "0.5rem 0 0.5rem 0",
     borderBottom: `1px solid ${colors.midGray}`
   },
   typeSubjectTitles: {

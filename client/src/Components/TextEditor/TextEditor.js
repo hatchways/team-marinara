@@ -10,7 +10,10 @@ Object.assign(defaultTheme, {
       root: {
         marginTop: 20
       },
-      editor: {},
+      container: {
+        display: "flex",
+        flexDirection: "column-reverse"
+      },
       editorContainer: {
         height: "30vh"
       }
@@ -21,7 +24,25 @@ Object.assign(defaultTheme, {
 const TextEditor = props => {
   return (
     <MuiThemeProvider theme={defaultTheme}>
-      <MUIRichTextEditor />
+      <MUIRichTextEditor
+        controls={[
+          "title",
+          "bold",
+          "italic",
+          "underline",
+          "strikethrough",
+          "highlight",
+          "undo",
+          "redo",
+          "link",
+          "media",
+          "numberList",
+          "bulletList",
+          "quote",
+          "code",
+          "clear"
+        ]}
+      />
     </MuiThemeProvider>
   );
 };
