@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
+import { Switch, Route } from "react-router-dom";
 
 import Header from "./CampaignsHeader";
 import Table from "./CampaignsTable";
 import Modal from "./CreateCampaignModal";
+
+import Campaign from "./Campaign/Campaign";
 
 import { getCampaigns } from "Utils/api";
 
@@ -37,19 +40,26 @@ const Campaigns = () => {
 
   return (
     <Grid item container className={classes.root}>
-      {/* TODO: Add Sidebar */}
+      <Switch>
+        <Route path="/home/campaigns/:campaignId">
+          <Campaign />
+        </Route>
+        <Route path="/home/campaigns">
+          {/* TODO: Add Sidebar */}
 
-      {/* Content Area */}
-      <Grid item container direction="column">
-        <Header setModalOpen={setModalOpen} />
-        <Table campaigns={campaigns} />
-      </Grid>
+          {/* Content Area */}
+          <Grid item container direction="column">
+            <Header setModalOpen={setModalOpen} />
+            <Table campaigns={campaigns} />
+          </Grid>
 
-      <Modal
-        open={modalOpen}
-        setOpen={setModalOpen}
-        setRecentlyFetched={setRecentlyFetched}
-      />
+          <Modal
+            open={modalOpen}
+            setOpen={setModalOpen}
+            setRecentlyFetched={setRecentlyFetched}
+          />
+        </Route>
+      </Switch>
     </Grid>
   );
 };
