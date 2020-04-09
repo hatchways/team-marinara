@@ -21,10 +21,9 @@ router.post(
       //   return res.status(400).json(errors);
       // }
 
-      const { name, ownedBy } = req.body;
       const newCampaign = new Campaign({
-        name,
-        ownedBy
+        name: req.body.name,
+        ownedBy: req.user.id
       });
       const campaign = await newCampaign.save();
       res.json(campaign);
@@ -56,18 +55,18 @@ router.get(
 // @desc Get specified campaign of logged in user. Requires 'campaignId'
 // @access Authenticated Users
 router.get(
-  "/campaign",
+  "/campaign/:campaignId",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId } = req.body;
+      const campaignId = req.params.campaignId;
 
       const campaign = await Campaign.find({
         _id: campaignId,
         ownedBy: userId
       });
-      console.log(campaign);
+
       if (!campaign || campaign.length === 0) {
         res
           .status(404)
