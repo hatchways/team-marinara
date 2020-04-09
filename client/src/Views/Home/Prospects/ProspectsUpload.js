@@ -5,6 +5,7 @@ import ProspectSidebar from "./ProspectSidebar";
 import Paper from '@material-ui/core/Paper';
 import colors from "Components/Styles/Colors";
 import { uploadProspectCsv } from "Utils/api";
+import Dropzone from 'react-dropzone'
 //import styles from "Components/Form/ProspectUploadStyles";
 
 import { makeStyles} from "@material-ui/core";
@@ -34,19 +35,35 @@ const styles = (theme) => ({
         },
       },
       upload : {
-        marginTop: theme.spacing(10),
+        marginTop: theme.spacing(5),
       },
       uploadButton : {
         backgroundColor : `${colors.lightGreen}`,
+        padding: theme.spacing(2),
+        
         color : `${colors.white}`,
         '&:hover': {
             backgroundColor:`${colors.white}`,
             color : `${colors.lightGreen}`,
+            border: "1px solid #4FBE75",
+        }
+      },
+      
+      dropzone : {
+          backgroundColor : `${colors.gray}`,
+          borderRadius: 7,
+          paddingTop: theme.spacing(3),
+          paddingBottom: theme.spacing(3),
+          marginBottom: theme.spacing(5),
+          border: "1px dashed #bbbaba",
+          width : "70%",
+          '&:hover': {
+            backgroundColor: "#bbbaba",
 
         }
       },
-      fileMessage : {
-        marginBottom: theme.spacing(5),
+      resultMessage : {
+        paddingTop: theme.spacing(3),
       }
   });
 
@@ -56,7 +73,8 @@ const styles = (theme) => ({
     state = {
         file : null,
         uploadSuccess: false,
-        fileMessage : ''
+        fileMessage : '',
+        uploadResultMessage : ''
     }
 
     onsubmit = async (e) => {
@@ -65,18 +83,42 @@ const styles = (theme) => ({
         let formData = new FormData();
         formData.append('file', file);
 
-        const res = await uploadProspectCsv(formData);
-
+        try{
+            const res = await uploadProspectCsv(formData);
+            if(res.status==200) {
+                this.setState({
+                    uploadResultMessage : 
+                    "Successfully uploaded " + res.data.successCount + " records. \n\n" +
+                    "Skipped " + res.data.skippedCount + " records."
+                })
+            }
+        } catch(error) {
+            this.setState({
+                uploadResultMessage : 
+                "Error occured. File not uploaded."
+            })
+            console.log(error);
+        }
     }
 
     handleFileSelect =  (e) => {
+        this.setState({
+            uploadResultMessage : ""
+        })
+        let file = e[0];
+        if(file.type !== 'text/csv') {
+            console.log(file.mimetype);
+            this.setState({
+                uploadResultMessage : "File must be of type *.csv"
+            });
+        }
         try{
-            //const res = await uploadProspectCsv(file);
-            let file = e.target.files[0];
             this.setState({file : file,
             fileMessage : '\"' + file.name + '\"' + ' selected.'});
         }catch (error) {
-            console.log("Error")
+            this.setState({
+                uploadResultMessage : "Error occured. File not uploaded."
+            });
         }
         
     }
@@ -108,33 +150,32 @@ const styles = (theme) => ({
                                     
                                     <div className={classes.upload}
                                         align="center">
-                                            {this.state.file ? 
-                                                <Typography style= {{color: "black"}} className={classes.fileMessage}> {this.state.fileMessage}</Typography>
-                                                : <p></p>}
-                                        <form  encType="multipart/form-data">
-                                        <Grid container spacing={3}>
-                                                
-                                            <Grid item xs={12} sm={6}>
-                                                <label htmlFor="raised-button-file">
-                                                <input
-                                                accept="csv/*"
-                                                className={classes.input}
-                                                style={{ display: 'none' }}
-                                                id="raised-button-file"
-                                                multiple
-                                                type="file"
-                                                onChange={(e) => this.handleFileSelect(e)} 
-                                                />
-                                                <Button  component="span" className={classes.uploadButton}>
-                                                    Upload file
-                                                </Button>
-                                                </label> 
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <Button className={classes.uploadButton} onClick={(e) => this.onsubmit(e)} type="button">Upload</Button>
-                                            </Grid>
-                                            </Grid>
                                             
+                                        <form  encType="multipart/form-data">
+                                        <Dropzone onDrop={(e) => this.handleFileSelect(e)}>
+                                            {({getRootProps, getInputProps}) => (
+                                                <section className = {classes.dropzone}>
+                                                <div {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    
+                                                    {this.state.file ? 
+                                                        <Typography style= {{color: "black"}} className={classes.fileMessage}> {this.state.fileMessage}</Typography>
+                                                        : <Typography style= {{color: "black"}} className={classes.fileMessage}>Click here to select a file. Or Drag and Drop.</Typography>}
+                                                </div>
+                                                </section>
+                                            )}
+                                        </Dropzone>
+
+                    
+                                        <Grid item xs={12} sm={6}>
+                                            <Button className={classes.uploadButton} onClick={ (e) => this.onsubmit(e)} type="button">Import Data</Button>
+                                        </Grid>
+                                        <div>
+                                            
+                                            {this.state.uploadResultMessage ? 
+                                                <Typography style= {{color: "black"}} className={classes.resultMessage}> {this.state.uploadResultMessage}</Typography>
+                                                : <Typography style= {{color: "black"}} className={classes.resultMessage}></Typography>}
+                                        </div>
                                         </form>
                                     </div>
                                    

@@ -25,19 +25,18 @@ const getProspectData = (userId) => {
 
 const uploadProspectCsv = async (formData) => {
   try{
-    //const response = await axios.post('/api/prospects/upload')
-    const response = axios({
+    const response = await axios({
       url : '/api/prospects/upload',
       method : "POST",
       headers : {
   
       },
       data : formData
-    }).then((res) => {
-      console.log(res);
     });
-  } catch(error) {
-
+    return response;
+  } catch (error) {
+    console.log("Error occurred csv upload:", error);
+    return false;
   }
 }
 
