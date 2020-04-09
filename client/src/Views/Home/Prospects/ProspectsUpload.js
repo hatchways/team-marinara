@@ -5,10 +5,7 @@ import ProspectSidebar from "./ProspectSidebar";
 import Paper from '@material-ui/core/Paper';
 import colors from "Components/Styles/Colors";
 import { uploadProspectCsv } from "Utils/api";
-import Dropzone from 'react-dropzone'
-//import styles from "Components/Form/ProspectUploadStyles";
-
-import { makeStyles} from "@material-ui/core";
+import Dropzone from 'react-dropzone';
 
 const styles = (theme) => ({
     root: {
