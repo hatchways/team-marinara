@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 
 const CampaignHeader = props => {
   const classes = useStyles();
+
   return (
     <Grid item container className={classes.root} spacing={4}>
       <Grid item className={classes.title}>
@@ -27,11 +28,11 @@ const CampaignHeader = props => {
       </Grid>
 
       <Grid item>
-        <StyledButton>Add Step</StyledButton>
+        <StyledButton onClick={props.handleClick}>Add Step</StyledButton>
       </Grid>
 
       <Grid item>
-        <StyledButton>Add Prospects</StyledButton>
+        <StyledButton onClick={props.handleClick}>Add Prospects</StyledButton>
       </Grid>
     </Grid>
   );
