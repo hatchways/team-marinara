@@ -7,6 +7,7 @@ import requireAuth from "Components/Session/requireAuth";
 
 import Navbar from "./Navbar/HomeNavbar";
 import Campaigns from "./Campaigns/Campaigns";
+import ProspectsUpload from "./Prospects/ProspectsUpload";
 import Prospects from "./Prospects/Prospects";
 import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
@@ -40,6 +41,9 @@ const Home = props => {
         </Route>
         <Route path="/home/templates">
           <Templates />
+        </Route>
+        <Route path="/home/prospects/upload">
+          <ProspectsUpload />
         </Route>
         <Route path="/home/prospects">
           <Prospects />

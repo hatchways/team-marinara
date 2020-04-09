@@ -23,6 +23,24 @@ const getProspectData = (userId) => {
   return axios.get("/api/prospects?ownedBy=" + userId);
 }
 
+const uploadProspectCsv = async (formData) => {
+  try{
+    //const response = await axios.post('/api/prospects/upload')
+    const response = axios({
+      url : '/api/prospects/upload',
+      method : "POST",
+      headers : {
+  
+      },
+      data : formData
+    }).then((res) => {
+      console.log(res);
+    });
+  } catch(error) {
+
+  }
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -94,5 +112,6 @@ export {
   getAuthUrl,
   postGmailAuthCode,
   getUser,
-  getProspectData
+  getProspectData,
+  uploadProspectCsv
 };

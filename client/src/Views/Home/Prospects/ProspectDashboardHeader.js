@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import MailIcon from '@material-ui/icons/Mail';
@@ -57,7 +58,9 @@ const styles = () => ({
         </Grid>
         
       <Grid item>
-        <StyledImportProspectButtonOutline>
+        <StyledImportProspectButtonOutline
+          component={Link}
+          to="/home/prospects/upload">
           Imports
         </StyledImportProspectButtonOutline>
       </Grid>
