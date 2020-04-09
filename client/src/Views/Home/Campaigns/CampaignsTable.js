@@ -19,13 +19,13 @@ const useStyles = makeStyles({
     padding: "0 3rem"
   },
   tableContainer: {
-    padding: 10,
+    padding: 15,
     backgroundColor: `${colors.white}`,
-    border: `1px solid ${colors.darkGray}`,
+    //border: `1px solid ${colors.darkGray}`,
     borderRadius: 7
   },
   headRow: {
-    backgroundColor: `${colors.green}`
+    backgroundColor: `${colors.lightGreen}`
   },
   headCell: {
     fontSize: "1rem",

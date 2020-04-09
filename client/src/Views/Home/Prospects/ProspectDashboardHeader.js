@@ -66,15 +66,17 @@ const ProspectDashboardHeader = props => {
         </Grid>
         
       <Grid item>
-        <StyledImportProspectButtonOutline
-          component={Link}
-          to="/home/prospects/upload">
+        <StyledImportProspectButtonOutline>
           Imports
         </StyledImportProspectButtonOutline>
       </Grid>
 
         <Grid item>
-          <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>
+          <StyledAddProspectButton
+          component={Link}
+          to="/home/prospects/upload">
+            Add New Prospects
+          </StyledAddProspectButton>
         </Grid>
       </Grid>
     </Grid>

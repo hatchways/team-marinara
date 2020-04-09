@@ -4,7 +4,7 @@ import { Button, withStyles } from "@material-ui/core";
 const styles = {
   root: {
     backgroundColor: "#F4F6FC",
-    border: "1px solid #2AA897",
+    border: "1px solid #4FBE75",
     borderRadius: 7,
     color: "#000000",
     fontWeight: "bold",

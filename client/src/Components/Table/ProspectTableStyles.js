@@ -25,9 +25,11 @@ const ProspectTableStyles = () => ({
         color: `${colors.white}`,
         backgroundColor: `${colors.white}`,
         borderRadius: 7,
-        margin: "25px 0px 75px 0px"
+        margin: "25px 0px 75px 0px",
+        padding: "15px"
       },
       table : {
+        borderCollapse: "separate",
         borderRadius: 7,
         width : "800px",
         overflow: "auto"
@@ -35,7 +37,13 @@ const ProspectTableStyles = () => ({
       table_header_cell : {
         backgroundColor: `${colors.lightGreen}`,
         color : `${colors.white}`,
-        width : "50px"
+        width : "50px",
+        "&:first-child": {
+          borderRadius: "7px 0 0 7px"
+        },
+        "&:last-child": {
+          borderRadius: "0 7px 7px 0"
+        }
       },
       table_header : {
         borderRadius: 7,
