@@ -5,6 +5,8 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 
+const passport = require("passport");
+
 const {validateProspectInput, validateFile} = require("../../validation/prospect");
 const Prospect = require("../../models/Prospect");
 const { processCsvData } = require("../../utils/csv/csvProcess")
@@ -149,9 +151,14 @@ router.delete("/:id", (req, res) => {
 // @route POST /api/prospects/upload
 // @desc Upload Prospects with a csv file
 // @access Authenticated Users
-router.post("/upload", upload.single('file'), (req, res) => {
+router.post("/upload", 
+passport.authenticate("jwt", { session: false }),
+upload.single('file'), async (req, res) => {
   const csvData = [];
   const file = req.file;
+  console.log("check");
+  console.log(req.user);
+  const userId = req.user.id;
 
   const { errors, isValid } = validateFile(file);
   if(!isValid) {
@@ -166,7 +173,7 @@ router.post("/upload", upload.single('file'), (req, res) => {
       .on("end",  async () => {
         fs.unlinkSync(file.path);
         try{
-          const count = await processCsvData(csvData);
+          const count = await processCsvData(csvData, userId);
           res.status(200).send(count);
         } catch(err){
           const error = {
