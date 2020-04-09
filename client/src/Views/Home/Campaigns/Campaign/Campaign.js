@@ -24,11 +24,15 @@ const Campaign = props => {
       fetchCampaign(campaignId);
       setRecentlyFetched(true);
     }
-  }, [recentlyFetched, campaignId]);
+  }, [recentlyFetched, campaignId, props]);
+
+  const handleClick = () => {
+    props.history.push(`/home/prospects`);
+  };
 
   return (
     <React.Fragment>
-      <Header name={campaign.name} />
+      <Header name={campaign.name} handleClick={handleClick} />
     </React.Fragment>
   );
 };

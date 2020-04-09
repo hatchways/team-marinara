@@ -41,9 +41,7 @@ const Campaigns = () => {
   return (
     <Grid item container className={classes.root}>
       <Switch>
-        <Route path="/home/campaigns/:campaignId">
-          <Campaign />
-        </Route>
+        <Route path="/home/campaigns/:campaignId" component={Campaign} />
         <Route path={["/home", "/home/campaigns"]}>
           {/* TODO: Add Sidebar */}
 
