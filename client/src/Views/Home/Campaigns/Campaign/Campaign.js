@@ -41,7 +41,7 @@ const Campaign = props => {
 
   return (
     <Grid item container direction="column">
-      <Header name={campaign.name} handleClick={handleClick} />
+      <Header name={campaign.name} />
       <Table prospects={prospects} />
     </Grid>
   );
