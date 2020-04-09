@@ -81,11 +81,11 @@ router.get(
   }
 );
 
-// @route POST /api/campaigns/addProspects
+// @route POST /api/campaigns/prospects
 // @desc Add prospects to a Campaign. Requires 'campaignId' and 'prospects' (array of Prospect ids)
 // @access Authenticated Users
 router.post(
-  "/addProspects",
+  "/prospects",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
