@@ -139,7 +139,7 @@ router.get(
         ownedBy: userId
       });
 
-      if (!campaign || campaign.length === 0) {
+      if (!campaigns || campaigns.length === 0) {
         res
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
@@ -163,17 +163,23 @@ router.delete(
       const userId = req.user.id;
       const { campaignId, prospectIds } = req.body;
 
-      const campaign = await Campaign.findOne({
-        _id: campaignId,
-        ownedBy: userId
-      });
+      const prospectIdsArray = JSON.parse(prospectIds);
 
-      prospectIds.forEach(async prospectId => {
-        campaign.prospects.pull({ prospectId: prospectId });
-      });
-      await Campaign.save();
+      const results = await Campaign.updateOne(
+        {
+          _id: campaignId,
+          ownedBy: userId
+        },
+        {
+          prospects: {
+            $pullAll: {
+              prospectId: prospectIdsArray
+            }
+          }
+        }
+      );
 
-      res.json({ id: `Prospects removed` });
+      res.json({ id: `${results} removed` });
     } catch (error) {
       console.log(error);
     }
