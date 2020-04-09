@@ -90,9 +90,9 @@ router.post(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId, prospects } = req.body;
+      const { campaignId, prospectIds } = req.body;
 
-      const prospectsArray = JSON.parse(prospects);
+      const prospectIdsArray = JSON.parse(prospectsIds);
 
       /****************** TODO: Check prospects are valid ***************/
 
@@ -107,7 +107,7 @@ router.post(
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
         // turn array of ids into array of objects for adding to campaign.prospects
-        const arrayOfProspectObj = prospectsArray.map(prospectId => {
+        const arrayOfProspectObj = prospectIdsArray.map(prospectId => {
           return {
             prospectId: prospectId
           };
