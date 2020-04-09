@@ -15,7 +15,8 @@ const CampaignSelectDialog = props => {
   useEffect(() => {
     const asyncFunc = async () => {
       const camps = await getCampaigns();
-      setCampaigns(camps);
+      const campsData = camps.data;
+      setCampaigns(campsData);
     };
     asyncFunc();
   }, []);
