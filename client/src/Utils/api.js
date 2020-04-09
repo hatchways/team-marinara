@@ -19,6 +19,10 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
+const getProspectData = (userId) => {
+  return axios.get("/api/prospects?ownedBy=" + userId);
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -89,5 +93,6 @@ export {
   checkForGmailToken,
   getAuthUrl,
   postGmailAuthCode,
-  getUser
+  getUser,
+  getProspectData
 };
