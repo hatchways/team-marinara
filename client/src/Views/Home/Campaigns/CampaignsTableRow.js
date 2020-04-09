@@ -11,10 +11,21 @@ const useStyles = makeStyles({
 
 const CampaignsTableRow = props => {
   const classes = useStyles();
+
+  const formatDate = dateString => {
+    let date = new Date(dateString);
+    date = date.toDateString().split(" ");
+    const month = date[1];
+    const day = Number.parseInt(date[2]);
+    return `${month} ${day}`;
+  };
+
   return (
     <TableRow key={props.campaign._id}>
       <TableCell className={classes.cell}>{props.campaign.name}</TableCell>
-      <TableCell className={classes.cell} align="center"></TableCell>
+      <TableCell className={classes.cell} align="center">
+        {formatDate(props.campaign.created)}
+      </TableCell>
       <TableCell className={classes.cell} align="center">
         {props.campaign.prospects.length}
       </TableCell>
