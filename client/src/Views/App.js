@@ -4,8 +4,7 @@ import { ThemeProvider } from "@material-ui/styles";
 
 import Home from "./Home/Home";
 import Landing from "./Landing/Landing";
-import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
-import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
+
 import theme from "Assets/styles/Theme";
 import withAuthentication from "Components/Session/withAuthentication";
 
@@ -18,11 +17,6 @@ const App = () => {
             <Route path="/home" component={Home} />
             <Route path={["/", "/login", "/register"]} component={Landing} />
           </Switch>
-          <Route path={`*/email-auth-dialog`} component={GmailSignInDialog} />
-          <Route
-            path={`*/email-auth-results-dialog`}
-            component={GmailAuthResultDialog}
-          />
         </BrowserRouter>
       </ThemeProvider>
     </div>

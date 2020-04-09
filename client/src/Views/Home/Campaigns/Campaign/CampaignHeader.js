@@ -1,13 +1,13 @@
 import React from "react";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 import StyledButton from "Components/Button/StyledButton";
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
-    padding: "2rem 3rem",
-    position: "absolute"
+    padding: "2rem 3rem"
   },
   title: {
     flexGrow: 1
@@ -21,6 +21,14 @@ const useStyles = makeStyles({
 const CampaignHeader = props => {
   const classes = useStyles();
 
+  const handleAddProspects = () => {
+    props.history.push(`/home/prospects`);
+  };
+
+  const handleAddStep = () => {
+    props.history.push(`${props.match.url}/step`);
+  };
+
   return (
     <Grid item container className={classes.root} spacing={4}>
       <Grid item className={classes.title}>
@@ -28,14 +36,14 @@ const CampaignHeader = props => {
       </Grid>
 
       <Grid item>
-        <StyledButton onClick={props.handleClick}>Add Step</StyledButton>
+        <StyledButton onClick={handleAddStep}>Add Step</StyledButton>
       </Grid>
 
       <Grid item>
-        <StyledButton onClick={props.handleClick}>Add Prospects</StyledButton>
+        <StyledButton onClick={handleAddProspects}>Add Prospects</StyledButton>
       </Grid>
     </Grid>
   );
 };
 
-export default CampaignHeader;
+export default withRouter(CampaignHeader);
