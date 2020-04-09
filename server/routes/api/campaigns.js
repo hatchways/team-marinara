@@ -124,12 +124,12 @@ router.post(
 // @desc Get all prospects in a campaign. Requires campaignId
 // @access Authenticated Users
 router.get(
-  "/prospects",
+  "/prospects/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId } = req.body;
+      const { campaignId } = req.params.id;
 
       const campaigns = await Campaign.findOne({
         _id: campaignId,
