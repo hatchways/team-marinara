@@ -18,6 +18,8 @@ import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
 
 import ProspectSidebar from "./ProspectSidebar";
 import ProspectDashboardHeader from "./ProspectDashboardHeader";
+import CampaignSelectDialog from "Views/Home/Prospects/CampaignSelect";
+import { addProspectsToCampaign } from "Utils/api";
 
 class Prospects extends Component {
   constructor(props) {
@@ -29,14 +31,34 @@ class Prospects extends Component {
       user: {},
       allChecked: false,
       errors: {},
-      addToCampaignBtnVisible: false
+      addToCampaignBtnVisible: false,
+      showCampaignDialog: false
     };
   }
 
   handleClick = (event, id) => {};
 
   handleAddToCampaign = () => {
-    console.log("retreat!");
+    this.setState({
+      showCampaignDialog: true
+    });
+  };
+
+  handleCampaignDialogClose = campaignId => {
+    this.setState({
+      showCampaignDialog: false
+    });
+
+    if (campaignId) {
+      const selectedProspects = [];
+      const prospectObj = this.state.prospectChecked;
+
+      for (const property in prospectObj) {
+        if (prospectObj[property]) selectedProspects.push(property);
+      }
+
+      addProspectsToCampaign(campaignId, selectedProspects);
+    }
   };
 
   componentDidMount = async () => {
@@ -290,6 +312,10 @@ class Prospects extends Component {
             </Box>
           </Grid>
         </Grid>
+        <CampaignSelectDialog
+          open={this.state.showCampaignDialog}
+          onClose={this.handleCampaignDialogClose}
+        />
       </Route>
     );
   }
