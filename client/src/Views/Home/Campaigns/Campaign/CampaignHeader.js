@@ -6,8 +6,7 @@ import StyledButton from "Components/Button/StyledButton";
 const useStyles = makeStyles({
   root: {
     width: "100%",
-    padding: "2rem 3rem",
-    position: "absolute"
+    padding: "2rem 3rem"
   },
   title: {
     flexGrow: 1

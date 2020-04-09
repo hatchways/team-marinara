@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Grid } from "@material-ui/core";
 
-import { getCampaign } from "Utils/api";
+import { getCampaign, getCampaignProspects } from "Utils/api";
 
 import Header from "./CampaignHeader";
+import Table from "./CampaignProspectsTable";
 
 const Campaign = props => {
   const { campaignId } = useParams();
   const [campaign, setCampaign] = useState({});
+  const [prospects, setProspects] = useState([]);
   const [recentlyFetched, setRecentlyFetched] = useState(false);
 
   useEffect(() => {
@@ -20,8 +23,18 @@ const Campaign = props => {
       }
     };
 
+    const getProspects = async campaignId => {
+      try {
+        const res = await getCampaignProspects(campaignId);
+        setProspects(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (!recentlyFetched) {
       fetchCampaign(campaignId);
+      getProspects(campaignId);
       setRecentlyFetched(true);
     }
   }, [recentlyFetched, campaignId, props]);
@@ -31,9 +44,10 @@ const Campaign = props => {
   };
 
   return (
-    <React.Fragment>
+    <Grid item container direction="column">
       <Header name={campaign.name} handleClick={handleClick} />
-    </React.Fragment>
+      <Table prospects={prospects} />
+    </Grid>
   );
 };
 

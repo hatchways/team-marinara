@@ -4,6 +4,7 @@ const router = express.Router();
 const passport = require("passport");
 
 const Campaign = require("../../models/campaign");
+const Prospect = require("../../models/Prospect");
 
 // @route POST /api/campaigns
 // @desc Create a Campaign object. Requires 'name' (campaign name) and 'ownedBy' (a userId)
@@ -129,7 +130,7 @@ router.get(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId } = req.params.campaignId;
+      const campaignId = req.params.campaignId;
 
       const campaigns = await Campaign.findOne({
         _id: campaignId,
@@ -141,7 +142,10 @@ router.get(
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
-        res.json(campaigns.prospects);
+        const prospects = await Prospect.populate(campaigns.prospects, {
+          path: "prospectId"
+        });
+        res.json(prospects);
       }
     } catch (error) {
       console.log(error);

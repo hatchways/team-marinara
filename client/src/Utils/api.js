@@ -23,22 +23,20 @@ const getProspectData = userId => {
   return axios.get("/api/prospects?ownedBy=" + userId);
 };
 
-const uploadProspectCsv = async (formData) => {
-  try{
+const uploadProspectCsv = async formData => {
+  try {
     const response = await axios({
-      url : '/api/prospects/upload',
-      method : "POST",
-      headers : {
-  
-      },
-      data : formData
+      url: "/api/prospects/upload",
+      method: "POST",
+      headers: {},
+      data: formData
     });
     return response;
   } catch (error) {
     console.log("Error occurred csv upload:", error);
     return false;
   }
-}
+};
 
 /*
  * Check if current user has given permission for Mail Sender to access their
@@ -125,6 +123,10 @@ const addProspectsToCampaign = async (campaignId, prospectIds) => {
   return response;
 };
 
+const getCampaignProspects = campaignId => {
+  return axios.get(`/api/campaigns/prospects/${campaignId}`);
+};
+
 export {
   register,
   login,
@@ -137,5 +139,6 @@ export {
   createCampaign,
   getCampaigns,
   getCampaign,
-  addProspectsToCampaign
+  addProspectsToCampaign,
+  getCampaignProspects
 };
