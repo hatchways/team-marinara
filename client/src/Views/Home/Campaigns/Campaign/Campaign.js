@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, makeStyles } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 
 import { getCampaign } from "Utils/api";
+
+import Header from "./CampaignHeader";
 
 const Campaign = props => {
   const { campaignId } = useParams();
@@ -26,9 +27,9 @@ const Campaign = props => {
   }, [recentlyFetched, campaignId]);
 
   return (
-    <Grid item container>
-      <Typography variant="h6">{campaign.name}</Typography>
-    </Grid>
+    <React.Fragment>
+      <Header name={campaign.name} />
+    </React.Fragment>
   );
 };
 
