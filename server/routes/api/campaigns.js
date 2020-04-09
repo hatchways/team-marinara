@@ -92,7 +92,7 @@ router.post(
       const userId = req.user.id;
       const { campaignId, prospectIds } = req.body;
 
-      /****************** TODO: Check prospects are valid ***************/
+      /****************** TODO: Check prospects are valid/not already in this campaign ***************/
 
       const campaign = await Campaign.findOne({
         _id: campaignId,

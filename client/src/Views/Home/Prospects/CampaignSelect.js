@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  DialogTitle,
+  Dialog
+} from "@material-ui/core";
 import { getCampaigns } from "Utils/api";
 
 const CampaignSelectDialog = props => {

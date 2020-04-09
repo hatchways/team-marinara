@@ -36,31 +36,6 @@ class Prospects extends Component {
     };
   }
 
-  handleClick = (event, id) => {};
-
-  handleAddToCampaign = () => {
-    this.setState({
-      showCampaignDialog: true
-    });
-  };
-
-  handleCampaignDialogClose = campaignId => {
-    this.setState({
-      showCampaignDialog: false
-    });
-
-    if (campaignId) {
-      const selectedProspects = [];
-      const prospectObj = this.state.prospectChecked;
-
-      for (const property in prospectObj) {
-        if (prospectObj[property]) selectedProspects.push(property);
-      }
-
-      addProspectsToCampaign(campaignId, selectedProspects);
-    }
-  };
-
   componentDidMount = async () => {
     try {
       this.state.user = this.context.user;
@@ -122,6 +97,30 @@ class Prospects extends Component {
       p.email.toLowerCase().includes(value.toLowerCase())
     );
     this.setState({ filteredProspects: newFilteredProspectList });
+  };
+
+  handleAddToCampaign = () => {
+    this.setState({
+      showCampaignDialog: true
+    });
+  };
+
+  handleCampaignDialogClose = campaignId => {
+    this.setState({
+      showCampaignDialog: false
+    });
+
+    // if user clicked outside dialog, campaignId will be null
+    if (campaignId) {
+      const selectedProspects = [];
+      const prospectObj = this.state.prospectChecked;
+
+      for (const property in prospectObj) {
+        if (prospectObj[property]) selectedProspects.push(property);
+      }
+
+      addProspectsToCampaign(campaignId, selectedProspects);
+    }
   };
 
   render() {
