@@ -92,22 +92,28 @@ router.post(
       const userId = req.user.id;
       const { campaignId, prospects } = req.body;
 
+      const prospectsArray = JSON.parse(prospects);
+
       /****************** TODO: Check prospects are valid ***************/
 
-      const campaign = await Campaign.find({
+      const campaign = await Campaign.findOne({
         _id: campaignId,
         ownedBy: userId
       });
+
       if (!campaign || campaign.length === 0) {
         res
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
-        campaign.prospects = prospects.map(prospectId => {
+        // turn array of ids into array of objects for adding to campaign.prospects
+        const arrayOfProspectObj = prospectsArray.map(prospectId => {
           return {
             prospectId: prospectId
           };
         });
+
+        campaign.prospects.push(...arrayOfProspectObj);
         await campaign.save();
         res.json(campaign);
       }
