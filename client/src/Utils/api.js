@@ -19,9 +19,9 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
-const getProspectData = (userId) => {
+const getProspectData = userId => {
   return axios.get("/api/prospects?ownedBy=" + userId);
-}
+};
 
 const uploadProspectCsv = async (formData) => {
   try{
@@ -104,6 +104,19 @@ const getUser = async () => {
   }
 };
 
+const getCampaigns = async () => {
+  const response = await axios.get("/api/campaigns");
+  return response.data;
+};
+
+const addProspectsToCampaign = async (campaignId, prospectIds) => {
+  const response = await axios.post("/api/campaigns/prospects", {
+    campaignId: campaignId,
+    prospectIds: prospectIds
+  });
+  return response;
+};
+
 export {
   register,
   login,
@@ -112,5 +125,7 @@ export {
   postGmailAuthCode,
   getUser,
   getProspectData,
-  uploadProspectCsv
+  uploadProspectCsv,
+  getCampaigns,
+  addProspectsToCampaign
 };

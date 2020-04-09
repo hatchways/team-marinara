@@ -11,6 +11,8 @@ import ProspectsUpload from "./Prospects/ProspectsUpload";
 import Prospects from "./Prospects/Prospects";
 import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
+import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
+import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
 
 import colors from "Components/Styles/Colors";
 
@@ -36,22 +38,19 @@ const Home = props => {
       <Navbar />
 
       <Switch>
-        <Route path="/home/reporting">
-          <Reporting />
-        </Route>
-        <Route path="/home/templates">
-          <Templates />
-        </Route>
-        <Route path="/home/prospects/upload">
-          <ProspectsUpload />
-        </Route>
-        <Route path="/home/prospects">
-          <Prospects />
-        </Route>
-        <Route path={["/home", "/home/campaigns"]}>
-          <Campaigns />
-        </Route>
+        <Route path="/home/prospects/upload" component={ProspectsUpload}/>
+        <Route path="/home/reporting" component={Reporting} />
+        <Route path="/home/templates" component={Templates} />
+        <Route path="/home/prospects" component={Prospects} />
+        <Route path={["/home", "/home/campaigns"]} component={Campaigns} />
       </Switch>
+
+      {/* Overlay Components */}
+      <Route path={`*/email-auth-dialog`} component={GmailSignInDialog} />
+      <Route
+        path={`*/email-auth-results-dialog`}
+        component={GmailAuthResultDialog}
+      />
     </Grid>
   );
 };
