@@ -100,6 +100,14 @@ const getCampaign = campaignId => {
   return axios.get(`/api/campaigns/campaign/${campaignId}`);
 };
 
+const addProspectsToCampaign = async (campaignId, prospectIds) => {
+  const response = await axios.post("/api/campaigns/prospects", {
+    campaignId: campaignId,
+    prospectIds: prospectIds
+  });
+  return response;
+};
+
 export {
   register,
   login,
@@ -110,5 +118,6 @@ export {
   getProspectData,
   createCampaign,
   getCampaigns,
-  getCampaign
+  getCampaign,
+  addProspectsToCampaign
 };
