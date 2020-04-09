@@ -39,10 +39,6 @@ const Campaign = props => {
     }
   }, [recentlyFetched, campaignId, props]);
 
-  const handleClick = () => {
-    props.history.push(`/home/prospects`);
-  };
-
   return (
     <Grid item container direction="column">
       <Header name={campaign.name} handleClick={handleClick} />
