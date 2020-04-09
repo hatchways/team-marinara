@@ -1,35 +1,32 @@
 import React from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
-import FlashOnIcon from '@material-ui/icons/FlashOn';
-import MailIcon from '@material-ui/icons/Mail';
+import FlashOnIcon from "@material-ui/icons/FlashOn";
+import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
-
-
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
 
 const styles = () => ({
-    root: {
-      width: "100%",
-      backgroundColor: `${colors.gray}`,
-      padding: "48px 56px"
-    },
-    toggle: {
-      width: "auto"
-    },
-    header: {
-        fontSize: "1.5rem",
-        fontWeight: "bold"
-    },
-    mainHeaderIcon : {
-      color: "#A9A9A9"
-    }
-  });
+  root: {
+    width: "100%",
+    backgroundColor: `${colors.gray}`,
+    padding: "48px 56px"
+  },
+  toggle: {
+    width: "auto"
+  },
+  header: {
+    fontSize: "1.5rem",
+    fontWeight: "bold"
+  },
+  mainHeaderIcon: {
+    color: "#A9A9A9"
+  }
+});
 
-
-  const ProspectDashboardHeader = props => (
-    <Grid
+const ProspectDashboardHeader = props => (
+  <Grid
     item
     container
     alignContent="center"
@@ -38,7 +35,7 @@ const styles = () => ({
     className={props.classes.root}
   >
     <Grid item>
-    <Typography className={props.classes.header}>Prospects</Typography>
+      <Typography className={props.classes.header}>Prospects</Typography>
     </Grid>
 
     <Grid
@@ -50,12 +47,19 @@ const styles = () => ({
       className={props.classes.toggle}
     >
       <Grid item>
-        <FlashOnIcon className={props.classes.mainHeaderIcon }/>
-        </Grid>
-        <Grid item>
-          <MailIcon className={props.classes.mainHeaderIcon } />  
-        </Grid>
-        
+        {props.addToCampaignBtnVisible && (
+          <StyledAddProspectButton onClick={e => props.handleClick(e)}>
+            Add to Campaign
+          </StyledAddProspectButton>
+        )}
+      </Grid>
+      <Grid item>
+        <FlashOnIcon className={props.classes.mainHeaderIcon} />
+      </Grid>
+      <Grid item>
+        <MailIcon className={props.classes.mainHeaderIcon} />
+      </Grid>
+
       <Grid item>
         <StyledImportProspectButtonOutline>
           Imports
@@ -63,12 +67,10 @@ const styles = () => ({
       </Grid>
 
       <Grid item>
-        <StyledAddProspectButton>
-          Add New Prospect
-        </StyledAddProspectButton>
+        <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>
       </Grid>
     </Grid>
   </Grid>
-  );
-  
-  export default withStyles(styles)(ProspectDashboardHeader);
+);
+
+export default withStyles(styles)(ProspectDashboardHeader);
