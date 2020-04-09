@@ -33,8 +33,10 @@ class Prospects extends Component {
     };
   }
 
-  handleClick = (event, id) => {
-    console.log(event);
+  handleClick = (event, id) => {};
+
+  handleAddToCampaign = () => {
+    console.log("retreat!");
   };
 
   componentDidMount = async () => {
@@ -193,7 +195,7 @@ class Prospects extends Component {
               >
                 <ProspectDashboardHeader
                   addToCampaignBtnVisible={this.state.addToCampaignBtnVisible}
-                  handleClick={this.handleClick}
+                  handleClick={this.handleAddToCampaign}
                 />
                 <Grid
                   item

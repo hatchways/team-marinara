@@ -25,52 +25,57 @@ const styles = () => ({
   }
 });
 
-const ProspectDashboardHeader = props => (
-  <Grid
-    item
-    container
-    alignContent="center"
-    alignItems="center"
-    justify="space-between"
-    className={props.classes.root}
-  >
-    <Grid item>
-      <Typography className={props.classes.header}>Prospects</Typography>
-    </Grid>
-
+const ProspectDashboardHeader = props => {
+  return (
     <Grid
       item
       container
       alignContent="center"
       alignItems="center"
-      spacing={4}
-      className={props.classes.toggle}
+      justify="space-between"
+      className={props.classes.root}
     >
       <Grid item>
-        {props.addToCampaignBtnVisible && (
-          <StyledAddProspectButton onClick={e => props.handleClick(e)}>
-            Add to Campaign
-          </StyledAddProspectButton>
-        )}
-      </Grid>
-      <Grid item>
-        <FlashOnIcon className={props.classes.mainHeaderIcon} />
-      </Grid>
-      <Grid item>
-        <MailIcon className={props.classes.mainHeaderIcon} />
+        <Typography className={props.classes.header}>Prospects</Typography>
       </Grid>
 
-      <Grid item>
-        <StyledImportProspectButtonOutline>
-          Imports
-        </StyledImportProspectButtonOutline>
-      </Grid>
+      <Grid
+        item
+        container
+        alignContent="center"
+        alignItems="center"
+        spacing={4}
+        className={props.classes.toggle}
+      >
+        <Grid item>
+          {props.addToCampaignBtnVisible && (
+            <StyledAddProspectButton
+              idxyt="add-to-campaign"
+              onClick={e => props.handleClick(e)}
+            >
+              Add to Campaign
+            </StyledAddProspectButton>
+          )}
+        </Grid>
+        <Grid item>
+          <FlashOnIcon className={props.classes.mainHeaderIcon} />
+        </Grid>
+        <Grid item>
+          <MailIcon className={props.classes.mainHeaderIcon} />
+        </Grid>
 
-      <Grid item>
-        <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>
+        <Grid item>
+          <StyledImportProspectButtonOutline>
+            Imports
+          </StyledImportProspectButtonOutline>
+        </Grid>
+
+        <Grid item>
+          <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-);
+  );
+};
 
 export default withStyles(styles)(ProspectDashboardHeader);
