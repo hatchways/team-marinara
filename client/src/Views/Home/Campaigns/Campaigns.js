@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 
 import Header from "./CampaignsHeader";
+import Table from "./CampaignsTable";
 import Modal from "./CreateCampaignModal";
 
 import { getCampaigns } from "Utils/api";
@@ -36,8 +37,12 @@ const Campaigns = () => {
 
   return (
     <Grid item container className={classes.root}>
-      <Grid item container>
+      {/* TODO: Add Sidebar */}
+
+      {/* Content Area */}
+      <Grid item container direction="column">
         <Header setModalOpen={setModalOpen} />
+        <Table campaigns={campaigns} />
       </Grid>
 
       <Modal
