@@ -21,11 +21,11 @@ const useStyles = makeStyles({
   tableContainer: {
     padding: 10,
     backgroundColor: `${colors.white}`,
-    border: `1px solid ${colors.darkGray}`,
+    //border: `1px solid ${colors.darkGray}`,
     borderRadius: 7
   },
   headRow: {
-    backgroundColor: `${colors.green}`
+    backgroundColor: `${colors.lightGreen}`
   },
   headCell: {
     fontSize: "1rem",
