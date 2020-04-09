@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
 import MailIcon from "@material-ui/icons/Mail";
@@ -63,12 +64,14 @@ const ProspectDashboardHeader = props => {
         <Grid item>
           <MailIcon className={props.classes.mainHeaderIcon} />
         </Grid>
-
-        <Grid item>
-          <StyledImportProspectButtonOutline>
-            Imports
-          </StyledImportProspectButtonOutline>
-        </Grid>
+        
+      <Grid item>
+        <StyledImportProspectButtonOutline
+          component={Link}
+          to="/home/prospects/upload">
+          Imports
+        </StyledImportProspectButtonOutline>
+      </Grid>
 
         <Grid item>
           <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>

@@ -1,34 +1,65 @@
-import React from "react";
-import { Grid, Typography, withStyles } from "@material-ui/core";
-import StyledButton from "Components/Button/StyledButton";
+import React, { useState, useEffect } from "react";
+import { Grid, makeStyles } from "@material-ui/core";
+import { Switch, Route } from "react-router-dom";
 
-const styles = () => ({
+import Header from "./CampaignsHeader";
+import Table from "./CampaignsTable";
+import Modal from "./CreateCampaignModal";
+
+import Campaign from "./Campaign/Campaign";
+
+import { getCampaigns } from "Utils/api";
+
+const useStyles = makeStyles({
   root: {
     flexGrow: 1
   }
 });
 
-const Campaigns = props => {
-  const openTextEditor = () => {
-    props.history.push(`${props.match.url}/step`);
-  };
+const Campaigns = () => {
+  const classes = useStyles();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [campaigns, setCampaigns] = useState([]);
+  const [recentlyFetched, setRecentlyFetched] = useState(false);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await getCampaigns();
+        setCampaigns(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (!recentlyFetched) {
+      fetchCampaigns();
+      setRecentlyFetched(true);
+    }
+  }, [recentlyFetched]);
 
   return (
-    <Grid
-      item
-      container
-      direction="column"
-      className={props.classes.root}
-      alignContent="center"
-      alignItems="center"
-    >
-      <Grid>
-        <Typography variant="h1">Campaigns Page</Typography>
-      </Grid>
-      <Grid>
-        <StyledButton onClick={openTextEditor}>Add Step</StyledButton>
-      </Grid>
+    <Grid item container className={classes.root}>
+      <Switch>
+        <Route path="/home/campaigns/:campaignId" component={Campaign} />
+        <Route path={["/home", "/home/campaigns"]}>
+          {/* TODO: Add Sidebar */}
+
+          {/* Content Area */}
+          <Grid item container direction="column">
+            <Header setModalOpen={setModalOpen} />
+            <Table campaigns={campaigns} />
+          </Grid>
+
+          <Modal
+            open={modalOpen}
+            setOpen={setModalOpen}
+            setRecentlyFetched={setRecentlyFetched}
+          />
+        </Route>
+      </Switch>
     </Grid>
   );
 };
-export default withStyles(styles)(Campaigns);
+
+export default Campaigns;

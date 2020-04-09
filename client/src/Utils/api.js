@@ -23,6 +23,23 @@ const getProspectData = userId => {
   return axios.get("/api/prospects?ownedBy=" + userId);
 };
 
+const uploadProspectCsv = async (formData) => {
+  try{
+    const response = await axios({
+      url : '/api/prospects/upload',
+      method : "POST",
+      headers : {
+  
+      },
+      data : formData
+    });
+    return response;
+  } catch (error) {
+    console.log("Error occurred csv upload:", error);
+    return false;
+  }
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -87,9 +104,17 @@ const getUser = async () => {
   }
 };
 
-const getCampaigns = async () => {
-  const response = await axios.get("/api/campaigns");
-  return response.data;
+//API calls for campaigns
+const createCampaign = name => {
+  return axios.post("/api/campaigns", { name });
+};
+
+const getCampaigns = () => {
+  return axios.get("/api/campaigns");
+};
+
+const getCampaign = campaignId => {
+  return axios.get(`/api/campaigns/campaign/${campaignId}`);
 };
 
 const addProspectsToCampaign = async (campaignId, prospectIds) => {
@@ -108,6 +133,9 @@ export {
   postGmailAuthCode,
   getUser,
   getProspectData,
+  uploadProspectCsv,
+  createCampaign,
   getCampaigns,
+  getCampaign,
   addProspectsToCampaign
 };

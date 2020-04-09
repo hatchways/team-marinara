@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Grid, withStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 
-import AuthUserContext from "Components/Session/AuthUserContext";
 import requireAuth from "Components/Session/requireAuth";
 
 import Navbar from "./Navbar/HomeNavbar";
 import Campaigns from "./Campaigns/Campaigns";
+import ProspectsUpload from "./Prospects/ProspectsUpload";
 import Prospects from "./Prospects/Prospects";
 import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
@@ -26,7 +26,6 @@ const styles = () => ({
 });
 
 const Home = props => {
-  const context = useContext(AuthUserContext);
   return (
     <Grid
       className={props.classes.root}
@@ -38,6 +37,7 @@ const Home = props => {
       <Navbar />
 
       <Switch>
+        <Route path="/home/prospects/upload" component={ProspectsUpload}/>
         <Route path="/home/reporting" component={Reporting} />
         <Route path="/home/templates" component={Templates} />
         <Route path="/home/prospects" component={Prospects} />
