@@ -19,6 +19,10 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
+const getProspectData = userId => {
+  return axios.get("/api/prospects?ownedBy=" + userId);
+};
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -83,11 +87,27 @@ const getUser = async () => {
   }
 };
 
+const getCampaigns = async () => {
+  const response = await axios.get("/api/campaigns");
+  return response.data;
+};
+
+const addProspectsToCampaign = async (campaignId, prospectIds) => {
+  const response = await axios.post("/api/campaigns/prospects", {
+    campaignId: campaignId,
+    prospectIds: prospectIds
+  });
+  return response;
+};
+
 export {
   register,
   login,
   checkForGmailToken,
   getAuthUrl,
   postGmailAuthCode,
-  getUser
+  getUser,
+  getProspectData,
+  getCampaigns,
+  addProspectsToCampaign
 };

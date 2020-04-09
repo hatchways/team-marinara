@@ -49,6 +49,12 @@ class Register extends Component {
     }
   };
 
+  onEnterPress = e => {
+    if (e.key === "Enter") {
+      this.onSubmit();
+    }
+  };
+
   closeSnackbar = () => {
     this.setState({
       errors: {}
@@ -68,6 +74,7 @@ class Register extends Component {
         alignItems="center"
         spacing={7}
         className={this.props.classes.root}
+        onKeyPress={this.onEnterPress}
       >
         <Grid item>
           <Typography className={this.props.classes.header}>

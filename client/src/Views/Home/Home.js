@@ -44,7 +44,7 @@ const Home = props => {
         <Route path={["/home", "/home/campaigns"]} component={Campaigns} />
       </Switch>
 
-      {/* Overlay components */}
+      {/* Overlay Components */}
       <Route path={`*/email-auth-dialog`} component={GmailSignInDialog} />
       <Route
         path={`*/email-auth-results-dialog`}
