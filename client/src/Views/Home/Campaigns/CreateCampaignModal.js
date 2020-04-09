@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 
 import colors from "Components/Styles/Colors";
+import { createCampaign } from "Utils/api";
 
 const useStyles = makeStyles({
   modal: {
@@ -50,12 +51,25 @@ const useStyles = makeStyles({
 const CreateCampaignModal = props => {
   const classes = useStyles();
   const [name, setName] = useState("");
+
   const onChange = e => {
     setName(e.target.value);
   };
+
   const onClose = () => {
     props.setOpen(false);
   };
+
+  const onSubmit = async () => {
+    try {
+      await createCampaign(name);
+      props.setRecentlyFetched(false);
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Modal open={props.open} onClose={onClose} className={classes.modal}>
       <Grid container direction="column" className={classes.root}>
@@ -86,7 +100,10 @@ const CreateCampaignModal = props => {
             </Button>
           </Grid>
           <Grid item>
-            <Button className={`${classes.button} ${classes.save}`}>
+            <Button
+              className={`${classes.button} ${classes.save}`}
+              onClick={onSubmit}
+            >
               Save
             </Button>
           </Grid>

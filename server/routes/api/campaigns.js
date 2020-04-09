@@ -21,10 +21,9 @@ router.post(
       //   return res.status(400).json(errors);
       // }
 
-      const { name, ownedBy } = req.body;
       const newCampaign = new Campaign({
-        name,
-        ownedBy
+        name: req.body.name,
+        ownedBy: req.user.id
       });
       const campaign = await newCampaign.save();
       res.json(campaign);
