@@ -1,6 +1,6 @@
 import React from "react";
 import { TableRow, TableCell, makeStyles } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import colors from "Components/Styles/Colors";
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 const CampaignsTableRow = props => {
   const classes = useStyles();
-  const { history } = props;
+  const history = useHistory();
 
   const formatDate = dateString => {
     let date = new Date(dateString);
@@ -35,11 +35,7 @@ const CampaignsTableRow = props => {
   };
 
   return (
-    <TableRow
-      key={props.campaign._id}
-      className={classes.row}
-      onClick={onClick}
-    >
+    <TableRow className={classes.row} onClick={onClick}>
       <TableCell className={classes.cell}>{props.campaign.name}</TableCell>
       <TableCell className={classes.cell} align="center">
         {formatDate(props.campaign.created)}
@@ -58,4 +54,4 @@ const CampaignsTableRow = props => {
   );
 };
 
-export default withRouter(CampaignsTableRow);
+export default CampaignsTableRow;

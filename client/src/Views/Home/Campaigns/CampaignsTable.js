@@ -46,7 +46,9 @@ const useStyles = makeStyles({
 
 const CampaignsTable = props => {
   const classes = useStyles();
-  const rows = props.campaigns.map(curr => <Row campaign={curr} />);
+  const rows = props.campaigns.map(curr => (
+    <Row campaign={curr} key={curr._id} />
+  ));
   return (
     <Grid item className={classes.root}>
       <Paper className={classes.tableContainer}>

@@ -44,7 +44,7 @@ const Campaigns = () => {
         <Route path="/home/campaigns/:campaignId">
           <Campaign />
         </Route>
-        <Route path="/home/campaigns">
+        <Route path={["/home", "/home/campaigns"]}>
           {/* TODO: Add Sidebar */}
 
           {/* Content Area */}

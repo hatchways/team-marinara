@@ -96,6 +96,10 @@ const getCampaigns = () => {
   return axios.get("/api/campaigns");
 };
 
+const getCampaign = campaignId => {
+  return axios.get(`/api/campaigns/campaign/${campaignId}`);
+};
+
 export {
   register,
   login,
@@ -105,5 +109,6 @@ export {
   getUser,
   getProspectData,
   createCampaign,
-  getCampaigns
+  getCampaigns,
+  getCampaign
 };
