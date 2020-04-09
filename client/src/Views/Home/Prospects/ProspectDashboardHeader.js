@@ -74,12 +74,6 @@ const ProspectDashboardHeader = props => {
       </Grid>
 
         <Grid item>
-          <StyledImportProspectButtonOutline>
-            Imports
-          </StyledImportProspectButtonOutline>
-        </Grid>
-
-        <Grid item>
           <StyledAddProspectButton>Add New Prospect</StyledAddProspectButton>
         </Grid>
       </Grid>
