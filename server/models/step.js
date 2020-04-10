@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const StepSchema = new Schema({
+  campaignId: { type: Schema.Types.ObjectId, ref: "Campaign", index: true },
   name: { type: String, required: true },
   type: {
     type: String,
@@ -14,7 +15,7 @@ const StepSchema = new Schema({
   created: { type: Date, default: Date.now, required: true },
   prospects: [
     {
-      prospect: {
+      prospectId: {
         type: Schema.Types.ObjectId,
         ref: "Prospect",
         required: true,
