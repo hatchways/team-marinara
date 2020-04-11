@@ -95,6 +95,7 @@ router.delete(
   async (req, res) => {
     try {
       const userId = req.user.id;
+      console.log();
       const campaignId = req.params.campaignId;
 
       const results = await Campaign.deleteOne({
@@ -192,7 +193,7 @@ router.get(
 // @desc Remove prospects from a campaign. Requires campaignId and an array of prospect ids
 // @access Authenticated Users
 router.delete(
-  "/prospects:campaignId&:prospectIds",
+  "/prospects/:campaignId/:prospectIds",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -200,21 +201,18 @@ router.delete(
       const { campaignId, prospectIds } = req.params;
       const prospectIdArray = JSON.parse(prospectIds);
 
-      const results = await Campaign.updateOne(
-        {
-          _id: campaignId,
-          ownedBy: userId
-        },
-        {
-          prospects: {
-            $pullAll: {
-              prospectId: prospectIdArray
-            }
-          }
-        }
-      );
+      const campaign = await Campaign.findOne({
+        _id: campaignId,
+        ownedBy: userId
+      });
 
-      res.json({ id: `${results} removed` });
+      // Add Error checking and report them back //
+      prospectIdArray.forEach(async prospectId => {
+        campaign.prospects.id(prospectId).remove();
+        await campaign.save();
+      });
+
+      res.json({ id: `${prospectIdArray} removed` });
     } catch (error) {
       console.log(error);
       res.json({ error: "Error deleting prospects" });

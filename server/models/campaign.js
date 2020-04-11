@@ -7,7 +7,7 @@ const CampaignSchema = new Schema({
   ownedBy: { type: Schema.Types.ObjectId, ref: "User", index: true },
   prospects: [
     {
-      prospectId: { type: Schema.Types.ObjectId, ref: "Prospect", index: true },
+      _id: { type: Schema.Types.ObjectId, ref: "Prospect", index: true },
       status: {
         type: String,
         required: true,
