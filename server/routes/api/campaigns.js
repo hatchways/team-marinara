@@ -198,6 +198,7 @@ router.delete(
     try {
       const userId = req.user.id;
       const { campaignId, prospectIds } = req.params;
+      const prospectIdArray = JSON.parse(prospectIds);
 
       const results = await Campaign.updateOne(
         {
@@ -207,7 +208,7 @@ router.delete(
         {
           prospects: {
             $pullAll: {
-              prospectId: prospectIds
+              prospectId: prospectIdArray
             }
           }
         }

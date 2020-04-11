@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const Campaign = require("../../models/campaign");
+const Campaign = require("../models/campaign");
 
 exports.validateCampaignInput = async data => {
   const errors = {};
