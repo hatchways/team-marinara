@@ -122,7 +122,7 @@ router.post(
       const userId = req.user.id;
       const { campaignId, prospectIds } = req.body;
 
-      // Check if any prospects being added, are already in the campaign
+      // Check if any prospects being added are already in the campaign
       const uniqueProspectIds = validateAddProspectsInput(
         campaignId,
         prospectIds
@@ -206,13 +206,32 @@ router.delete(
         ownedBy: userId
       });
 
-      // Add Error checking and report them back //
+      if (!campaign)
+        throw new Error(
+          `Campaign ${campaignId} owned by ${userId} cannot be found`
+        );
+
+      const skippedProspects = [];
       prospectIdArray.forEach(async prospectId => {
-        campaign.prospects.id(prospectId).remove();
-        await campaign.save();
+        if (campaign.prospects.id(prospectId)) {
+          campaign.prospects.id(prospectId).remove();
+          await campaign.save();
+        } else {
+          skippedProspects.push(prospectId);
+        }
       });
 
-      res.json({ id: `${prospectIdArray} removed` });
+      const errorString = skippedProspects.length
+        ? `${skippedProspects} could not be found`
+        : "";
+
+      res.json({
+        skippedNum: skippedProspects.length,
+        skippedIds: skippedProspects,
+        result: `${prospectIdArray.length - skippedProspects.length} of ${
+          prospectIdArray.length
+        } removed. ${errorString}`
+      });
     } catch (error) {
       console.log(error);
       res.json({ error: "Error deleting prospects" });
