@@ -184,7 +184,7 @@ const Step = props => {
               <StyledButtonTransparent>Variables</StyledButtonTransparent>
             </Grid>
             <Grid item xs={4}>
-              <StyledButtonText>Cancel</StyledButtonText>
+              <StyledButtonText onClick={handleClose}>Cancel</StyledButtonText>
               <StyledButtonOutline onClick={handleSave}>
                 Save
               </StyledButtonOutline>
