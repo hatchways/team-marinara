@@ -24,8 +24,10 @@ const upload = multer({ storage: storage })
 // @route POST /api/prospects
 // @desc Create a Prospect object
 // @access Authenticated Users
-router.post("/", (req, res) => {
+router.post("/", passport.authenticate("jwt", { session: false }),
+(req, res) => {
   //Prospect field validation
+  const ownedBy = req.user.id;
   const { errors, isValid } = validateProspectInput(req.body);
 
     if (!isValid) {
@@ -35,10 +37,10 @@ router.post("/", (req, res) => {
         if (prospect) {
           return res.status(400).json({ email: "Prospect with this email address already exists" });
         } else {
-          if(req.body.ownedBy !== null && !mongoose.Types.ObjectId.isValid(req.body.ownedBy)){
+          if(ownedBy !== null && !mongoose.Types.ObjectId.isValid(ownedBy)){
             return res.status(400).json({ ownedBy: "Invalid user id provided for ownedBy"});
           }
-          const {firstName, lastName, email, ownedBy, status} = req.body;
+          const {firstName, lastName, email, status} = req.body;
           const newProspect = new Prospect({firstName, lastName, email, ownedBy, status});
     newProspect
         .save()
@@ -51,7 +53,8 @@ router.post("/", (req, res) => {
 // @route GET /api/prospects/{id}
 // @desc Get a Prospect object
 // @access Authenticated Users
-router.get("/:id", (req, res) => {
+router.get("/:id", passport.authenticate("jwt", { session: false }),
+  (req, res) => {
   let id = req.params.id;
   Prospect.findById(id, function(err, prospect) {
     if (!prospect) {
@@ -62,16 +65,17 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// @route GET /api/prospects?userId=xxxx
+// @route GET /api/prospects
 // @desc Get a List of Prospect objects for a User
 // @access Authenticated Users
-router.get("/", async function (req, res)  {
-  let ownedById = req.query.ownedBy;
+router.get("/", passport.authenticate("jwt", { session: false }),
+  async function (req, res)  {
+  let ownedBy = req.user.id;
   let results;
 
-  if(mongoose.Types.ObjectId.isValid(ownedById)) {
-    ownedById = mongoose.Types.ObjectId(ownedById);
-    results = await Prospect.find({ownedBy: ownedById});
+  if(mongoose.Types.ObjectId.isValid(ownedBy)) {
+    ownedById = mongoose.Types.ObjectId(ownedBy);
+    results = await Prospect.find({ownedBy: ownedBy});
   }
   res.status(200).send(results);
 });
@@ -79,11 +83,12 @@ router.get("/", async function (req, res)  {
 // @route PUT /api/prospects/{id}
 // @desc Update a Prospect object
 // @access Authenticated Users
-router.put("/:id", async (req, res) => {
-  let id = req.params.id;
+router.put("/:id", passport.authenticate("jwt", { session: false }),
+async (req, res) => {
+  const id = req.params.id;
 
   const { errors, isValid } = validateProspectInput(req.body); 
-  const {firstName, lastName, email, ownedBy, status, lastContacted} = req.body;
+  const {firstName, lastName, email, status, lastContacted} = req.body;
 
   if (!isValid) {
     return res.status(400).json(errors);
@@ -104,11 +109,11 @@ router.put("/:id", async (req, res) => {
               email: "Cannot update email address. Email address already exists"
             });
           }
+        }
         
         prospect.firstName = firstName;
         prospect.lastName = lastName;
         prospect.lastContacted = lastContacted;
-        prospect.ownedBy = ownedBy;
         prospect.status = status;
         prospect.email = email;
 
@@ -119,7 +124,6 @@ router.put("/:id", async (req, res) => {
             })
             .catch(err => console.log(err));
       }
-    }
     });
   } catch (error) {
     console.log("Error editing prospect: ", error);
@@ -130,20 +134,26 @@ router.put("/:id", async (req, res) => {
 // @route DELETE /api/prospects/{id}
 // @desc Delete a Prospect object
 // @access Authenticated Users
-router.delete("/:id", (req, res) => {
+router.delete("/:id", passport.authenticate("jwt", { session: false }),
+  (req, res) => {
   let id = req.params.id;
 
-  prospect = Prospect.findOneAndDelete({ _id: id }, function(
-    err,
-    removeResult
-  ) {
+  if(mongoose.Types.ObjectId.isValid(id)) {
+    id = mongoose.Types.ObjectId(id);
+  } else {
+    res.status(404).send({ id: `Prospect with id ${id} not found.` });
+    return;
+  }
+
+  Prospect.findOneAndDelete({ _id: id }, function( err,removeResult) {
     if (err) {
       res.status(400).send(err);
     }
     if (!removeResult) {
-      res.status(404).send({ id: `Prospect with id ${id} not found.` });
+      res.status(404).json({ id: `Prospect with id ${id} not found.` });
+      return;
     } else {
-      res.json({ id: id });
+      res.send({ id: id });
     }
   });
 });

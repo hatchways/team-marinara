@@ -19,8 +19,8 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
-const getProspectData = userId => {
-  return axios.get("/api/prospects?ownedBy=" + userId);
+const getProspectData = () => {
+  return axios.get("/api/prospects/");
 };
 
 const uploadProspectCsv = async formData => {
