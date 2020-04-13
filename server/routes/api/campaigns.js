@@ -7,16 +7,13 @@ const Prospect = require("../../models/Prospect");
 const { validateCampaignInput } = require("../../validation/campaign");
 
 // @route POST /api/campaigns
-// @desc Create a Campaign object. Requires 'name' (campaign name) and 'ownedBy' (a userId)
+// @desc Create a Campaign object. Requires 'name' (campaign name)
 // @access Authenticated Users
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      if (req.body.ownedBy !== req.user.id)
-        res.status(403).send("User forbidden to access this resource");
-
       const { errors, isValid } = validateCampaignInput(req.body);
       if (!isValid) {
         return res.status(400).json(errors);
