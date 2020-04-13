@@ -206,10 +206,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 1",
       ownedBy: userIds[0],
       prospects: [
-        { _id: prospectIds[0] },
-        { _id: prospectIds[1] },
-        { _id: prospectIds[2] },
-        { _id: prospectIds[3] }
+        { prospectId: prospectIds[0] },
+        { prospectId: prospectIds[1] },
+        { prospectId: prospectIds[2] },
+        { prospectId: prospectIds[3] }
       ],
       steps: [stepIds[0], stepIds[3]]
     },
@@ -218,10 +218,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 2",
       ownedBy: userIds[1],
       prospects: [
-        { _id: prospectIds[4] },
-        { _id: prospectIds[5] },
-        { _id: prospectIds[6] },
-        { _id: prospectIds[7] }
+        { prospectId: prospectIds[4] },
+        { prospectId: prospectIds[5] },
+        { prospectId: prospectIds[6] },
+        { prospectId: prospectIds[7] }
       ],
       steps: [stepIds[1], stepIds[4]]
     },
@@ -230,10 +230,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 3",
       ownedBy: userIds[2],
       prospects: [
-        { _id: prospectIds[8] },
-        { _id: prospectIds[9] },
-        { _id: prospectIds[10] },
-        { _id: prospectIds[11] }
+        { prospectId: prospectIds[8] },
+        { prospectId: prospectIds[9] },
+        { prospectId: prospectIds[10] },
+        { prospectId: prospectIds[11] }
       ],
       steps: [stepIds[2], stepIds[5]]
     }
@@ -257,13 +257,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nYou gotta buy this product. It'll sell faster than tp in a pandemic!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[0]
+          prospectId: prospectIds[0]
         },
         {
-          _id: prospectIds[1]
+          prospectId: prospectIds[1]
         },
         {
-          _id: prospectIds[2]
+          prospectId: prospectIds[2]
         }
       ]
     },
@@ -276,13 +276,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nYou gotta buy this product. It'll sell faster than tp in a pandemic!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[6]
+          prospectId: prospectIds[6]
         },
         {
-          _id: prospectIds[4]
+          prospectId: prospectIds[4]
         },
         {
-          _id: prospectIds[5]
+          prospectId: prospectIds[5]
         }
       ]
     },
@@ -295,13 +295,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nYou gotta buy this product. It'll sell faster than tp in a pandemic!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[9]
+          prospectId: prospectIds[9]
         },
         {
-          _id: prospectIds[10]
+          prospectId: prospectIds[10]
         },
         {
-          _id: prospectIds[8]
+          prospectId: prospectIds[8]
         }
       ]
     },
@@ -314,13 +314,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nWhy no reply? Seriously, you gotta buy this product. It'll sell faster than sports scholorships to an Ivy league college!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[0]
+          prospectId: prospectIds[0]
         },
         {
-          _id: prospectIds[1]
+          prospectId: prospectIds[1]
         },
         {
-          _id: prospectIds[2]
+          prospectId: prospectIds[2]
         }
       ]
     },
@@ -333,13 +333,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nWhy no reply? Seriously, you gotta buy this product. It'll sell faster than sports scholorships to an Ivy league college!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[6]
+          prospectId: prospectIds[6]
         },
         {
-          _id: prospectIds[4]
+          prospectId: prospectIds[4]
         },
         {
-          _id: prospectIds[5]
+          prospectId: prospectIds[5]
         }
       ]
     },
@@ -352,13 +352,13 @@ async function populateSteps(prospectIds, campaignIds, stepIds) {
         "Hi {{prospect_first_name}},\n\nWhy no reply? Seriously, you gotta buy this product. It'll sell faster than sports scholorships to an Ivy league college!\n\nCall me,\n{{your_first_name}}",
       prospects: [
         {
-          _id: prospectIds[9]
+          prospectId: prospectIds[9]
         },
         {
-          _id: prospectIds[10]
+          prospectId: prospectIds[10]
         },
         {
-          _id: prospectIds[8]
+          prospectId: prospectIds[8]
         }
       ]
     }
