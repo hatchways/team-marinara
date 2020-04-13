@@ -120,8 +120,6 @@ router.post(
       const userId = req.user.id;
       let { campaignId, prospectIds } = req.body;
 
-      prospectIds = JSON.parse(prospectIds);
-
       const campaign = await Campaign.findOne({
         _id: campaignId,
         ownedBy: userId
@@ -153,7 +151,7 @@ router.post(
           })
         );
 
-        // Filter out undefined values returned from .map
+        // Filter out undefined values returned from .map so only valid objects are added to db
         const finalProspectIds = checkedProspectIds.filter(
           prospect => prospect !== undefined
         );
@@ -227,14 +225,17 @@ router.delete(
         );
 
       const skippedProspects = [];
-      prospectIdArray.forEach(async prospectId => {
-        if (campaign.prospects.id(prospectId)) {
-          campaign.prospects.id(prospectId).remove();
-          await campaign.save();
+      prospectIdArray.forEach(prospectId => {
+        const prospectIndex = campaign.prospects.findIndex(
+          prospect => prospect.prospectId == prospectId
+        );
+        if (prospectIndex > -1) {
+          campaign.prospects.splice(prospectIndex, 1);
         } else {
           skippedProspects.push(prospectId);
         }
       });
+      await campaign.save();
 
       const errorString = skippedProspects.length
         ? `${skippedProspects} could not be found`
