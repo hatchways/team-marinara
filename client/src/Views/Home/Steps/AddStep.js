@@ -40,7 +40,7 @@ const Step = props => {
     props.history.push(props.match.params[0]);
   };
 
-  const handleVariablesClick = () => {};
+  const handleVariableValueClick = () => {};
 
   const handleSave = async () => {
     try {
@@ -91,7 +91,7 @@ const Step = props => {
           </Grid>
 
           <StepFooter
-            handleVariablesClick={handleVariablesClick}
+            handleVariableValueClick={handleVariableValueClick}
             handleClose={handleClose}
             handleSave={handleSave}
           />
