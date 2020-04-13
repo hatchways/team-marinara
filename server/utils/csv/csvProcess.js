@@ -32,12 +32,10 @@ async function processCsvData(data, userId) {
       const {firstName, lastName, email, ownedBy, status} = prospect;
       if(emailsFromCsv.has(data[i].email)) {
         let newProspect;
-        console.log("Check Here : " + ownedBy);
         if(mongoose.Types.ObjectId.isValid(userId)) {
             prospect.ownedBy = mongoose.Types.ObjectId(userId);
             newProspect = new Prospect({firstName, lastName, email, ownedBy, status});
         } else {
-            console.log("fails");
             newProspect = new Prospect({firstName, lastName, email, status});
         }
         uploadArray.push(newProspect);
