@@ -10,6 +10,7 @@ import Campaigns from "./Campaigns/Campaigns";
 import Prospects from "./Prospects/Prospects";
 import Templates from "./Templates/Templates";
 import Reporting from "./Reporting/Reporting";
+import Step from "Views/Home/Steps/AddStep";
 
 import colors from "Components/Styles/Colors";
 
@@ -48,6 +49,7 @@ const Home = props => {
           <Campaigns />
         </Route>
       </Switch>
+      <Route path={`*/step`} component={Step} />
     </Grid>
   );
 };

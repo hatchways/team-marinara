@@ -83,11 +83,17 @@ const getUser = async () => {
   }
 };
 
+const addStepToCampaign = async data => {
+  const response = await axios.post("/api/campaigns/step", data);
+  return response;
+};
+
 export {
   register,
   login,
   checkForGmailToken,
   getAuthUrl,
   postGmailAuthCode,
-  getUser
+  getUser,
+  addStepToCampaign
 };
