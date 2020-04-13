@@ -206,12 +206,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 1",
       ownedBy: userIds[0],
       prospects: [
-        {
-          prospectId: prospectIds[0],
-          prospectId: prospectIds[1],
-          prospectId: prospectIds[2],
-          prospectId: prospectIds[3]
-        }
+        { prospectId: prospectIds[0] },
+        { prospectId: prospectIds[1] },
+        { prospectId: prospectIds[2] },
+        { prospectId: prospectIds[3] }
       ],
       steps: [stepIds[0], stepIds[3]]
     },
@@ -220,12 +218,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 2",
       ownedBy: userIds[1],
       prospects: [
-        {
-          prospectId: prospectIds[4],
-          prospectId: prospectIds[5],
-          prospectId: prospectIds[6],
-          prospectId: prospectIds[7]
-        }
+        { prospectId: prospectIds[4] },
+        { prospectId: prospectIds[5] },
+        { prospectId: prospectIds[6] },
+        { prospectId: prospectIds[7] }
       ],
       steps: [stepIds[1], stepIds[4]]
     },
@@ -234,12 +230,10 @@ async function populateCampaigns(userIds, prospectIds) {
       name: "Campaign 3",
       ownedBy: userIds[2],
       prospects: [
-        {
-          prospectId: prospectIds[8],
-          prospectId: prospectIds[9],
-          prospectId: prospectIds[10],
-          prospectId: prospectIds[11]
-        }
+        { prospectId: prospectIds[8] },
+        { prospectId: prospectIds[9] },
+        { prospectId: prospectIds[10] },
+        { prospectId: prospectIds[11] }
       ],
       steps: [stepIds[2], stepIds[5]]
     }
