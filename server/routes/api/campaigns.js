@@ -118,7 +118,7 @@ router.post(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      let { campaignId, prospectIds } = req.body;
+      const { campaignId, prospectIds } = req.body;
 
       const campaign = await Campaign.findOne({
         _id: campaignId,

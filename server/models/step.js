@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const StepSchema = new Schema({
-  campaignId: { type: Schema.Types.ObjectId, ref: "Campaign", index: true },
   name: { type: String, required: true },
   type: {
     type: String,
