@@ -1,10 +1,10 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
 const passport = require("passport");
 
 const Campaign = require("../../models/campaign");
 const Prospect = require("../../models/Prospect");
+const { validateCampaignInput } = require("../../validation/campaign");
 
 // @route POST /api/campaigns
 // @desc Create a Campaign object. Requires 'name' (campaign name) and 'ownedBy' (a userId)
@@ -14,22 +14,23 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      //*********** TO DO *****************
-      //Campaign field validation
-      //const { errors, isValid } = validateCampaignInput(req.body);
+      if (req.body.ownedBy !== req.user.id)
+        res.status(403).send("User forbidden to access this resource");
 
-      // if (!isValid) {
-      //   return res.status(400).json(errors);
-      // }
+      const { errors, isValid } = validateCampaignInput(req.body);
+      if (!isValid) {
+        return res.status(400).json(errors);
+      }
 
       const newCampaign = new Campaign({
         name: req.body.name,
         ownedBy: req.user.id
       });
       const campaign = await newCampaign.save();
-      res.json(campaign);
+      res.status(200).json(campaign);
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error saving campaign" });
     }
   }
 );
@@ -45,9 +46,10 @@ router.get(
       const userId = req.user.id;
 
       const campaigns = await Campaign.find({ ownedBy: userId });
-      res.json(campaigns);
+      res.status(200).json(campaigns);
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error getting campaigns" });
     }
   }
 );
@@ -73,10 +75,36 @@ router.get(
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
-        res.json(campaign);
+        res.status(200).json(campaign);
       }
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error getting campaign" });
+    }
+  }
+);
+
+// @route DELETE /api/campaigns/campaign
+// @desc Remove campaign. Requires campaignId
+// @access Authenticated Users
+router.delete(
+  "/campaign/:campaignId",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      console.log();
+      const campaignId = req.params.campaignId;
+
+      const results = await Campaign.deleteOne({
+        _id: campaignId,
+        ownedBy: userId
+      });
+
+      res.status(200).json({ id: `${results} removed` });
+    } catch (error) {
+      console.log(error);
+      res.json({ error: "Error deleting campaign" });
     }
   }
 );
@@ -92,8 +120,6 @@ router.post(
       const userId = req.user.id;
       const { campaignId, prospectIds } = req.body;
 
-      /****************** TODO: Check prospects are valid/not already in this campaign ***************/
-
       const campaign = await Campaign.findOne({
         _id: campaignId,
         ownedBy: userId
@@ -104,19 +130,41 @@ router.post(
           .status(404)
           .send({ id: `Campaign with id ${campaignId} is not found` });
       } else {
-        // turn array of ids into array of objects for adding to campaign.prospects
-        const arrayOfProspectObj = prospectIds.map(prospectId => {
-          return {
-            prospectId: prospectId
-          };
-        });
+        // Get only prospects that are not already in the campaign to avoid duplication
+        // and only prospects owned by logged in user
+        const checkedProspectIds = await Promise.all(
+          prospectIds.map(async prospectId => {
+            const prospectOwnedByUser = await Prospect.exists({
+              _id: prospectId,
+              ownedBy: userId
+            });
 
-        campaign.prospects.push(...arrayOfProspectObj);
-        await campaign.save();
-        res.json(campaign);
+            const prospectExistsInCampaign = campaign.prospects.find(
+              prospect => prospect.prospectId == prospectId
+            );
+
+            if (!prospectExistsInCampaign && prospectOwnedByUser) {
+              return {
+                prospectId: prospectId
+              };
+            }
+          })
+        );
+
+        // Filter out undefined values returned from .map so only valid objects are added to db
+        const finalProspectIds = checkedProspectIds.filter(
+          prospect => prospect !== undefined
+        );
+
+        if (finalProspectIds.length > 0) {
+          campaign.prospects.push(...finalProspectIds);
+          await campaign.save();
+        }
+        res.status(200).json(campaign);
       }
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error saving prospects to Campaign" });
     }
   }
 );
@@ -145,10 +193,11 @@ router.get(
         const prospects = await Prospect.populate(campaigns.prospects, {
           path: "prospectId"
         });
-        res.json(prospects);
+        res.status(200).json(prospects);
       }
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error getting prospects" });
     }
   }
 );
@@ -157,32 +206,51 @@ router.get(
 // @desc Remove prospects from a campaign. Requires campaignId and an array of prospect ids
 // @access Authenticated Users
 router.delete(
-  "/prospects",
+  "/prospects/:campaignId/:prospectIds",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { campaignId, prospectIds } = req.body;
+      const { campaignId, prospectIds } = req.params;
+      const prospectIdArray = JSON.parse(prospectIds);
 
-      const prospectIdsArray = JSON.parse(prospectIds);
+      const campaign = await Campaign.findOne({
+        _id: campaignId,
+        ownedBy: userId
+      });
 
-      const results = await Campaign.updateOne(
-        {
-          _id: campaignId,
-          ownedBy: userId
-        },
-        {
-          prospects: {
-            $pullAll: {
-              prospectId: prospectIdsArray
-            }
-          }
+      if (!campaign)
+        throw new Error(
+          `Campaign ${campaignId} owned by ${userId} cannot be found`
+        );
+
+      const skippedProspects = [];
+      prospectIdArray.forEach(prospectId => {
+        const prospectIndex = campaign.prospects.findIndex(
+          prospect => prospect.prospectId == prospectId
+        );
+        if (prospectIndex > -1) {
+          campaign.prospects.splice(prospectIndex, 1);
+        } else {
+          skippedProspects.push(prospectId);
         }
-      );
+      });
+      await campaign.save();
 
-      res.json({ id: `${results} removed` });
+      const errorString = skippedProspects.length
+        ? `${skippedProspects} could not be found`
+        : "";
+
+      res.status(200).json({
+        skippedNum: skippedProspects.length,
+        skippedIds: skippedProspects,
+        result: `${prospectIdArray.length - skippedProspects.length} of ${
+          prospectIdArray.length
+        } removed. ${errorString}`
+      });
     } catch (error) {
       console.log(error);
+      res.json({ error: "Error deleting prospects" });
     }
   }
 );
