@@ -6,7 +6,7 @@ const fs = require('fs');
 const { validateProspectInput } = require("../../validation/prospect");
 const Prospect = require("../../models/Prospect");
 
-async function processCsvData(data) {
+async function processCsvData(data, userId) {
     let skippedCount = 0;
     let successCount = 0;
     let uploadArray = [];
@@ -28,13 +28,16 @@ async function processCsvData(data) {
 
     for(let i = 0; i < data.length; i++) {
       const prospect = data[i];
+      prospect.ownedBy = userId;
       const {firstName, lastName, email, ownedBy, status} = prospect;
       if(emailsFromCsv.has(data[i].email)) {
         let newProspect;
-        if(mongoose.Types.ObjectId.isValid(prospect.ownedBy)) {
-            prospect.ownedBy = mongoose.Types.ObjectId(prospect.ownedBy);
+        console.log("Check Here : " + ownedBy);
+        if(mongoose.Types.ObjectId.isValid(userId)) {
+            prospect.ownedBy = mongoose.Types.ObjectId(userId);
             newProspect = new Prospect({firstName, lastName, email, ownedBy, status});
         } else {
+            console.log("fails");
             newProspect = new Prospect({firstName, lastName, email, status});
         }
         uploadArray.push(newProspect);

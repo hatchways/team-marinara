@@ -8,6 +8,7 @@ import {
   withStyles
 } from "@material-ui/core";
 import { AccountCircle, ArrowDropDown } from "@material-ui/icons";
+import { withRouter } from "react-router-dom";
 
 import AuthUserContext from "Components/Session/AuthUserContext";
 
@@ -59,6 +60,10 @@ const Profile = props => {
     setOpen(false);
   };
 
+  const handleClick = () => {
+    props.history.push(`${props.location.pathname}/email-auth-dialog`);
+  };
+
   return (
     <Grid
       item
@@ -102,6 +107,7 @@ const Profile = props => {
         open={open}
         onClose={onClose}
       >
+        <MenuItem onClick={handleClick}>Link Gmail</MenuItem>
         <MenuItem onClick={onClose}>Edit Profile</MenuItem>
         <MenuItem onClick={context.logOut}>Logout</MenuItem>
       </Menu>
@@ -109,4 +115,4 @@ const Profile = props => {
   );
 };
 
-export default withStyles(styles)(Profile);
+export default withStyles(styles)(withRouter(Profile));
