@@ -269,7 +269,7 @@ router.post(
     }
 
     const campaignId = req.params.campaignId;
-    const { name, content } = req.body;
+    const { name } = req.body;
 
     try {
       const campaign = await Campaign.findById(campaignId);
@@ -280,7 +280,7 @@ router.post(
           .json({ error: `Campaign with id ${campaignId} not found` });
       }
 
-      const newStep = new Step({ name, content });
+      const newStep = new Step({ name });
       await newStep.save();
 
       campaign.steps.push(newStep._id);
@@ -289,9 +289,54 @@ router.post(
       res.json(newStep);
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error adding step" });
+      res.status(500).json({ error: "Error adding step" });
     }
   }
 );
 
+// @route POST /api/campaigns/:campaignId/steps/:stepId/content
+// @desc Edit the subject and content of a step.
+//       Requires subject and content (stringified editorState) in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps/:stepId/content",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { campaignId, stepId } = req.params;
+    const { subject, content } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const step = await Step.findById(stepId);
+
+      if (!step) {
+        return res.status(404).json({ error: `Step ${stepId} not found` });
+      }
+
+      const stepInCampaign = campaign.steps.some(curr => curr == stepId);
+
+      if (!stepInCampaign) {
+        return res.status(404).json({
+          error: `Step ${stepId} not found in Campaign ${campaignId}`
+        });
+      }
+
+      step.subject = subject;
+      step.content = content;
+      await step.save();
+
+      res.json(step);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error updating step content" });
+    }
+  }
+);
 module.exports = router;
