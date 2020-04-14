@@ -1,53 +1,39 @@
-import React, { useState } from "react";
-import MUIRichTextEditor from "mui-rte";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import React from "react";
+import Editor from "draft-js-plugins-editor";
+import createToolbarPlugin from "draft-js-static-toolbar-plugin";
+import { makeStyles } from "@material-ui/core/styles";
 
-const defaultTheme = createMuiTheme();
+const toolbarPlugin = createToolbarPlugin();
+const plugins = [toolbarPlugin];
 
-Object.assign(defaultTheme, {
-  overrides: {
-    MUIRichTextEditor: {
-      root: {
-        marginTop: 20
-      },
-      container: {
-        display: "flex",
-        flexDirection: "column-reverse"
-      },
-      editorContainer: {
-        height: "30vh"
-      }
-    }
+const useStyles = makeStyles({
+  root: {
+    fontFamily: "'Open Sans', sans-serif",
+    padding: "1rem 0",
+    width: "100%"
+  },
+  editor: {
+    cursor: "text",
+    minHeight: "30vh"
   }
 });
 
 const TextEditor = props => {
-  const { editorState, setEditorState } = useState(props);
+  const { editorState, setEditorState } = props;
+  const classes = useStyles();
 
   return (
-    <MuiThemeProvider theme={defaultTheme}>
-      <MUIRichTextEditor
-        controls={[
-          "title",
-          "bold",
-          "italic",
-          "underline",
-          "strikethrough",
-          "highlight",
-          "undo",
-          "redo",
-          "link",
-          "media",
-          "numberList",
-          "bulletList",
-          "quote",
-          "code",
-          "clear"
-        ]}
-        editorState={editorState}
-        onChange={setEditorState}
-      />
-    </MuiThemeProvider>
+    <div className={classes.root}>
+      <div className={classes.editor}>
+        <Editor
+          editorState={editorState}
+          onChange={editorState => {
+            setEditorState(editorState);
+          }}
+          plugins={plugins}
+        />
+      </div>
+    </div>
   );
 };
 

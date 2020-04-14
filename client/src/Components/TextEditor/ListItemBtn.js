@@ -3,7 +3,7 @@ import { ListItem, ListItemText } from "@material-ui/core";
 
 const ListItemBtn = props => {
   return (
-    <ListItem button>
+    <ListItem button onClick={props.onClick}>
       <ListItemText primary={props.text} />
     </ListItem>
   );

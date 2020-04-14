@@ -7,7 +7,7 @@ import {
   DialogContentText,
   makeStyles
 } from "@material-ui/core";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState, convertToRaw, Modifier } from "draft-js";
 
 import { addStepToCampaign } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
@@ -40,10 +40,46 @@ const Step = props => {
     props.history.push(props.match.params[0]);
   };
 
-  const handleVariableValueClick = () => {};
+  const handleVariableValueClick = value => {
+    let textToInsert;
+    switch (value) {
+      case "First name":
+        textToInsert = "{{firstName}}";
+        break;
+      case "Last name":
+        textToInsert = "{{lastName}}";
+        break;
+      default:
+        console.log("Error matching variable");
+        break;
+    }
+    const newEditorState = insertText(textToInsert);
+    setEditorState(newEditorState);
+  };
+
+  const insertText = textToInsert => {
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+
+    const newContentState = Modifier.insertText(
+      contentState,
+      selectionState,
+      textToInsert
+    );
+
+    const newEditorState = EditorState.push(
+      editorState,
+      newContentState,
+      "insert-characters"
+    );
+    return newEditorState;
+  };
 
   const handleSave = async () => {
     try {
+      console.log(
+        JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+      );
       await addStepToCampaign({
         campaignId: props.campaignId,
         type: type,

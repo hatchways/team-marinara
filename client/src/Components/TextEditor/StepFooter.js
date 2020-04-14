@@ -20,13 +20,16 @@ const StepFooter = props => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
-  const { handleClose, handleSave } = props;
+  const { handleClose, handleSave, handleVariableValueClick } = props;
 
   const handleVariablesBtnClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClick = event => {};
+  const handleVariableClick = event => {
+    handleVariableValueClick(event.target.innerText);
+    setAnchorEl(null);
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -57,8 +60,8 @@ const StepFooter = props => {
           }}
         >
           <List component="nav">
-            <ListItemBtn text="First name" />
-            <ListItemBtn text="Last name" />
+            <ListItemBtn text="First name" onClick={handleVariableClick} />
+            <ListItemBtn text="Last name" onClick={handleVariableClick} />
           </List>
         </Popover>
       </Grid>
