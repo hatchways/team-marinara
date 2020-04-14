@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Editor from "draft-js-plugins-editor";
 import createToolbarPlugin from "draft-js-static-toolbar-plugin";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,16 +21,23 @@ const useStyles = makeStyles({
 const TextEditor = props => {
   const { editorState, setEditorState } = props;
   const classes = useStyles();
+  const editorRef = useRef();
 
   return (
     <div className={classes.root}>
-      <div className={classes.editor}>
+      <div
+        className={classes.editor}
+        onClick={e => {
+          editorRef.current.focus();
+        }}
+      >
         <Editor
           editorState={editorState}
           onChange={editorState => {
             setEditorState(editorState);
           }}
           plugins={plugins}
+          ref={editorRef}
         />
       </div>
     </div>
