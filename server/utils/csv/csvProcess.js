@@ -36,6 +36,7 @@ async function processCsvData(data, userId) {
             prospect.ownedBy = mongoose.Types.ObjectId(userId);
             newProspect = new Prospect({firstName, lastName, email, ownedBy, status});
         } else {
+            console.log("fails");
             newProspect = new Prospect({firstName, lastName, email, status});
         }
         uploadArray.push(newProspect);

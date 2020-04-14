@@ -14,7 +14,8 @@ const StepSchema = new Schema({
   created: { type: Date, default: Date.now, required: true },
   prospects: [
     {
-      prospect: {
+      _id: false,
+      prospectId: {
         type: Schema.Types.ObjectId,
         ref: "Prospect",
         required: true,

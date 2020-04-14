@@ -88,6 +88,20 @@ router.get("/", passport.authenticate("jwt", { session: false }),
     res.status(200).send(results);
 });
 
+// @route GET /api/prospects?userId=xxxx
+// @desc Get a List of Prospect objects for a User
+// @access Authenticated Users
+router.get("/", async function (req, res)  {
+  let ownedById = req.query.ownedBy;
+  let results;
+
+  if(mongoose.Types.ObjectId.isValid(ownedById)) {
+    ownedById = mongoose.Types.ObjectId(ownedById);
+    results = await Prospect.find({ownedBy: ownedById});
+  }
+  res.status(200).send(results);
+});
+
 // @route PUT /api/prospects/{id}
 // @desc Update a Prospect object
 // @access Authenticated Users
@@ -187,34 +201,35 @@ router.delete("/:id", passport.authenticate("jwt", { session: false }),
 // @route POST /api/prospects/upload
 // @desc Upload Prospects with a csv file
 // @access Authenticated Users
-router.post("/upload", passport.authenticate("jwt", { session: false }),
-  upload.single('file'), async (req, res) => {
-    const csvData = [];
-    const file = req.file;
-    const userId = req.user.id;
+router.post("/upload", 
+passport.authenticate("jwt", { session: false }),
+upload.single('file'), async (req, res) => {
+  const csvData = [];
+  const file = req.file;
+  console.log("check");
+  console.log(req.user);
+  const userId = req.user.id;
 
-    const { errors, isValid } = validateFile(file);
-    if(!isValid) {
-        return res.status(400).send(errors);
-    }
+  const { errors, isValid } = validateFile(file);
+  if(!isValid) {
+      return res.status(400).send(errors);
+  }
 
-    fs.createReadStream(file.path)
-        .pipe(csv())
-        .on('data', (row) => {
-          csvData.push(row);
-        })
-        .on("end",  async () => {
-          fs.unlinkSync(file.path);
-          try{
-            const count = await processCsvData(csvData, userId);
-            res.status(200).send(count);
-          } catch(err){
-            const error = {
-              success : false,
-              message : "CSV failed to upload",
-              details : err.message
-            }
-            res.status(400).send(error);
+  fs.createReadStream(file.path)
+      .pipe(csv())
+      .on('data', (row) => {
+        csvData.push(row);
+      })
+      .on("end",  async () => {
+        fs.unlinkSync(file.path);
+        try{
+          const count = await processCsvData(csvData, userId);
+          res.status(200).send(count);
+        } catch(err){
+          const error = {
+            success : false,
+            message : "CSV failed to upload",
+            details : err.message
           }
         })
         .on('error', function(err) {
