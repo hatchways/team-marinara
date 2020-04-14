@@ -55,10 +55,14 @@ router.post("/", passport.authenticate("jwt", { session: false }),
 // @access Authenticated Users
 router.get("/:id", passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    let id = req.params.id;
+    const ownedBy = req.user.id;
+    const id = req.params.id;
     Prospect.findById(id, function(err, prospect) {
       if (!prospect) {
         res.status(404).send({ id: `Prospect with id ${id} is not found` });
+      } else if (ownedBy != prospect.ownedBy) {
+        res.status(403).send({ ownedBy : `Prospect with id ${id} is not ownedBy user ${ownedBy}`});
+        return;
       } else {
         res.json(prospect);
       }
@@ -70,7 +74,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }),
 // @access Authenticated Users
 router.get("/", passport.authenticate("jwt", { session: false }),
   async function (req, res)  {
-    let ownedBy = req.user.id;
+    const ownedBy = req.user.id;
     let results;
 
     if(mongoose.Types.ObjectId.isValid(ownedBy)) {
@@ -90,6 +94,7 @@ router.get("/", passport.authenticate("jwt", { session: false }),
 router.put("/:id", passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const id = req.params.id;
+    const ownedBy = req.user.id;
 
     const { errors, isValid } = validateProspectInput(req.body); 
     const {firstName, lastName, email, status, lastContacted} = req.body;
@@ -103,6 +108,10 @@ router.put("/:id", passport.authenticate("jwt", { session: false }),
         if (!prospect) {
           res.status(404).send({ id: `Prospect with id ${id} is not found` });
         } else {
+          if(prospect.ownedBy != ownedBy) {
+            res.status(403).send({ ownedBy : `Prospect with id ${id} is not ownedBy user ${ownedBy}`});
+            return;
+          }
           //if updating email field, check if Prospect with new email alredy exists
           if (req.body.email !== prospect.email) {
             const emailExists = await Prospect.findOne({
@@ -139,7 +148,9 @@ router.put("/:id", passport.authenticate("jwt", { session: false }),
 // @desc Delete a Prospect object
 // @access Authenticated Users
 router.delete("/:id", passport.authenticate("jwt", { session: false }),
-  (req, res) => {
+  async (req, res) => {
+    
+    const ownedBy = req.user.id;
     let id = req.params.id;
 
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -148,6 +159,17 @@ router.delete("/:id", passport.authenticate("jwt", { session: false }),
       res.status(404).send({ id: `Prospect with id ${id} not found.` });
       return;
     }
+
+    try{
+      const prospect = await Prospect.findById(id);
+      if(prospect && prospect.ownedBy != ownedBy) {
+        res.status(403).send({ ownedBy : `Prospect with id ${id} is not ownedBy user ${ownedBy}`});
+        return;
+      }
+    } catch(error) {
+      console.log(error);
+    }
+    
 
     Prospect.findOneAndDelete({ _id: id }, function( err,removeResult) {
       if (err) {
