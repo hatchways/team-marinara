@@ -4,6 +4,7 @@ const passport = require("passport");
 
 const Campaign = require("../../models/campaign");
 const Prospect = require("../../models/Prospect");
+const Step = require("../../models/step");
 const { validateCampaignInput } = require("../../validation/campaign");
 
 // @route POST /api/campaigns
@@ -248,6 +249,39 @@ router.delete(
     } catch (error) {
       console.log(error);
       res.json({ error: "Error deleting prospects" });
+    }
+  }
+);
+
+// @route POST /api/campaigns/:campaignId/steps
+// @desc Add a step to a campaign. Requires step name and type in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const campaignId = req.params.campaignId;
+    const { name, type } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign with id ${campaignId} not found` });
+      }
+
+      const newStep = new Step({ name, type });
+      await newStep.save();
+
+      campaign.steps.push(newStep._id);
+      await campaign.save();
+
+      res.json(newStep);
+    } catch (error) {
+      console.log(error);
+      res.json({ error: "Error adding step" });
     }
   }
 );
