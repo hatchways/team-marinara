@@ -5,7 +5,10 @@ const passport = require("passport");
 const Campaign = require("../../models/campaign");
 const Prospect = require("../../models/Prospect");
 const Step = require("../../models/step");
-const { validateCampaignInput } = require("../../validation/campaign");
+const {
+  validateCampaignInput,
+  validateStepInput
+} = require("../../validation/campaign");
 
 // @route POST /api/campaigns
 // @desc Create a Campaign object. Requires 'name' (campaign name)
@@ -254,14 +257,19 @@ router.delete(
 );
 
 // @route POST /api/campaigns/:campaignId/steps
-// @desc Add a step to a campaign. Requires step name and type in request body.
+// @desc Add a step to a campaign. Requires step name in request body.
 // @access Authenticated Users
 router.post(
   "/:campaignId/steps",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    const { errors, isValid } = validateStepInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
     const campaignId = req.params.campaignId;
-    const { name, type } = req.body;
+    const { name, content } = req.body;
 
     try {
       const campaign = await Campaign.findById(campaignId);
@@ -272,7 +280,7 @@ router.post(
           .json({ error: `Campaign with id ${campaignId} not found` });
       }
 
-      const newStep = new Step({ name, type });
+      const newStep = new Step({ name, content });
       await newStep.save();
 
       campaign.steps.push(newStep._id);
