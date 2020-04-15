@@ -35,15 +35,23 @@ const TextEditor = props => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setEditorState(newState);
+      // returning 'handled' stops the event being passed to any other handlers
       return "handled";
     }
     return "not-handled";
   };
 
-  const focus = () => {
-    const editor = editorRef.current;
-    if (editor) {
-      editor.focus();
+  // Handles tab-key press in lists to indent rather than changing focus
+  const handleTab = e => {
+    e.preventDefault();
+
+    const newState = RichUtils.onTab(e, editorState, 4);
+
+    if (newState) {
+      setEditorState(newState);
+      return "handled";
+    } else {
+      return "not-handled";
     }
   };
 
@@ -53,16 +61,15 @@ const TextEditor = props => {
         container
         item
         className={classes.editor}
-        onClick={e => {
-          editorRef.current.focus();
-        }}
-        onFocus={focus}
+        // Clicking anywhere in Grid should put cursor in Editor
+        onClick={editorRef.current.focus}
       >
         <Editor
           editorState={editorState}
           onChange={setEditorState}
           ref={editorRef}
           handleKeyCommand={handleKeyCommand}
+          onTab={handleTab}
           customStyleFn={customStyleFn}
         />
         <Grid container item className={classes.toolbarContainer}>

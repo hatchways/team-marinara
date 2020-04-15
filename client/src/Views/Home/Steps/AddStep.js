@@ -39,6 +39,7 @@ const Step = props => {
   const classes = useStyles();
 
   const handleClose = () => {
+    // Removes '/step' from current url to go back to calling route
     props.history.push(props.match.params[0]);
   };
 
@@ -59,6 +60,7 @@ const Step = props => {
     setEditorState(newEditorState);
   };
 
+  // Inserts variables text into editor
   const insertText = textToInsert => {
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
@@ -77,22 +79,20 @@ const Step = props => {
     return newEditorState;
   };
 
+  // Sends editor content to back-end
   const handleSave = async () => {
     try {
-      console.log(
-        JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-      );
       await addStepToCampaign({
         campaignId: props.campaignId,
         type: type,
         subject: subject,
-        editorState: JSON.stringify(
-          convertToRaw(editorState.getCurrentContent())
-        )
+        editorState: convertToRaw(editorState.getCurrentContent())
       });
 
+      // launches success dialog
       setSaveSuccess(true);
     } catch (error) {
+      // Launches error dialog
       setSaveSuccess(false);
     }
   };

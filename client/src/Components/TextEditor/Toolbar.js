@@ -1,17 +1,12 @@
-import React, { useState } from "react";
-import {
-  Grid,
-  makeStyles,
-  IconButton,
-  Select,
-  MenuItem
-} from "@material-ui/core";
+import React from "react";
+import { Grid, makeStyles, IconButton } from "@material-ui/core";
 import {
   FormatBold,
   FormatItalic,
   FormatUnderlined,
-  Code,
-  FormatSize
+  FormatSize,
+  FormatListBulleted,
+  FormatListNumbered
 } from "@material-ui/icons";
 import { RichUtils } from "draft-js";
 import "draft-js/dist/Draft.css";
@@ -29,20 +24,6 @@ const useStyles = makeStyles({
 const Toolbar = props => {
   const classes = useStyles();
   const { editorState, setEditorState, styles } = props;
-
-  const handleClick = (e, category, textSize) => {
-    e.preventDefault();
-    if (category === "fontSize") {
-      setFontSize(textSize);
-    } else if (category === "style")
-      setEditorState(RichUtils.toggleInlineStyle(editorState, e.target.id));
-  };
-
-  const handleChange = e => {
-    e.preventDefault();
-    // setBlockSize(event.target.value);
-    // setEditorState(RichUtils.toggleBlockType(editorState, event.target.value));
-  };
 
   const styleButtons = [
     { icon: FormatBold, id: "BOLD", category: "style" },
@@ -64,31 +45,27 @@ const Toolbar = props => {
     },
     {
       icon: FormatSize,
-      id: "10px",
+      id: "SMALL",
       fontSize: "small",
       textSize: "12px",
       category: "fontSize"
     }
   ];
 
-  const BLOCK_TYPES = [
-    {
-      label: "Blockquote",
-      style: "blockquote"
-    },
-    {
-      label: "UL",
-      style: "unordered-list-item"
-    },
-    {
-      label: "OL",
-      style: "ordered-list-item"
-    },
-    {
-      label: "Code Block",
-      style: "code-block"
-    }
-  ];
+  const handleMouseDown = (e, category, textSize) => {
+    e.preventDefault();
+    if (category === "fontSize") {
+      setFontSize(textSize);
+    } else if (category === "style")
+      // toggles Bold, Italic and Underline
+      setEditorState(RichUtils.toggleInlineStyle(editorState, e.target.id));
+  };
+
+  const toggleBlockType = (e, type) => {
+    // prevent Editor from losing focus so RichUtils knows what text to change
+    e.preventDefault();
+    setEditorState(RichUtils.toggleBlockType(editorState, type));
+  };
 
   const setFontSize = value => {
     //remove current font size at selection
@@ -105,7 +82,7 @@ const Toolbar = props => {
           <IconButton
             key={btn.id}
             onMouseDown={e => {
-              handleClick(e, btn.category, btn.textSize);
+              handleMouseDown(e, btn.category, btn.textSize);
             }}
           >
             <BtnComponent
@@ -116,6 +93,20 @@ const Toolbar = props => {
           </IconButton>
         );
       })}
+      <IconButton>
+        <FormatListBulleted
+          onMouseDown={e => {
+            toggleBlockType(e, "unordered-list-item");
+          }}
+        />
+      </IconButton>
+      <IconButton>
+        <FormatListNumbered
+          onMouseDown={e => {
+            toggleBlockType(e, "ordered-list-item");
+          }}
+        />
+      </IconButton>
     </Grid>
   );
 };
