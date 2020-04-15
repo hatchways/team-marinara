@@ -1,20 +1,23 @@
 import React, { useRef } from "react";
-import Editor from "draft-js-plugins-editor";
-import createToolbarPlugin from "draft-js-static-toolbar-plugin";
-import { makeStyles } from "@material-ui/core/styles";
-
-const toolbarPlugin = createToolbarPlugin();
-const plugins = [toolbarPlugin];
+import { Editor, RichUtils } from "draft-js";
+import { Grid, makeStyles } from "@material-ui/core";
+import Toolbar from "Components/TextEditor/Toolbar";
 
 const useStyles = makeStyles({
   root: {
     fontFamily: "'Open Sans', sans-serif",
     padding: "1rem 0",
-    width: "100%"
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   editor: {
     cursor: "text",
-    minHeight: "30vh"
+    minHeight: "30vh",
+    alignSelf: "flex-start"
+  },
+  toolbarContainer: {
+    alignSelf: "flex-end"
   }
 });
 
@@ -23,24 +26,47 @@ const TextEditor = props => {
   const classes = useStyles();
   const editorRef = useRef();
 
+  // Handles format shosrt-cuts e.g. ctrl-b to bold
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      return "handled";
+    }
+    return "not-handled";
+  };
+
+  const focus = () => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.focus();
+    }
+  };
+
   return (
-    <div className={classes.root}>
-      <div
+    <Grid container className={classes.root}>
+      <Grid
+        container
+        item
         className={classes.editor}
         onClick={e => {
           editorRef.current.focus();
         }}
+        onFocus={focus}
       >
         <Editor
           editorState={editorState}
           onChange={editorState => {
             setEditorState(editorState);
           }}
-          plugins={plugins}
           ref={editorRef}
+          handleKeyCommand={handleKeyCommand}
         />
-      </div>
-    </div>
+        <Grid container item className={classes.toolbarContainer}>
+          <Toolbar editorState={editorState} setEditorState={setEditorState} />
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

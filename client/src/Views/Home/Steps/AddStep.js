@@ -16,10 +16,12 @@ import StepFooter from "Components/TextEditor/StepFooter";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    fontFamily: "'Open Sans', sans-serif"
+    fontFamily: "'Open Sans', sans-serif",
+    justifyContent: "center"
   },
   // remove scrollbars
   dialogContent: {
+    maxWidth: "900px",
     overflow: "hidden",
     height: "100%",
     padding: "1rem"
@@ -103,9 +105,9 @@ const Step = props => {
     <Dialog
       open={true}
       onClose={handleClose}
-      fullWidth={true}
+      fullWidth={false}
       maxWidth="md"
-      className={(classes.root, classes.dialog)}
+      className={classes.root}
     >
       <DialogContent className={classes.dialogContent}>
         <Grid container spacing={2}>

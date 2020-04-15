@@ -63,27 +63,6 @@ const AddStepHeader = props => {
 
       <Grid container item className={classes.typeSubjectRows} xs={12}>
         <Grid item className={classes.typeSubjectTitles} xs={1}>
-          <Typography>Type</Typography>
-        </Grid>
-        <Grid item className={classes.FormControl} xs={10}>
-          <FormControl className={classes.formControl}>
-            <Select
-              id="type"
-              value={type}
-              disableUnderline={true}
-              onChange={e => setType(e.target.value)}
-            >
-              <MenuItem value="New Thread">New Thread</MenuItem>
-              <MenuItem value="Follow-up">
-                Follow-up with previous thread
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
-
-      <Grid container item className={classes.typeSubjectRows} xs={12}>
-        <Grid item className={classes.typeSubjectTitles} xs={1}>
           <Typography>Subject</Typography>
         </Grid>
         <Grid item xs={10}>
