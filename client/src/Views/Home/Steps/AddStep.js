@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "900px",
     overflow: "hidden",
     height: "100%",
-    padding: "1rem"
+    padding: "1rem 0 0 0"
   },
   emailContainer: {
     margin: "1rem 2rem"

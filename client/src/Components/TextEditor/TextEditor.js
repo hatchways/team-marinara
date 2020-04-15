@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Editor, RichUtils } from "draft-js";
+import { Editor, RichUtils, getDefaultKeyBinding } from "draft-js";
 import createStyles from "draft-js-custom-styles";
 import { Grid, makeStyles } from "@material-ui/core";
 import Toolbar from "Components/TextEditor/Toolbar";
@@ -42,17 +42,19 @@ const TextEditor = props => {
   };
 
   // Handles tab-key press in lists to indent rather than changing focus
-  const handleTab = e => {
-    e.preventDefault();
+  const handleKeyPress = e => {
+    if (e.keyCode === 9) {
+      e.preventDefault();
 
-    const newState = RichUtils.onTab(e, editorState, 4);
+      const newState = RichUtils.onTab(e, editorState, 4);
 
-    if (newState) {
-      setEditorState(newState);
-      return "handled";
-    } else {
-      return "not-handled";
+      if (newState) {
+        setEditorState(newState);
+        return "handled";
+      }
     }
+    // If it's not a tab key press in a list, hand back to draft-js for regular handling
+    return getDefaultKeyBinding(e);
   };
 
   return (
@@ -62,14 +64,16 @@ const TextEditor = props => {
         item
         className={classes.editor}
         // Clicking anywhere in Grid should put cursor in Editor
-        onClick={editorRef.current.focus}
+        onClick={e => {
+          editorRef.current.focus();
+        }}
       >
         <Editor
           editorState={editorState}
           onChange={setEditorState}
           ref={editorRef}
           handleKeyCommand={handleKeyCommand}
-          onTab={handleTab}
+          keyBindingFn={handleKeyPress}
           customStyleFn={customStyleFn}
         />
         <Grid container item className={classes.toolbarContainer}>

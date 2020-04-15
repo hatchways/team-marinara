@@ -26,9 +26,19 @@ const Toolbar = props => {
   const { editorState, setEditorState, styles } = props;
 
   const styleButtons = [
-    { icon: FormatBold, id: "BOLD", category: "style" },
-    { icon: FormatItalic, id: "ITALIC", category: "style" },
-    { icon: FormatUnderlined, id: "UNDERLINE", category: "style" },
+    { icon: FormatBold, id: "BOLD", category: "style", fontSize: "default" },
+    {
+      icon: FormatItalic,
+      id: "ITALIC",
+      category: "style",
+      fontSize: "default"
+    },
+    {
+      icon: FormatUnderlined,
+      id: "UNDERLINE",
+      category: "style",
+      fontSize: "default"
+    },
     {
       icon: FormatSize,
       id: "LARGE",
@@ -39,7 +49,7 @@ const Toolbar = props => {
     {
       icon: FormatSize,
       id: "MEDIUM",
-      fontSize: "",
+      fontSize: "default",
       textSize: "16px",
       category: "fontSize"
     },

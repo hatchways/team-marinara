@@ -4,10 +4,7 @@ import {
   Typography,
   IconButton,
   makeStyles,
-  FormControl,
-  Select,
-  InputBase,
-  MenuItem
+  InputBase
 } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
 import colors from "Components/Styles/Colors.js";
@@ -43,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 const AddStepHeader = props => {
   const classes = useStyles();
-  const { handleClose, type, setType, subject, setSubject } = props;
+  const { handleClose, subject, setSubject } = props;
 
   return (
     <Grid container>
