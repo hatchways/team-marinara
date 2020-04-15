@@ -127,6 +127,11 @@ const getCampaignProspects = campaignId => {
   return axios.get(`/api/campaigns/prospects/${campaignId}`);
 };
 
+const addStepToCampaign = async data => {
+  const response = await axios.post("/api/campaigns/step", data);
+  return response;
+};
+
 export {
   register,
   login,
@@ -134,6 +139,7 @@ export {
   getAuthUrl,
   postGmailAuthCode,
   getUser,
+  addStepToCampaign,
   getProspectData,
   uploadProspectCsv,
   createCampaign,

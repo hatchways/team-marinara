@@ -37,7 +37,7 @@ const Home = props => {
       <Navbar />
 
       <Switch>
-        <Route path="/home/prospects/upload" component={ProspectsUpload}/>
+        <Route path="/home/prospects/upload" component={ProspectsUpload} />
         <Route path="/home/reporting" component={Reporting} />
         <Route path="/home/templates" component={Templates} />
         <Route path="/home/prospects" component={Prospects} />
