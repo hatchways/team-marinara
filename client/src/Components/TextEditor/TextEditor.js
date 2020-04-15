@@ -7,7 +7,7 @@ import Toolbar from "Components/TextEditor/Toolbar";
 const useStyles = makeStyles({
   root: {
     fontFamily: "'Open Sans', sans-serif",
-    padding: "1rem 0",
+    padding: "1rem 0 0 0",
     width: "100%",
     display: "flex",
     flexDirection: "column"
