@@ -58,6 +58,8 @@ const StepFooter = props => {
             vertical: "bottom",
             horizontal: "center"
           }}
+          disableAutoFocus={true}
+          disableEnforceFocus={true}
         >
           <List component="nav">
             <ListItemBtn text="First name" onClick={handleVariableClick} />

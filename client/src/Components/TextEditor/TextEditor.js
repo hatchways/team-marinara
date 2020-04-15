@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Editor, RichUtils } from "draft-js";
+import createStyles from "draft-js-custom-styles";
 import { Grid, makeStyles } from "@material-ui/core";
 import Toolbar from "Components/TextEditor/Toolbar";
 
@@ -21,12 +22,15 @@ const useStyles = makeStyles({
   }
 });
 
+// For editing font-size in Text Editor
+const { styles, customStyleFn } = createStyles(["font-size"]);
+
 const TextEditor = props => {
   const { editorState, setEditorState } = props;
   const classes = useStyles();
   const editorRef = useRef();
 
-  // Handles format shosrt-cuts e.g. ctrl-b to bold
+  // Handles format short-cuts e.g. ctrl-b to bold
   const handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -56,14 +60,17 @@ const TextEditor = props => {
       >
         <Editor
           editorState={editorState}
-          onChange={editorState => {
-            setEditorState(editorState);
-          }}
+          onChange={setEditorState}
           ref={editorRef}
           handleKeyCommand={handleKeyCommand}
+          customStyleFn={customStyleFn}
         />
         <Grid container item className={classes.toolbarContainer}>
-          <Toolbar editorState={editorState} setEditorState={setEditorState} />
+          <Toolbar
+            editorState={editorState}
+            setEditorState={setEditorState}
+            styles={styles}
+          />
         </Grid>
       </Grid>
     </Grid>
