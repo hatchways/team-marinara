@@ -339,4 +339,77 @@ router.post(
     }
   }
 );
+
+// @route POST /api/campaigns/:campaignId/steps/:stepId/prospects
+// @desc Move a selection of prospects in a campaign to one of its steps
+//       Requires prospects (array of prospectIds) in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps/:stepId/prospects",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { campaignId, stepId } = req.params;
+    const { prospects } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const targetStep = await Step.findById(stepId);
+
+      if (!targetStep) {
+        return res.status(404).json({ error: `Step ${stepId} not found` });
+      }
+
+      const stepInCampaign = campaign.steps.some(curr => curr == stepId);
+
+      if (!stepInCampaign) {
+        return res.status(404).json({
+          error: `Step ${stepId} not found in Campaign ${campaignId}`
+        });
+      }
+
+      for (let i = 0; i < prospects.length; i++) {
+        const prospectObject = campaign.prospects.find(
+          curr => curr.prospectId == prospects[i]
+        );
+        if (!prospectObject) {
+          continue;
+        }
+
+        //If the prospect was in another step, remove it from that step
+        if (prospectObject.step) {
+          const originStep = await Step.findById(prospectObject.step);
+
+          originStep.prospects = originStep.prospects.filter(
+            curr => curr.prospectId != prospects[i]
+          );
+          await originStep.save();
+        }
+
+        //Add the prospect to the target step
+        targetStep.prospects.push({
+          prospectId: prospects[i]
+        });
+
+        //Update the prospect object from the campaign
+        prospectObject.step = targetStep._id;
+      }
+
+      await targetStep.save();
+      await campaign.save();
+
+      res.status(200).json(campaign);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error moving prospects" });
+    }
+  }
+);
+
 module.exports = router;
