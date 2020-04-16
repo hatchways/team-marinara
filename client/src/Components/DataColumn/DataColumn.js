@@ -5,8 +5,7 @@ import colors from "Components/Styles/Colors";
 
 const styles = {
   root: {
-    width: "auto",
-    padding: "0 2rem"
+    width: "6rem"
   },
   label: {
     fontSize: "0.75rem",
