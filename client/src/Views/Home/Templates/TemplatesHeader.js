@@ -53,16 +53,7 @@ const TemplatesHeader = (props) => {
         spacing={4}
         className={props.classes.toggle}
       >
-        <Grid item>
-          {props.addToCampaignBtnVisible && (
-            <StyledAddProspectButton
-              idxyt="add-to-campaign"
-              onClick={e => props.handleClick(e)}
-            >
-              Add to Campaign
-            </StyledAddProspectButton>
-          )}
-        </Grid>
+        
         <Grid item>
           <FlashOnIcon className={props.classes.mainHeaderIcon} />
         </Grid>

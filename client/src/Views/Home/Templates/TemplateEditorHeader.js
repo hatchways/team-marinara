@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "flex-start",
     direction: "row"
   },
-  stepName: {
+  templateName: {
     fontWeight: "bold",
     borderRight: `1px solid ${colors.midGray}`
   },
@@ -48,7 +48,7 @@ const TemplateEditorHeader = props => {
   return (
     <Grid container>
       <Grid container item xs={12} className={classes.header}>
-        <Grid item className={classes.stepName} xs={7}>
+        <Grid item className={classes.templateName} xs={7}>
         <InputBase
             id="title"
             autoComplete="off"
