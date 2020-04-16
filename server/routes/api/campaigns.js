@@ -402,18 +402,9 @@ router.post(
         const prospectObject = campaign.prospects.find(
           curr => curr.prospectId == prospects[i]
         );
+
         if (!prospectObject) {
           continue;
-        }
-
-        //If the prospect was in another step, remove it from that step
-        if (prospectObject.step) {
-          const originStep = await Step.findById(prospectObject.step);
-
-          originStep.prospects = originStep.prospects.filter(
-            curr => curr.prospectId != prospects[i]
-          );
-          await originStep.save();
         }
 
         //Add the prospect to the target step
