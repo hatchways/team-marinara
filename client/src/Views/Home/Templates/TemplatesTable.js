@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 
 import colors from "Components/Styles/Colors";
-import Row from "../Campaigns/CampaignsTableRow";
+import Row from "./TemplatesTableRow";
 
 const useStyles = makeStyles({
   root: {
@@ -46,32 +46,28 @@ const useStyles = makeStyles({
 
 const TemplatesTable = props => {
   const classes = useStyles();
-  /*const rows = props.campaigns.map(curr => (
-    <Row campaign={curr} key={curr._id} />
-  ));*/
+
+  const headers = props.headerColumns.map(header => (
+    <TableCell className={classes.headCell}>{header}</TableCell>
+  ));
+
+  const rows = props.filteredTemplates.map(template => (
+      <Row 
+        user={props.user} 
+        template={template} 
+        key={template._id}
+        handleChange={props.handleChange} />
+  ));
   return (
     <Grid item className={classes.root}>
       <Paper className={classes.tableContainer}>
         <Table className={classes.table}>
           <TableHead className={classes.headRow}>
             <TableRow className={classes.headRow}>
-              <TableCell className={classes.headCell}>Name</TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Created
-              </TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Prospects
-              </TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Replies
-              </TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Steps
-              </TableCell>
-              <TableCell className={classes.headCell}>Due</TableCell>
+              {headers}
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
+          <TableBody>{rows}</TableBody>
         </Table>
       </Paper>
     </Grid>

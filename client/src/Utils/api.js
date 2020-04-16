@@ -38,6 +38,10 @@ const uploadProspectCsv = async formData => {
   }
 };
 
+const getTemplates = () => {
+  return axios.get("/api/templates")
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -146,5 +150,6 @@ export {
   getCampaigns,
   getCampaign,
   addProspectsToCampaign,
-  getCampaignProspects
+  getCampaignProspects,
+  getTemplates
 };

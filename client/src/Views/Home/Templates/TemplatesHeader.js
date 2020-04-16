@@ -4,6 +4,7 @@ import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
 import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
+import { useHistory } from "react-router-dom";
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
@@ -26,7 +27,14 @@ const styles = () => ({
   }
 });
 
-const TemplatesHeader = props => {
+const TemplatesHeader = (props) => {
+  const history = useHistory();
+
+
+  const handleAddStep = () => {
+    history.push(`/home/templates/create`);
+  };
+  
   return (
     <Grid
       item
@@ -73,9 +81,8 @@ const TemplatesHeader = props => {
 
         <Grid item>
           <StyledAddProspectButton
-          component={Link}
-          to="/home/prospects/upload">
-            Add New Prospects
+          onClick={handleAddStep}>
+            Create New Template
           </StyledAddProspectButton>
         </Grid>
       </Grid>
