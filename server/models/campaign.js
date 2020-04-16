@@ -23,7 +23,8 @@ const CampaignSchema = new Schema({
           "Opted out"
         ],
         default: "Draft"
-      }
+      },
+      step: { type: Schema.Types.ObjectId, ref: "Step" }
     }
   ],
   // stepsSummary are counts of campaign.steps.prospects.status
