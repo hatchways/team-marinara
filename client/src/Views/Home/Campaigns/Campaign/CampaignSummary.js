@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, makeStyles } from "@material-ui/core";
 
 import Header from "./CampaignSummaryHeader";
+import Steps from "./Steps";
 
 const useStyles = makeStyles({
   root: {
@@ -15,6 +16,7 @@ const CampaignSummary = props => {
   return (
     <Grid item container direction="column" className={classes.root}>
       <Header campaign={props.campaign} />
+      <Steps steps={props.steps} />
     </Grid>
   );
 };
