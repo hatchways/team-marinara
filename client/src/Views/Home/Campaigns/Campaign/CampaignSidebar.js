@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Tabs, Tab, makeStyles, withStyles } from "@material-ui/core";
 import colors from "Components/Styles/Colors";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -43,9 +43,20 @@ const SidebarTab = withStyles({
 const CampaignSidebar = props => {
   const classes = useStyles();
   const [active, setActive] = useState("summary");
+  const match = useRouteMatch("/home/campaigns/*/:page");
+
+  useEffect(() => {
+    if (!match) {
+      setActive("summary");
+    } else {
+      setActive(match.params.page);
+    }
+  }, [match]);
+
   const handleChange = (event, value) => {
     setActive(value);
   };
+
   return (
     <Grid item className={classes.root}>
       <SidebarTabs
