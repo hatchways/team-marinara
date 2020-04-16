@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const StepSchema = new Schema({
   name: { type: String, required: true },
   subject: { type: String },
-  content: { type: Schema.Types.Mixed },
+  content: { type: String },
   created: { type: Date, default: Date.now, required: true },
   prospects: [
     {

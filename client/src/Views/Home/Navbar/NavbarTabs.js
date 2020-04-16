@@ -9,7 +9,11 @@ const NavbarTabs = props => {
   const match = useRouteMatch("/home/:page");
 
   useEffect(() => {
-    setActive(match.params.page);
+    if (!match) {
+      setActive("campaigns");
+    } else {
+      setActive(match.params.page);
+    }
   }, [match]);
 
   const onChange = (event, value) => {
