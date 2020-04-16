@@ -51,6 +51,7 @@ const Home = props => {
         path={`*/email-auth-results-dialog`}
         component={GmailAuthResultDialog}
       />
+      <Route path={`*/templates/load`} component={TemplateEditor} />
       <Route path={`*/templates/create`} component={TemplateEditor} />
       <Route path={`*/step`} component={Step} />
     </Grid>

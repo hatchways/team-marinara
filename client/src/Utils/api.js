@@ -42,6 +42,10 @@ const getTemplates = () => {
   return axios.get("/api/templates")
 }
 
+const createTemplate = (template) => {
+  return axios.post("/api/templates/", template);
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -151,5 +155,6 @@ export {
   getCampaign,
   addProspectsToCampaign,
   getCampaignProspects,
-  getTemplates
+  getTemplates,
+  createTemplate
 };

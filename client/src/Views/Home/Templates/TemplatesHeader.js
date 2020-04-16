@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
@@ -8,6 +8,8 @@ import { useHistory } from "react-router-dom";
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
+
+import Modal from "./TemplateEditor";
 
 const styles = () => ({
   root: {
@@ -28,12 +30,24 @@ const styles = () => ({
 });
 
 const TemplatesHeader = (props) => {
+  
+  
   const history = useHistory();
 
 
-  const handleAddStep = () => {
-    history.push(`/home/templates/create`);
+  const handleCreateTemplate = () => {
+    props.setModalOpen(true);
   };
+
+  const handleLoadTemplate = () => {
+    history.push(`/home/templates/load`);
+  }
+
+  
+
+  const setRecentlyFetched = () => {
+
+  }
   
   return (
     <Grid
@@ -75,16 +89,21 @@ const TemplatesHeader = (props) => {
         
       <Grid item>
         <StyledImportProspectButtonOutline>
-          Imports
+          Load Old Template
         </StyledImportProspectButtonOutline>
       </Grid>
 
         <Grid item>
           <StyledAddProspectButton
-          onClick={handleAddStep}>
+          onClick={handleCreateTemplate}>
             Create New Template
           </StyledAddProspectButton>
         </Grid>
+        <Modal
+            open={props.modalOpen}
+            setModalOpen={props.setModalOpen}
+            setRecentlyFetched={setRecentlyFetched}
+          />
       </Grid>
     </Grid>
   );

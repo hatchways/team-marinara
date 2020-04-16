@@ -34,6 +34,7 @@ const Templates = props => {
     const [recentlyFetched, setRecentlyFetched] = useState(false);
     const [user, setUser] = useState({});
     const [errors, setErrors] = useState({});
+    const [modalOpen, setModalOpen] = useState(false);
 
     const headerColumns = [
       "name", "subject", "created", "author"
@@ -65,13 +66,14 @@ const Templates = props => {
         </Grid>
         
         <Grid item xs={9}>
-          <TemplatesHeader />
+          <TemplatesHeader modalOpen={modalOpen} setModalOpen={setModalOpen} templates={templates}/>
           <TemplatesTable 
             filteredTemplates={filteredTemplates}
             headerColumns={headerColumns}
             user={user}
             />
         </Grid>
+        
     </Grid>
   );
   }
