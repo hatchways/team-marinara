@@ -1,5 +1,13 @@
 import React from "react";
-import { Grid, Typography, makeStyles } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+  Tooltip,
+  IconButton,
+  makeStyles,
+  withStyles
+} from "@material-ui/core";
+import EmailIcon from "@material-ui/icons/Email";
 
 import colors from "Components/Styles/Colors";
 
@@ -18,10 +26,22 @@ const useStyles = makeStyles({
     flexGrow: 1
   },
   name: {
-    fontSize: "1rem",
+    fontSize: "1.2rem",
     fontWeight: "bold"
+  },
+  button: {
+    marginRight: "1rem",
+    "&:hover": {
+      color: colors.green
+    }
   }
 });
+
+const EmailTooltip = withStyles({
+  tooltip: {
+    fontSize: "0.8rem"
+  }
+})(Tooltip);
 
 const Step = props => {
   const classes = useStyles();
@@ -50,6 +70,13 @@ const Step = props => {
 
   return (
     <Grid item container alignItems="center" className={classes.root}>
+      <Grid item>
+        <EmailTooltip title="Edit Email">
+          <IconButton className={classes.button}>
+            <EmailIcon />
+          </IconButton>
+        </EmailTooltip>
+      </Grid>
       <Grid item className={classes.nameContainer}>
         <Typography className={classes.name}>{props.step.name}</Typography>
       </Grid>
