@@ -4,7 +4,7 @@ const router = express.Router();
 const passport = require("passport");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
-const { client_secret, client_id } = require("../../config/gmail-secret.json");
+const { googleClientSecret, googleClientId } = require("../../config/config");
 
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
@@ -42,8 +42,8 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const oAuth2Client = new google.auth.OAuth2(
-      client_id,
-      client_secret,
+      googleClientId,
+      googleClientSecret,
       req.query.redirectUrl
     );
 
@@ -76,8 +76,8 @@ router.post(
       if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
       const oAuth2Client = new google.auth.OAuth2(
-        client_id,
-        client_secret,
+        googleClientId,
+        googleClientSecret,
         req.query.redirectUrl
       );
 
@@ -122,8 +122,8 @@ async function sendEmail(mail) {
   const userId = "5e84b3101bd834092a28464f";
   const loggedInUser = await User.findById(userId);
   const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
+    googleClientId,
+    googleClientSecret,
     req.query.redirectUrl
   );
   oAuth2Client.setCredentials({ refresh_token: loggedInUser.gmailToken });
@@ -176,8 +176,8 @@ async function sendEmail(mail) {
  */
 async function readEmail(threadId) {
   const oAuth2Client = new google.auth.OAuth2(
-    client_id,
-    client_secret,
+    googleClientId,
+    googleClientSecret,
     req.query.redirectUrl
   );
   oAuth2Client.setCredentials(tokens);

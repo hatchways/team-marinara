@@ -5,17 +5,14 @@ const app = require("../app.js");
 chai.should();
 chai.use(chaiHttp);
 
-describe("/POST ping", () => {
-  it("it should return 400", done => {
+describe("Test Authorization required", () => {
+  it("should return 401 Unauthorized", done => {
     chai
       .request(app)
-      .post(`/ping/`)
-      .send({ teamName: "Shums" })
+      .post(`/api/campaigns`)
+      .send({ name: "New Test Campaign", ownedBy: "A user" })
       .end((err, res) => {
-        res.should.have.status(400);
-        res.body.should.have
-          .property("response")
-          .eql("Shums is not part of the team. Modify your .env");
+        res.should.have.status(401);
         done();
       });
   });
