@@ -6,6 +6,7 @@ import { getCampaign, getCampaignProspects } from "Utils/api";
 
 import Header from "./CampaignHeader";
 import Table from "./CampaignProspectsTable";
+import Sidebar from "./CampaignSidebar";
 
 const Campaign = props => {
   const { campaignId } = useParams();
@@ -40,10 +41,18 @@ const Campaign = props => {
   }, [recentlyFetched, campaignId, props]);
 
   return (
-    <Grid item container direction="column">
-      <Header name={campaign.name} />
-      <Table prospects={prospects} />
-    </Grid>
+    <React.Fragment>
+      <Sidebar />
+      <Grid
+        item
+        container
+        direction="column"
+        style={{ flexGrow: 1, width: "auto" }}
+      >
+        <Header name={campaign.name} />
+        <Table prospects={prospects} />
+      </Grid>
+    </React.Fragment>
   );
 };
 

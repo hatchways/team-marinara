@@ -11,7 +11,8 @@ const styles = () => ({
     width: "100%",
     backgroundColor: `${colors.white}`,
     padding: "0 48px",
-    height: 100
+    height: 100,
+    borderBottom: `2px solid ${colors.midGray}`
   },
   logo: {
     flexGrow: 1
