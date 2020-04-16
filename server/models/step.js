@@ -31,7 +31,16 @@ const StepSchema = new Schema({
         default: "Draft"
       }
     }
-  ]
+  ],
+  summary: {
+    sent: { type: Number, default: 0, required: true },
+    delivered: { type: Number, default: 0, required: true },
+    opened: { type: Number, default: 0, required: true },
+    clicked: { type: Number, default: 0, required: true },
+    replied: { type: Number, default: 0, required: true },
+    bounced: { type: Number, default: 0, required: true },
+    optedOut: { type: Number, default: 0, required: true }
+  }
 });
 
 module.exports = mongoose.model("Step", StepSchema);
