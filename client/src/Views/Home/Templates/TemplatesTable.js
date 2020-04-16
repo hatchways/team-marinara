@@ -53,6 +53,7 @@ const TemplatesTable = props => {
 
   const rows = props.filteredTemplates.map(template => (
       <Row 
+        viewTemplate={props.viewTemplate}
         user={props.user} 
         template={template} 
         key={template._id}

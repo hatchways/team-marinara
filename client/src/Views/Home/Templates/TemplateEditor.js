@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Dialog,
@@ -12,7 +12,7 @@ import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
 import { getTemplates, createTemplate } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
-import StepHeader from "Components/TextEditor/StepHeader";
+import TemplateEditorHeader from "./TemplateEditorHeader";
 import TemplateEditorFooter from "./TemplateEditorFooter";
 
 const useStyles = makeStyles(theme => ({
@@ -35,31 +35,27 @@ const useStyles = makeStyles(theme => ({
 const TemplateEditor = props => {
   const [type, setType] = useState("New Thread");
   const [subject, setSubject] = useState("");
+  const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [saveSuccess, setSaveSuccess] = useState(null);
   const classes = useStyles();
-  const [templates, setTemplates] = useState([]);
-  const [recentlyFetched, setRecentlyFetched] = useState(false);
+
+  const { templates, setTemplates } = props;
+
+  Modal.onEnter = () => {
+    console.log("check")
+  }
 
 
-  useEffect( () => {
-      
-
-    const fetchTemplates = async () => {
-        try {
-            const res = await getTemplates();
-            console.log(res);
-            setTemplates(res.data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    fetchTemplates();
-}, [recentlyFetched]);
+  useEffect(  () => {
+    
+});
 
   const handleClose = () => {
     props.setModalOpen(false);
+    setTitle("");
+    setSubject("");
+    setEditorState(EditorState.createEmpty());
   };
 
   const handleVariableValueClick = value => {
@@ -103,13 +99,16 @@ const TemplateEditor = props => {
     
     try {
       const res = await createTemplate({
-        name: "Template 1",
+        name: title,
         subject: subject,
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
       });
       console.log("here");
       // launches success dialog
       setSaveSuccess(true);
+      setEditorState(EditorState.createEmpty());
+      setSubject("");
+      setTitle("");
     } catch (error) {
       // Launches error dialog
       console.log(error);
@@ -119,22 +118,18 @@ const TemplateEditor = props => {
 
   const handleLoadTemplate = () => {
     let template = templates[0];
-    console.log(template.content);
+    setTitle(template.name);
+    setSubject(template.subject);
     const DBEditorState = convertFromRaw(JSON.parse(template.content));
     setEditorState(EditorState.createWithContent(DBEditorState));
-    //EditorState.createWithContent(convertFromRaw(rawContent))
   }
 
   const errorDialogClose = () => {
     setSaveSuccess(null);
   };
 
-  const onClose = () => {
-
-  }
-
   return (
-    <Modal open={props.open} onClose={onClose} className={classes.modal}>
+    <Modal open={props.open} className={classes.modal}>
     <Dialog
       open={true}
       onClose={handleClose}
@@ -145,8 +140,10 @@ const TemplateEditor = props => {
       <DialogContent className={classes.dialogContent}>
         <Grid container spacing={2}>
           <Grid container className={classes.emailContainer}>
-            <StepHeader
+            <TemplateEditorHeader
               handleClose={handleClose}
+              title={title}
+              setTitle={setTitle}
               type={type}
               setType={setType}
               subject={subject}

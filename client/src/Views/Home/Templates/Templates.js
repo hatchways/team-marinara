@@ -11,13 +11,14 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
 import ProspectSidebar from "../Prospects/ProspectSidebar";
 import TemplatesHeader from "./TemplatesHeader";
 import TemplatesTable from "./TemplatesTable";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import { getTemplates } from "Utils/api";
+import Modal from "./TemplateEditor";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 
 const Templates = props => {
     const context = useContext(AuthUserContext);
-    const history = useHistory();
     const classes = useStyles();
     const [templates, setTemplates] = useState([]);
     const [filteredTemplates, setFilteredTemplates] = useState([]);
@@ -35,6 +35,8 @@ const Templates = props => {
     const [user, setUser] = useState({});
     const [errors, setErrors] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
+    const [templateInFocus, setTemplateInFocus] = useState({});
+    const [contentState, setContentState] = useState({});
 
     const headerColumns = [
       "name", "subject", "created", "author"
@@ -56,8 +58,26 @@ const Templates = props => {
             setErrors(error);
         }
     }
-    fetchTemplates();
+    if (!recentlyFetched) {
+      fetchTemplates();
+      setRecentlyFetched(true);
+    }
 }, [recentlyFetched]);
+
+const onEnter = () => {
+  console.log("Cheese");
+}
+
+const viewTemplate = (template) => {
+  //setTemplateInFocus(template);
+  setContentState(convertFromRaw(JSON.parse(template.content)));
+  setModalOpen(true);
+
+  /*setTitle(template.name);
+  setSubject(template.subject);
+  const DBEditorState = convertFromRaw(JSON.parse(template.content));
+  setEditorState(EditorState.createWithContent(DBEditorState));*/
+}
 
   return (
     <Grid item container className={classes.root}>
@@ -68,12 +88,18 @@ const Templates = props => {
         <Grid item xs={9}>
           <TemplatesHeader modalOpen={modalOpen} setModalOpen={setModalOpen} templates={templates}/>
           <TemplatesTable 
+            viewTemplate={viewTemplate}
             filteredTemplates={filteredTemplates}
             headerColumns={headerColumns}
             user={user}
             />
         </Grid>
-        
+        <Modal
+            open={modalOpen}
+            setModalOpen={setModalOpen}
+            setRecentlyFetched={setRecentlyFetched}
+            templates={templates}
+          />
     </Grid>
   );
   }

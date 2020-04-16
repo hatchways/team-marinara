@@ -24,8 +24,16 @@ const useStyles = makeStyles ({
 const TemplatesTableRow = props => {
     const classes = useStyles();
 
+    const formatDate = dateString => {
+        let date = new Date(dateString);
+        date = date.toDateString().split(" ");
+        const month = date[1];
+        const day = Number.parseInt(date[2]);
+        return `${month} ${day}`;
+      };
+
     return (
-        <TableRow className={classes.row}>
+        <TableRow hover onClick={e => props.viewTemplate(props.template)} className={classes.row}>
             <TableCell align="center" className={classes.cell}>
                 {props.template.name}
             </TableCell>
@@ -33,7 +41,7 @@ const TemplatesTableRow = props => {
                 {props.template.subject}
             </TableCell>
             <TableCell align="center" className={classes.cell}>
-                {props.template.created}
+                {formatDate(props.template.created)}
             </TableCell>
             <TableCell align="center" className={classes.cell}>
                 {props.template.ownedBy}
