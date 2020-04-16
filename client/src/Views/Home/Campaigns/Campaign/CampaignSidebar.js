@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Tabs, Tab, makeStyles, withStyles } from "@material-ui/core";
 import colors from "Components/Styles/Colors";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -39,9 +40,9 @@ const SidebarTab = withStyles({
   }
 })(Tab);
 
-const CampaignSidebar = () => {
+const CampaignSidebar = props => {
   const classes = useStyles();
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState("summary");
   const handleChange = (event, value) => {
     setActive(value);
   };
@@ -52,8 +53,20 @@ const CampaignSidebar = () => {
         value={active}
         onChange={handleChange}
       >
-        <SidebarTab label="Summary" value="summary" disableRipple />
-        <SidebarTab label="Prospects" value="prospects" disableRipple />
+        <SidebarTab
+          label="Summary"
+          value="summary"
+          component={Link}
+          to={`/home/campaigns/${props.campaignId}/summary`}
+          disableRipple
+        />
+        <SidebarTab
+          label="Prospects"
+          value="prospects"
+          component={Link}
+          to={`/home/campaigns/${props.campaignId}/prospects`}
+          disableRipple
+        />
       </SidebarTabs>
     </Grid>
   );
