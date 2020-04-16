@@ -280,6 +280,14 @@ router.post(
           .json({ error: `Campaign with id ${campaignId} not found` });
       }
 
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
+      }
+
       const newStep = new Step({ name });
       await newStep.save();
 
@@ -312,6 +320,14 @@ router.post(
         return res
           .status(404)
           .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
       }
 
       const step = await Step.findById(stepId);
@@ -358,6 +374,14 @@ router.post(
         return res
           .status(404)
           .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
       }
 
       const targetStep = await Step.findById(stepId);
