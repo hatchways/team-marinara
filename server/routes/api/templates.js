@@ -17,8 +17,16 @@ router.post( "/",
             if (!isValid) {
                 return res.status(400).json(errors);
             }
-
             const { name, subject, content, attachments } = req.body;
+
+            const existingTemplate = await Template.find({
+                name: name,
+                ownedBy: ownedBy
+            });
+            if(existingTemplate && existingTemplate.length > 0){
+                res.status(409).send({error: "Template with this title already exists"});
+                return;
+            }
             const template = new Template({ name, subject, content, ownedBy, attachments});
             const newTemplate = await template.save();
             res.status(200).send(newTemplate);
@@ -79,6 +87,7 @@ router.get("/:id",
 router.put("/:id",
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
+        console.log("Got to the put")
         const templateId = req.params.id;
         const ownedBy = req.user.id;
 
@@ -86,25 +95,28 @@ router.put("/:id",
             _id: templateId,
             ownedBy: ownedBy
         });
+        console.log("Got to the put 2")
         if (!template || template.length === 0) {
-            res
-              .status(404)
+            console.log("Got to the async zone")
+            res.status(404)
               .send({ id: `Template with id ${templateId} is not found` });
+              return;
           } else {
+            console.log("Got to the put 3")
             const { name, subject, content, attachments } = req.body;
             const modifiedTemplate = template[0];
             modifiedTemplate.name = name;
             modifiedTemplate.subject = subject;
             modifiedTemplate.content = content;
             modifiedTemplate.attachments = attachments;
+            console.log("Got to the put 4")
 
             modifiedTemplate.save()
             .then(modifiedTemplate => {
-                res.status(200).json(modifiedTemplate);
+                return res.status(200).send(modifiedTemplate);
               })
             .catch(err => 
                 console.log(err));
-                res.status(400).send({error : "Error creating template"});
             }
     });
 

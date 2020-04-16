@@ -1,24 +1,34 @@
 import React from "react";
-import { Checkbox, TableRow, TableCell, makeStyles } from "@material-ui/core";
-import CloudIcon from "@material-ui/icons/Cloud";
+import { TableRow, TableCell, makeStyles } from "@material-ui/core";
 
-import colors from "Components/Styles/Colors";
 
 const useStyles = makeStyles ({
 
     row : {
-        margin: "10px",
+        height: "3rem",
     },
     cell : {
-        padding : "7px 0px",
-        width : "50px",
+        width : "75px",
+        textAlign: "left",
+        maxWidth: "100px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap"
     },
-    cloudIcon : {
-        color : "#A9A9A9",
+    centerCell : {
+        textAlign: "center",
+        maxWidth: "100px",
     },
-    checkbox : {
-        padding: "0px 0px 0px 15px",
+    boldCell : {
+        width : "75px",
+        textAlign: "left",
+        maxWidth: "100px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        fontWeight: "bolder"
     }
+    
 });
 
 const TemplatesTableRow = props => {
@@ -34,17 +44,17 @@ const TemplatesTableRow = props => {
 
     return (
         <TableRow hover onClick={e => props.viewTemplate(props.template)} className={classes.row}>
-            <TableCell align="center" className={classes.cell}>
+            <TableCell align="center" className={classes.boldCell}>
                 {props.template.name}
             </TableCell>
             <TableCell align="left" className={classes.cell}>
                 {props.template.subject}
             </TableCell>
-            <TableCell align="center" className={classes.cell}>
+            <TableCell className={classes.centerCell}>
                 {formatDate(props.template.created)}
             </TableCell>
-            <TableCell align="center" className={classes.cell}>
-                {props.template.ownedBy}
+            <TableCell className={classes.centerCell}>
+                {props.user.firstName + " " + props.user.lastName}
             </TableCell>
         </TableRow>
     )

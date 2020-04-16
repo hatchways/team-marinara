@@ -36,9 +36,8 @@ const TemplateEditorFooter = props => {
 
   return (
     <Grid container item className={classes.buttonBar} xs={12}>
-      <Grid item xs={8}>
-        <StyledButtonTransparent onClick={props.handleLoadTemplate}>Templates</StyledButtonTransparent>
-        <StyledButtonTransparent>Save as Template</StyledButtonTransparent>
+      <Grid item xs={10}>
+        <StyledButtonText onClick={handleClose}>Cancel</StyledButtonText>
         <StyledButtonTransparent
           id="variablesBtn"
           onClick={handleVariablesBtnClick}
@@ -67,9 +66,8 @@ const TemplateEditorFooter = props => {
           </List>
         </Popover>
       </Grid>
-      <Grid item xs={4}>
-        <StyledButtonText onClick={handleClose}>Cancel</StyledButtonText>
-        <StyledButtonOutline onClick={handleSave}>Save</StyledButtonOutline>
+      <Grid item xs={2}>
+        <StyledButtonOutline align="right" onClick={handleSave}>Save</StyledButtonOutline>
       </Grid>
     </Grid>
   );

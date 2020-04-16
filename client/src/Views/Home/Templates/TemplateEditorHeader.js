@@ -39,13 +39,16 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const TemplateEditorHeader = props => {
+
+  
+
   const classes = useStyles();
-  const { handleClose, subject, setSubject, title, setTitle } = props;
+  const { editMode, handleClose, subject, setSubject, title, setTitle } = props;
 
   return (
     <Grid container>
       <Grid container item xs={12} className={classes.header}>
-        <Grid item className={classes.stepName} xs={2}>
+        <Grid item className={classes.stepName} xs={7}>
         <InputBase
             id="title"
             autoComplete="off"
@@ -55,8 +58,8 @@ const TemplateEditorHeader = props => {
             onChange={e => setTitle(e.target.value)}
           />
         </Grid>
-        <Grid item container className={classes.editTemplateText} xs={8}>
-          <Typography variant="h6">Edit Template</Typography>
+        <Grid item container className={classes.editTemplateText} xs={3}>
+          <Typography variant="h6">{editMode ? "Edit Template " : "Create Template"}</Typography>
         </Grid>
         <Grid item container xs={2} alignItems="flex-start" justify="flex-end">
           <IconButton onClick={handleClose}>

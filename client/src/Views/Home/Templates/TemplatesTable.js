@@ -19,10 +19,9 @@ const useStyles = makeStyles({
     padding: "0 3rem"
   },
   tableContainer: {
-    padding: 15,
+    minWidth: "500px",
     backgroundColor: `${colors.white}`,
-    //border: `1px solid ${colors.darkGray}`,
-    borderRadius: 7
+    borderRadius: 7,
   },
   headRow: {
     backgroundColor: `${colors.lightGreen}`
@@ -30,7 +29,8 @@ const useStyles = makeStyles({
   headCell: {
     fontSize: "1rem",
     fontWeight: "bold",
-    height: "3rem",
+    height: "2rem",
+    width: "50px",
     color: `${colors.white}`,
     "&:first-child": {
       borderRadius: "7px 0 0 7px"
@@ -40,7 +40,9 @@ const useStyles = makeStyles({
     }
   },
   table: {
-    borderCollapse: "separate"
+    borderCollapse: "separate",
+    margin: "25px 0px 75px 0px",
+    padding: "15px",
   }
 });
 
@@ -48,11 +50,12 @@ const TemplatesTable = props => {
   const classes = useStyles();
 
   const headers = props.headerColumns.map(header => (
-    <TableCell className={classes.headCell}>{header}</TableCell>
+    <TableCell align="center" className={classes.headCell}>{header}</TableCell>
   ));
 
   const rows = props.filteredTemplates.map(template => (
       <Row 
+      align="center" 
         viewTemplate={props.viewTemplate}
         user={props.user} 
         template={template} 

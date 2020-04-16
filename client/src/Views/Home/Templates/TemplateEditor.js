@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Dialog,
@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
-import { getTemplates, createTemplate } from "Utils/api";
+import {createTemplate, editTemplate } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
 import TemplateEditorHeader from "./TemplateEditorHeader";
 import TemplateEditorFooter from "./TemplateEditorFooter";
@@ -38,25 +38,45 @@ const TemplateEditor = props => {
   const [title, setTitle] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [saveSuccess, setSaveSuccess] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [editMode, setEditMode] = useState(false);
   const classes = useStyles();
+  const emptyFieldMessage = "Title, Subject, and Body cannot be empty."
+  const genericErrorMessage = "Save failed. Please try again.";
+  const duplicateTitle = "A template with this title already exists."
 
-  const { templates, setTemplates } = props;
+  const { template, setRecentlyFetched, setModalOpen } = props;
 
-  Modal.onEnter = () => {
-    console.log("check")
-  }
-
-
-  useEffect(  () => {
+  useEffect( () => {
+    if(template){
+      const loadTemplateForView = () => {
+        try {
+            const rawContentState = convertFromRaw(JSON.parse(template.content));
+            setEditorState(EditorState.createWithContent(rawContentState));
+            setSubject(template.subject);
+            setTitle(template.name);
+            setEditMode(true);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    loadTemplateForView();
+    }
     
-});
+},[template]);
 
   const handleClose = () => {
-    props.setModalOpen(false);
+    setModalOpen(false);
+    clearState();
+  };
+
+  const clearState = () => {
     setTitle("");
     setSubject("");
     setEditorState(EditorState.createEmpty());
-  };
+    setRecentlyFetched(false);
+    setEditMode(false);
+  }
 
   const handleVariableValueClick = value => {
     let textToInsert;
@@ -96,37 +116,59 @@ const TemplateEditor = props => {
 
   // Sends editor content to back-end
   const handleSave = async () => {
-    
+    if(editMode){
+      console.log("edit");
+      //console.log(template);
+    } else {
+      console.log("save");
+      //console.log(template);
+    }
     try {
-      const res = await createTemplate({
-        name: title,
-        subject: subject,
-        content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-      });
-      console.log("here");
-      // launches success dialog
-      setSaveSuccess(true);
-      setEditorState(EditorState.createEmpty());
-      setSubject("");
-      setTitle("");
+      if(title && subject && editorState.getCurrentContent().hasText()) {
+        if(editMode) {
+          console.log(template); 
+          await editTemplate({
+            name: title,
+            subject: subject,
+            content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+          }, template._id)
+        } else {
+          await createTemplate({
+            name: title,
+            subject: subject,
+            content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+          });
+        }
+        // launches success dialog
+        setSaveSuccess(true);
+        clearState();
+      } else {
+        displayErrorDialogue(emptyFieldMessage);
+        setSaveSuccess(false);
+      }
+      
     } catch (error) {
       // Launches error dialog
+      //if(error.sta)
       console.log(error);
+      if(error.response.status === 409) {
+        setErrorMessage(duplicateTitle);
+      }
       setSaveSuccess(false);
     }
   };
-
-  const handleLoadTemplate = () => {
-    let template = templates[0];
-    setTitle(template.name);
-    setSubject(template.subject);
-    const DBEditorState = convertFromRaw(JSON.parse(template.content));
-    setEditorState(EditorState.createWithContent(DBEditorState));
-  }
-
   const errorDialogClose = () => {
     setSaveSuccess(null);
   };
+
+  const displayErrorDialogue = (message) => {
+    if(message) {
+      setErrorMessage(message);
+    } else {
+      setErrorMessage(genericErrorMessage);
+    }
+    
+  }
 
   return (
     <Modal open={props.open} className={classes.modal}>
@@ -143,6 +185,7 @@ const TemplateEditor = props => {
             <TemplateEditorHeader
               handleClose={handleClose}
               title={title}
+              editMode={editMode}
               setTitle={setTitle}
               type={type}
               setType={setType}
@@ -162,7 +205,6 @@ const TemplateEditor = props => {
             handleVariableValueClick={handleVariableValueClick}
             handleClose={handleClose}
             handleSave={handleSave}
-            handleLoadTemplate={handleLoadTemplate}
           />
         </Grid>
       </DialogContent>
@@ -178,7 +220,7 @@ const TemplateEditor = props => {
           <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {saveSuccess ? "Step saved" : "Save failed. Please try again."}
+              {saveSuccess ? "Template saved" : errorMessage}
             </DialogContentText>
           </DialogContent>
         </Dialog>

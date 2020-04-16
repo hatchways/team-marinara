@@ -1,19 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
-  IconButton,
   Grid,
-  Dialog,
-  DialogContent,
   makeStyles,
-  FormControl,
-  Select,
-  InputBase,
-  MenuItem,
-  Typography,
 } from "@material-ui/core";
-import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
+import DashboardSidebar from "Components/Sidebar/DashboardSidebar";
 
-import ProspectSidebar from "../Prospects/ProspectSidebar";
 import TemplatesHeader from "./TemplatesHeader";
 import TemplatesTable from "./TemplatesTable";
 import AuthUserContext from "Components/Session/AuthUserContext";
@@ -35,11 +26,14 @@ const Templates = props => {
     const [user, setUser] = useState({});
     const [errors, setErrors] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
-    const [templateInFocus, setTemplateInFocus] = useState({});
-    const [contentState, setContentState] = useState({});
+    const [template, setTemplate] = useState();
+
+    const sidebarCheckboxes = [
+      
+    ]
 
     const headerColumns = [
-      "name", "subject", "created", "author"
+      "Title", "Subject", "Created", "Author"
     ];
 
   useEffect( () => {
@@ -49,13 +43,12 @@ const Templates = props => {
     const fetchTemplates = async () => {
         try {
             const res = await getTemplates();
-            console.log(res);
             setTemplates(res.data);
             setFilteredTemplates(res.data);
 
         } catch (error) {
-            console.log(error);
             setErrors(error);
+            console.log(errors)
         }
     }
     if (!recentlyFetched) {
@@ -64,29 +57,32 @@ const Templates = props => {
     }
 }, [recentlyFetched]);
 
-const onEnter = () => {
-  console.log("Cheese");
-}
+const handleFieldChange = (elementId, value) => {
+  const newFilteredTemplateList = templates.filter(t =>
+    t.name.toLowerCase().includes(value.toLowerCase())
+  );
+  setFilteredTemplates(newFilteredTemplateList);
+};
 
 const viewTemplate = (template) => {
-  //setTemplateInFocus(template);
-  setContentState(convertFromRaw(JSON.parse(template.content)));
   setModalOpen(true);
-
-  /*setTitle(template.name);
-  setSubject(template.subject);
-  const DBEditorState = convertFromRaw(JSON.parse(template.content));
-  setEditorState(EditorState.createWithContent(DBEditorState));*/
+  setTemplate(template);
 }
 
   return (
     <Grid item container className={classes.root}>
       <Grid item xs={3}>
-            <ProspectSidebar />
+            <DashboardSidebar 
+              handleFieldChange={handleFieldChange}
+              sidebarCheckboxes={sidebarCheckboxes}/>
         </Grid>
         
         <Grid item xs={9}>
-          <TemplatesHeader modalOpen={modalOpen} setModalOpen={setModalOpen} templates={templates}/>
+          <TemplatesHeader 
+            modalOpen={modalOpen} 
+            setModalOpen={setModalOpen} 
+            templates={templates}
+            setRecentlyFetched={setRecentlyFetched}/>
           <TemplatesTable 
             viewTemplate={viewTemplate}
             filteredTemplates={filteredTemplates}
@@ -97,8 +93,9 @@ const viewTemplate = (template) => {
         <Modal
             open={modalOpen}
             setModalOpen={setModalOpen}
+            template={template}
+            setTemplate={setTemplate}
             setRecentlyFetched={setRecentlyFetched}
-            templates={templates}
           />
     </Grid>
   );

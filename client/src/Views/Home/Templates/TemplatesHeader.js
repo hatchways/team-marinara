@@ -1,12 +1,9 @@
-import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
 import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
-import { useHistory } from "react-router-dom";
 
-import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
 
 import Modal from "./TemplateEditor";
@@ -21,7 +18,7 @@ const styles = () => ({
     width: "auto"
   },
   header: {
-    fontSize: "1.5rem",
+    fontSize: "2rem",
     fontWeight: "bold"
   },
   mainHeaderIcon: {
@@ -31,23 +28,9 @@ const styles = () => ({
 
 const TemplatesHeader = (props) => {
   
-  
-  const history = useHistory();
-
-
   const handleCreateTemplate = () => {
     props.setModalOpen(true);
   };
-
-  const handleLoadTemplate = () => {
-    history.push(`/home/templates/load`);
-  }
-
-  
-
-  const setRecentlyFetched = () => {
-
-  }
   
   return (
     <Grid
@@ -87,11 +70,7 @@ const TemplatesHeader = (props) => {
           <MailIcon className={props.classes.mainHeaderIcon} />
         </Grid>
         
-      <Grid item>
-        <StyledImportProspectButtonOutline>
-          Load Old Template
-        </StyledImportProspectButtonOutline>
-      </Grid>
+
 
         <Grid item>
           <StyledAddProspectButton
@@ -102,7 +81,7 @@ const TemplatesHeader = (props) => {
         <Modal
             open={props.modalOpen}
             setModalOpen={props.setModalOpen}
-            setRecentlyFetched={setRecentlyFetched}
+            setRecentlyFetched={props.setRecentlyFetched}
           />
       </Grid>
     </Grid>

@@ -46,6 +46,12 @@ const createTemplate = (template) => {
   return axios.post("/api/templates/", template);
 }
 
+const editTemplate = (template, id) => {
+  let url = "/api/templates/" + id;
+  console.log(url);
+  return axios.put(url, template);
+}
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -156,5 +162,6 @@ export {
   addProspectsToCampaign,
   getCampaignProspects,
   getTemplates,
-  createTemplate
+  createTemplate,
+  editTemplate
 };
