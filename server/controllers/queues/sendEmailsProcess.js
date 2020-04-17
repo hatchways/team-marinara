@@ -8,12 +8,87 @@ const {
   googleRedirectUrl
 } = require("../../config/config");
 const Step = require("../../models/step");
+const Variable = require("../../models/variable");
 
 /*
- * @params: {campaignId, stepId, userId}
+ * Send one email via Gmail from user represented by gmailToken
+ */
+const sendOneEmail = async (encodedMailString, gmailToken) => {
+  const oAuth2Client = new google.auth.OAuth2(
+    googleClientId,
+    googleClientSecret,
+    googleRedirectUrl
+  );
+  oAuth2Client.setCredentials({ refresh_token: gmailToken });
+
+  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+
+  await gmail.users.messages.send(
+    {
+      userId: "me",
+      resource: {
+        raw: encodedMailString
+      }
+    },
+    (err, result) => {
+      if (err) {
+        return console.log("Gmail send returned an error: " + err);
+      }
+
+      // In app we'd save result.data.threadId to database so can track later
+
+      console.log("Send email success. Reply from server:", result.data);
+      return Promise.resolve();
+    }
+  );
+};
+
+/*
+ * Replace variables in step e.g. {{firstName}} with relevant content
+ */
+const replaceVariables = (prospect, emailContent, variables) => {
+  const regEx = /{{(.+?)}}/g;
+
+  return emailContent.replace(regEx, (match, bracketsContent) => {
+    const variable = variables.find(
+      obj => obj.variableName === bracketsContent
+    );
+    if (variable.collectionName === "prospects") {
+      return prospect.prospectId[variable.fieldName];
+    }
+  });
+};
+
+/*
+ * Convert plain text to Gmail accepted format: RFC 2822 formatted and base64url encoded string
+ */
+const convertToBufferString = async (
+  prospect,
+  emailSubject,
+  emailWithVariables
+) => {
+  // Generate RFC822 formatted e-mail message that can be streamed to SMTP
+  const encodedMail = await new mailComposer({
+    to: prospect.prospectId.email,
+    subject: emailSubject,
+    html: emailWithVariables,
+    textEncoding: "base64"
+  })
+    .compile()
+    .build();
+
+  // Convert RFC822 message to Buffer String
+  return Buffer.from(encodedMail)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+/*
+ * @params: data: {campaignId, stepId, userId}
  */
 const sendEmailsProcess = async data => {
-  // Get email template   // Get Prospects
   try {
     console.log("sendEmailsProcess Starting...");
     const step = await Step.findById(data.stepId).populate(
@@ -24,38 +99,23 @@ const sendEmailsProcess = async data => {
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
 
-    console.log("Email content:", emailContent);
+    const variables = await Variable.find();
     // Loop through prospects
     for (const prospect of step.prospects) {
-      // Build email
+      // Replace variables with content
+      const emailWithVariables = replaceVariables(
+        prospect,
+        emailContent,
+        variables
+      );
 
-      // TODO: Replace handlebars
-      // Find all text inside {{ }} and replace it
-      const regEx = /{{.+?}}/g;
-      emailContent.replace(regEx, match => {
-        return prospect[variables.match];
-      });
+      const encodedMailString = await convertToBufferString(
+        prospect,
+        emailSubject,
+        emailWithVariables
+      );
 
-      // Generate RFC822 formatted e-mail message that can be streamed to SMTP
-      const encodedMail = await new mailComposer({
-        to: prospect.email,
-        subject: emailSubject,
-        text: emailContent,
-        textEncoding: "base64"
-      })
-        .compile()
-        .build();
-
-      // Convert RFC822 message to Buffer String
-      const encodedMailString = Buffer.from(encodedMail)
-        .toString("base64")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-
-      console.log("Calling sendOneMail");
-
-      // Staggers sending of emails to 1 second each
+      //Staggers sending of emails to 1 per second
       await new Promise(resolve =>
         setTimeout(
           () => resolve(sendOneEmail(encodedMailString, data.gmailToken)),
@@ -71,38 +131,6 @@ const sendEmailsProcess = async data => {
   } catch (error) {
     console.log("Error running sendEmailsProcess: ", error);
   }
-};
-
-const sendOneEmail = async (encodedMailString, gmailToken) => {
-  const oAuth2Client = new google.auth.OAuth2(
-    googleClientId,
-    googleClientSecret,
-    googleRedirectUrl
-  );
-  oAuth2Client.setCredentials({ refresh_token: gmailToken });
-
-  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-  console.log(encodedMailString);
-  return Promise.resolve(true);
-  // await gmail.users.messages.send(
-  //   {
-  //     userId: "me",
-  //     resource: {
-  //       raw: encodedMailString
-  //     }
-  //   },
-  //   (err, result) => {
-  //     if (err) {
-  //       return console.log("Gmail send returned an error: " + err);
-  //     }
-
-  //     // In app we'd save result.data.threadId to database so can track later
-
-  //     console.log("Send email success. Reply from server:", result.data);
-  //     return Promise.resolve();
-  //   }
-  // );
 };
 
 module.exports = { sendEmailsProcess };
