@@ -4,11 +4,11 @@
 
 const Queue = require("bull");
 const REDIS_URL = require("../../config/config").redisURL;
-const { sendEmailsProcess } = require("./sendEmailsJob");
+const { sendEmailsProcess } = require("./sendEmailsProcess");
 
 const sendEmailsQueue = async (campaignId, stepId, userId, gmailToken) => {
-  // Create or connect to queue
   try {
+    // Create or connect to queue
     const sendEmailsQueue = new Queue("sendEmails", REDIS_URL);
 
     sendEmailsQueue.process(async job => {
@@ -22,7 +22,6 @@ const sendEmailsQueue = async (campaignId, stepId, userId, gmailToken) => {
       gmailToken: gmailToken
     });
 
-    // Define a local completed event
     sendEmailsQueue.on("completed", (job, result) => {
       console.log(`Job completed with result ${result}`);
     });

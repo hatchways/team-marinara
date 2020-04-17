@@ -1,5 +1,7 @@
 const { google } = require("googleapis");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
+const draftToHtml = require("draftjs-to-html");
+
 const {
   googleClientSecret,
   googleClientId,
@@ -18,13 +20,16 @@ const sendEmailsProcess = async data => {
       "prospects.prospectId",
       "firstName lastName email"
     );
+    console.log("step content: ", step.content);
 
     const emailSubject = step.subject;
-    const emailContent = step.content;
+    const emailContent = draftToHtml(step.content);
 
+    console.log("Email content:", emailContent);
     // Loop through prospects
     for (const prospect of step.prospects) {
       // Build email
+
       // TODO: Use handlebars
 
       // Generate RFC822 formatted e-mail message that can be streamed to SMTP

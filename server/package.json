@@ -7,7 +7,7 @@
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "stop": "mongo admin --eval \"db.shutdownServer()\" && redis-server stop"
+    "stop": "mongo admin --eval \"db.shutdownServer()\" & redis-server stop"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -16,9 +16,11 @@
     "csv-parser": "^2.3.2",
     "debug": "~2.6.9",
     "dotenv": "^8.0.0",
+    "draftjs-to-html": "^0.9.1",
     "express": "~4.16.1",
     "fs": "0.0.1-security",
     "googleapis": "^48.0.0",
+    "handlebars": "^4.7.6",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.6",
