@@ -8,7 +8,11 @@ const config = {
     require("./gmail-secret.json").client_secret,
   googleClientId:
     process.env.GOOGLE_CLIENT_ID || require("./gmail-secret.json").client_id,
-  redisURL: process.env.REDIS_URL || "redis://localhost:6379"
+  googleRedirectUrl:
+    process.env.GOOGLE_REDIRECT_URL ||
+    require("./gmail-secret.json").redirect_uri,
+  redisURI: process.env.REDIS_HOST || "127.0.0.1",
+  redisPort: process.env.REDIS_PORT || "6379"
 };
 
 module.exports = config;

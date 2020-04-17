@@ -91,7 +91,6 @@ router.delete(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      console.log();
       const campaignId = req.params.campaignId;
 
       const results = await Campaign.deleteOne({
@@ -258,10 +257,10 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const { campaignId, stepId } = req.params;
-
+    console.log("Starting sendEmailsQueue");
     // check campaign is owned by logged in user
 
-    sendEmailsQueue(campaignId, stepId, req.user.id);
+    sendEmailsQueue(campaignId, stepId, req.user.id, req.user.gmailToken);
   }
 );
 
