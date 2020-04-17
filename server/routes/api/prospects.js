@@ -189,6 +189,7 @@ router.delete("/:id", passport.authenticate("jwt", { session: false }),
 // @access Authenticated Users
 router.post("/upload", passport.authenticate("jwt", { session: false }),
   upload.single('file'), async (req, res) => {
+    console.log(req);
     const csvData = [];
     const file = req.file;
     const userId = req.user.id;

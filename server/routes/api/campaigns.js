@@ -4,7 +4,11 @@ const passport = require("passport");
 
 const Campaign = require("../../models/campaign");
 const Prospect = require("../../models/Prospect");
-const { validateCampaignInput } = require("../../validation/campaign");
+const Step = require("../../models/step");
+const {
+  validateCampaignInput,
+  validateStepInput
+} = require("../../validation/campaign");
 const { sendEmailsQueue } = require("../../controllers/queues/index");
 
 // @route POST /api/campaigns
@@ -286,6 +290,177 @@ router.post(
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Error sending emails" });
+    }
+  }
+);
+
+// @route POST /api/campaigns/:campaignId/steps
+// @desc Add a step to a campaign. Requires step name in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { errors, isValid } = validateStepInput(req.body);
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+
+    const campaignId = req.params.campaignId;
+    const { name } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign with id ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
+      }
+
+      const newStep = new Step({ name });
+      await newStep.save();
+
+      campaign.steps.push(newStep._id);
+      await campaign.save();
+
+      res.json(newStep);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error adding step" });
+    }
+  }
+);
+
+// @route POST /api/campaigns/:campaignId/steps/:stepId/content
+// @desc Edit the subject and content of a step.
+//       Requires subject and content (stringified editorState) in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps/:stepId/content",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { campaignId, stepId } = req.params;
+    const { subject, content } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
+      }
+
+      const step = await Step.findById(stepId);
+
+      if (!step) {
+        return res.status(404).json({ error: `Step ${stepId} not found` });
+      }
+
+      const stepInCampaign = campaign.steps.some(curr => curr == stepId);
+
+      if (!stepInCampaign) {
+        return res.status(404).json({
+          error: `Step ${stepId} not found in Campaign ${campaignId}`
+        });
+      }
+
+      step.subject = subject;
+      step.content = content;
+      await step.save();
+
+      res.json(step);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error updating step content" });
+    }
+  }
+);
+
+// @route POST /api/campaigns/:campaignId/steps/:stepId/prospects
+// @desc Move a selection of prospects in a campaign to one of its steps
+//       Requires prospects (array of prospectIds) in request body.
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps/:stepId/prospects",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { campaignId, stepId } = req.params;
+    const { prospects } = req.body;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
+      }
+
+      const targetStep = await Step.findById(stepId);
+
+      if (!targetStep) {
+        return res.status(404).json({ error: `Step ${stepId} not found` });
+      }
+
+      const stepInCampaign = campaign.steps.some(curr => curr == stepId);
+
+      if (!stepInCampaign) {
+        return res.status(404).json({
+          error: `Step ${stepId} not found in Campaign ${campaignId}`
+        });
+      }
+
+      for (let i = 0; i < prospects.length; i++) {
+        const prospectObject = campaign.prospects.find(
+          curr => curr.prospectId == prospects[i]
+        );
+
+        if (!prospectObject) {
+          continue;
+        }
+
+        //Add the prospect to the target step
+        targetStep.prospects.push({
+          prospectId: prospects[i]
+        });
+
+        //Update the prospect object from the campaign
+        prospectObject.step = targetStep._id;
+      }
+
+      await targetStep.save();
+      await campaign.save();
+
+      res.status(200).json(campaign);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error moving prospects" });
     }
   }
 );
