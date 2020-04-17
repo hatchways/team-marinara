@@ -51,6 +51,10 @@ const Campaign = props => {
     }
   }, [recentlyFetched, campaignId, props]);
 
+  const triggerFetch = () => {
+    setRecentlyFetched(false);
+  };
+
   return (
     <React.Fragment>
       <Sidebar campaignId={campaignId} />
@@ -59,7 +63,11 @@ const Campaign = props => {
           <Prospects campaign={campaign} prospects={prospects} />
         </Route>
         <Route path={["/home/campaigns/*", "/home/campaigns/*/summary"]}>
-          <Summary campaign={campaign} steps={steps} />
+          <Summary
+            campaign={campaign}
+            steps={steps}
+            triggerFetch={triggerFetch}
+          />
         </Route>
       </Switch>
     </React.Fragment>

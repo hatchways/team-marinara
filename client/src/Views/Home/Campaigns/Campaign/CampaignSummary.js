@@ -16,7 +16,11 @@ const CampaignSummary = props => {
   return (
     <Grid item container direction="column" className={classes.root}>
       <Header campaign={props.campaign} />
-      <Steps steps={props.steps} />
+      <Steps
+        campaignId={props.campaign._id}
+        steps={props.steps}
+        triggerFetch={props.triggerFetch}
+      />
     </Grid>
   );
 };

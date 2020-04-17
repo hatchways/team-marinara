@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { EditorState, convertToRaw, Modifier } from "draft-js";
 
-import { addStepToCampaign } from "Utils/api";
+import { addStepToCampaign, editStepContent } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
 import StepHeader from "Components/TextEditor/StepHeader";
 import StepFooter from "Components/TextEditor/StepFooter";
@@ -76,13 +76,20 @@ const StepEditor = props => {
   // Sends editor content to back-end
   const handleSave = async () => {
     try {
-      await addStepToCampaign({
-        campaignId: props.campaignId,
-        type: null,
-        subject: subject,
-        editorState: convertToRaw(editorState.getCurrentContent())
+      let stepId;
+
+      //Create a new step if no existing step was provided
+      if (!props.step) {
+        const res = await addStepToCampaign(props.campaignId, subject);
+        stepId = res.data._id;
+      }
+
+      await editStepContent(props.campaignId, stepId, {
+        subject,
+        content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
       });
 
+      props.triggerFetch();
       // launches success dialog
       setSaveSuccess(true);
     } catch (error) {

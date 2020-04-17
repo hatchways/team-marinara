@@ -131,9 +131,15 @@ const getCampaignSteps = campaignId => {
   return axios.get(`/api/campaigns/${campaignId}/steps`);
 };
 
-const addStepToCampaign = async data => {
-  const response = await axios.post("/api/campaigns/step", data);
-  return response;
+const addStepToCampaign = (campaignId, name) => {
+  return axios.post(`/api/campaigns/${campaignId}/steps`, { name });
+};
+
+const editStepContent = (campaignId, stepId, fields) => {
+  return axios.post(
+    `/api/campaigns/${campaignId}/steps/${stepId}/content`,
+    fields
+  );
 };
 
 export {
@@ -151,5 +157,6 @@ export {
   getCampaign,
   addProspectsToCampaign,
   getCampaignProspects,
-  getCampaignSteps
+  getCampaignSteps,
+  editStepContent
 };

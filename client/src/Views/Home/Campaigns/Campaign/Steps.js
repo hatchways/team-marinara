@@ -44,7 +44,13 @@ const Steps = props => {
       <Grid item>
         <Button onClick={() => openEditor(null)}>Add Step</Button>
       </Grid>
-      <StepEditor open={editorOpen} onClose={handleClose} step={selectedStep} />
+      <StepEditor
+        open={editorOpen}
+        onClose={handleClose}
+        campaignId={props.campaignId}
+        step={selectedStep}
+        triggerFetch={props.triggerFetch}
+      />
     </Grid>
   );
 };
