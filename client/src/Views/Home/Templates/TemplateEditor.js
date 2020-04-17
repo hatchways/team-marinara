@@ -32,6 +32,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const emptyFieldMessage = "Title, Subject, and Body cannot be empty."
+const genericErrorMessage = "Save failed. Please try again.";
+const duplicateTitle = "A template with this title already exists."
+
 const TemplateEditor = props => {
   const [type, setType] = useState("New Thread");
   const [subject, setSubject] = useState("");
@@ -41,9 +45,6 @@ const TemplateEditor = props => {
   const [errorMessage, setErrorMessage] = useState("");
   const [editMode, setEditMode] = useState(false);
   const classes = useStyles();
-  const emptyFieldMessage = "Title, Subject, and Body cannot be empty."
-  const genericErrorMessage = "Save failed. Please try again.";
-  const duplicateTitle = "A template with this title already exists."
 
   const { template, setRecentlyFetched, setModalOpen } = props;
 
@@ -116,17 +117,9 @@ const TemplateEditor = props => {
 
   // Sends editor content to back-end
   const handleSave = async () => {
-    if(editMode){
-      console.log("edit");
-      //console.log(template);
-    } else {
-      console.log("save");
-      //console.log(template);
-    }
     try {
       if(title && subject && editorState.getCurrentContent().hasText()) {
         if(editMode) {
-          console.log(template); 
           await editTemplate({
             name: title,
             subject: subject,

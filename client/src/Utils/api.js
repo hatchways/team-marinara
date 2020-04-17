@@ -47,8 +47,7 @@ const createTemplate = (template) => {
 }
 
 const editTemplate = (template, id) => {
-  let url = "/api/templates/" + id;
-  console.log(url);
+  const url = "/api/templates/" + id;
   return axios.put(url, template);
 }
 

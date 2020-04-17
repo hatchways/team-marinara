@@ -13,7 +13,6 @@ import Reporting from "./Reporting/Reporting";
 import GmailAuthResultDialog from "Views/GmailAuth/GmailAuthResultDialog";
 import GmailSignInDialog from "Views/GmailAuth/GmailSignInDialog";
 import Step from "Views/Home/Steps/AddStep";
-import TemplateEditor from "Views/Home/Templates/TemplateEditor";
 
 import colors from "Components/Styles/Colors";
 
@@ -51,8 +50,6 @@ const Home = props => {
         path={`*/email-auth-results-dialog`}
         component={GmailAuthResultDialog}
       />
-      <Route path={`*/templates/load`} component={TemplateEditor} />
-      <Route path={`*/templates/create`} component={TemplateEditor} />
       <Route path={`*/step`} component={Step} />
     </Grid>
   );
