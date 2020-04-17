@@ -38,6 +38,19 @@ const uploadProspectCsv = async formData => {
   }
 };
 
+const getTemplates = () => {
+  return axios.get("/api/templates");
+};
+
+const createTemplate = template => {
+  return axios.post("/api/templates/", template);
+};
+
+const editTemplate = (template, id) => {
+  const url = "/api/templates/" + id;
+  return axios.put(url, template);
+};
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -158,5 +171,8 @@ export {
   addProspectsToCampaign,
   getCampaignProspects,
   getCampaignSteps,
-  editStepContent
+  editStepContent,
+  getTemplates,
+  createTemplate,
+  editTemplate
 };

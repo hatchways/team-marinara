@@ -79,7 +79,7 @@ class ProspectsUpload extends Component {
 
     try {
       const res = await uploadProspectCsv(formData);
-      if (res.status == 200) {
+      if (res.status === 200) {
         this.setState({
           uploadResultMessage:
             "Successfully uploaded " +
@@ -112,7 +112,7 @@ class ProspectsUpload extends Component {
     try {
       this.setState({
         file: file,
-        fileMessage: '"' + file.name + '"' + " selected."
+        fileMessage: file.name + " selected."
       });
     } catch (error) {
       this.setState({
