@@ -7,7 +7,8 @@ const config = {
     process.env.GOOGLE_CLIENT_SECRET ||
     require("./gmail-secret.json").client_secret,
   googleClientId:
-    process.env.GOOGLE_CLIENT_ID || require("./gmail-secret.json").client_id
+    process.env.GOOGLE_CLIENT_ID || require("./gmail-secret.json").client_id,
+  redisURL: process.env.REDIS_URL || "redis://localhost:6379"
 };
 
 module.exports = config;

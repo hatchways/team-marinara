@@ -5,6 +5,7 @@ const passport = require("passport");
 const Campaign = require("../../models/campaign");
 const Prospect = require("../../models/Prospect");
 const { validateCampaignInput } = require("../../validation/campaign");
+const { sendEmailsQueue } = require("../../controllers/queues/index");
 
 // @route POST /api/campaigns
 // @desc Create a Campaign object. Requires 'name' (campaign name)
@@ -249,6 +250,18 @@ router.delete(
       console.log(error);
       res.json({ error: "Error deleting prospects" });
     }
+  }
+);
+
+router.post(
+  "/:campaignId/steps/:stepId/sendEmails",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { campaignId, stepId } = req.params;
+
+    // check campaign is owned by logged in user
+
+    sendEmailsQueue(campaignId, stepId, req.user.id);
   }
 );
 

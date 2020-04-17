@@ -68,7 +68,6 @@ router.get(
  */
 router.post(
   "/processToken",
-  // call passport authentication passing the "local" strategy name and a callback function
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
@@ -111,62 +110,6 @@ router.post(
     }
   }
 );
-
-/*
- * Test function to show send email functionality
- * @param: mail - nodemailer mailComposer object with to, subject, text and textEncoding properties
- * @param req.query.redirectUrl {string} - URL to redirect to
- * after Google auth process
- */
-async function sendEmail(mail) {
-  const userId = "5e84b3101bd834092a28464f";
-  const loggedInUser = await User.findById(userId);
-  const oAuth2Client = new google.auth.OAuth2(
-    googleClientId,
-    googleClientSecret,
-    req.query.redirectUrl
-  );
-  oAuth2Client.setCredentials({ refresh_token: loggedInUser.gmailToken });
-
-  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-  mail = new mailComposer({
-    to: "darren@darrengreenfield.com",
-    text: "This is a test email",
-    subject: "OMG it worked!",
-    textEncoding: "base64"
-  });
-
-  await mail.compile().build(async (err, msg) => {
-    if (err) {
-      return console.log("Error compiling email " + error);
-    }
-
-    const encodedMessage = Buffer.from(msg)
-      .toString("base64")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-
-    await gmail.users.messages.send(
-      {
-        userId: "me",
-        resource: {
-          raw: encodedMessage
-        }
-      },
-      (err, result) => {
-        if (err) {
-          return console.log("gmail send returned an error: " + err);
-        }
-
-        // In app we'd save result.data.threadId to database so can track later
-
-        console.log("Send email success. Reply from server:", result.data);
-      }
-    );
-  });
-}
 
 /*
  * Test function to show read email functionality
