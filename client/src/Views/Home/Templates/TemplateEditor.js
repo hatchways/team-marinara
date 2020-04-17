@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
-import {createTemplate, editTemplate } from "Utils/api";
+import { createTemplate, editTemplate } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
 import TemplateEditorHeader from "./TemplateEditorHeader";
 import TemplateEditorFooter from "./TemplateEditorFooter";
@@ -32,9 +32,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const emptyFieldMessage = "Title, Subject, and Body cannot be empty."
+const emptyFieldMessage = "Title, Subject, and Body cannot be empty.";
 const genericErrorMessage = "Save failed. Please try again.";
-const duplicateTitle = "A template with this title already exists."
+const duplicateTitle = "A template with this title already exists.";
 
 const TemplateEditor = props => {
   const [type, setType] = useState("New Thread");
@@ -48,23 +48,23 @@ const TemplateEditor = props => {
 
   const { template, setRecentlyFetched, setModalOpen } = props;
 
-  useEffect( () => {
-    if(template){
+  useEffect(() => {
+    if (template) {
       const loadTemplateForView = () => {
         try {
-            const rawContentState = convertFromRaw(JSON.parse(template.content));
-            setEditorState(EditorState.createWithContent(rawContentState));
-            setSubject(template.subject);
-            setTitle(template.name);
-            setEditMode(true);
+          const rawContentState = convertFromRaw(JSON.parse(template.content));
+          const editorState = EditorState.createWithContent(rawContentState);
+          setEditorState(EditorState.moveSelectionToEnd(editorState));
+          setSubject(template.subject);
+          setTitle(template.name);
+          setEditMode(true);
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
+      };
+      loadTemplateForView();
     }
-    loadTemplateForView();
-    }
-    
-},[template]);
+  }, [template]);
 
   const handleClose = () => {
     setModalOpen(false);
@@ -77,7 +77,7 @@ const TemplateEditor = props => {
     setEditorState(EditorState.createEmpty());
     setRecentlyFetched(false);
     setEditMode(false);
-  }
+  };
 
   const handleVariableValueClick = value => {
     let textToInsert;
@@ -118,18 +118,25 @@ const TemplateEditor = props => {
   // Sends editor content to back-end
   const handleSave = async () => {
     try {
-      if(title && subject && editorState.getCurrentContent().hasText()) {
-        if(editMode) {
-          await editTemplate({
-            name: title,
-            subject: subject,
-            content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-          }, template._id)
+      if (title && subject && editorState.getCurrentContent().hasText()) {
+        if (editMode) {
+          await editTemplate(
+            {
+              name: title,
+              subject: subject,
+              content: JSON.stringify(
+                convertToRaw(editorState.getCurrentContent())
+              )
+            },
+            template._id
+          );
         } else {
           await createTemplate({
             name: title,
             subject: subject,
-            content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+            content: JSON.stringify(
+              convertToRaw(editorState.getCurrentContent())
+            )
           });
         }
         // launches success dialog
@@ -139,12 +146,11 @@ const TemplateEditor = props => {
         displayErrorDialogue(emptyFieldMessage);
         setSaveSuccess(false);
       }
-      
     } catch (error) {
       // Launches error dialog
       //if(error.sta)
       console.log(error);
-      if(error.response.status === 409) {
+      if (error.response.status === 409) {
         setErrorMessage(duplicateTitle);
       }
       setSaveSuccess(false);
@@ -154,71 +160,70 @@ const TemplateEditor = props => {
     setSaveSuccess(null);
   };
 
-  const displayErrorDialogue = (message) => {
-    if(message) {
+  const displayErrorDialogue = message => {
+    if (message) {
       setErrorMessage(message);
     } else {
       setErrorMessage(genericErrorMessage);
     }
-    
-  }
+  };
 
   return (
     <Modal open={props.open} className={classes.modal}>
-    <Dialog
-      open={true}
-      onClose={handleClose}
-      fullWidth={false}
-      maxWidth="md"
-      className={classes.root}
-    >
-      <DialogContent className={classes.dialogContent}>
-        <Grid container spacing={2}>
-          <Grid container className={classes.emailContainer}>
-            <TemplateEditorHeader
-              handleClose={handleClose}
-              title={title}
-              editMode={editMode}
-              setTitle={setTitle}
-              type={type}
-              setType={setType}
-              subject={subject}
-              setSubject={setSubject}
-            />
-
-            <Grid item xs={12}>
-              <TextEditor
-                editorState={editorState}
-                setEditorState={setEditorState}
+      <Dialog
+        open={true}
+        onClose={handleClose}
+        fullWidth={false}
+        maxWidth="md"
+        className={classes.root}
+      >
+        <DialogContent className={classes.dialogContent}>
+          <Grid container spacing={2}>
+            <Grid container className={classes.emailContainer}>
+              <TemplateEditorHeader
+                handleClose={handleClose}
+                title={title}
+                editMode={editMode}
+                setTitle={setTitle}
+                type={type}
+                setType={setType}
+                subject={subject}
+                setSubject={setSubject}
               />
+
+              <Grid item xs={12}>
+                <TextEditor
+                  editorState={editorState}
+                  setEditorState={setEditorState}
+                />
+              </Grid>
             </Grid>
+
+            <TemplateEditorFooter
+              handleVariableValueClick={handleVariableValueClick}
+              handleClose={handleClose}
+              handleSave={handleSave}
+            />
           </Grid>
+        </DialogContent>
 
-          <TemplateEditorFooter
-            handleVariableValueClick={handleVariableValueClick}
-            handleClose={handleClose}
-            handleSave={handleSave}
-          />
-        </Grid>
-      </DialogContent>
-
-      {/* Success or Failure Dialog */}
-      {saveSuccess !== null && (
-        <Dialog
-          open={true}
-          onClose={errorDialogClose}
-          maxWidth="md"
-          className={(classes.root, classes.dialog)}
-        >
-          <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {saveSuccess ? "Template saved" : errorMessage}
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-      )}
-    </Dialog>
+        {/* Success or Failure Dialog */}
+        {saveSuccess !== null && (
+          <Dialog
+            open={true}
+            onClose={errorDialogClose}
+            maxWidth="md"
+            className={(classes.root, classes.dialog)}
+          >
+            <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {saveSuccess ? "Template saved" : errorMessage}
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+        )}
+      </Dialog>
     </Modal>
   );
 };
