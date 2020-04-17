@@ -45,11 +45,10 @@ const StepEditor = props => {
         setEditorState(EditorState.createEmpty());
       } else {
         setSubject(props.step.subject);
-        setEditorState(
-          EditorState.createWithContent(
-            convertFromRaw(JSON.parse(props.step.content))
-          )
+        const content = EditorState.createWithContent(
+          convertFromRaw(JSON.parse(props.step.content))
         );
+        setEditorState(EditorState.moveSelectionToEnd(content));
       }
       setRecentlyOpened(false);
     }
