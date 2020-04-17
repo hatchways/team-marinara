@@ -25,32 +25,24 @@ const sendEmailsProcess = async data => {
 
     for (const prospect of step.prospects) {
       // Build email
-      const mail = new mailComposer({
+      const encodedMail = await new mailComposer({
         to: prospect.email,
         subject: emailSubject,
         text: emailContent,
         textEncoding: "base64"
-      });
-      console.log(mail);
+      })
+        .compile()
+        .build();
 
-      const encodedMail = await mail.compile().build((err, msg) => {
-        if (err) {
-          return console.log(
-            `Error compiling email for ${prospect.email}. Error: ${error}`
-          );
-        }
-        console.log("Mail encoded");
-
-        return Buffer.from(msg)
-          .toString("base64")
-          .replace(/\+/g, "-")
-          .replace(/\//g, "_")
-          .replace(/=+$/, "");
-      });
+      const encodedMailString = Buffer.from(encodedMail)
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
 
       // Send email
       console.log("Calling sendOneMail");
-      await sendOneEmail(encodedMail, data.gmailToken);
+      await sendOneEmail(encodedMailString, data.gmailToken);
     }
 
     return true;
@@ -59,7 +51,7 @@ const sendEmailsProcess = async data => {
   }
 };
 
-const sendOneEmail = async (encodedMail, gmailToken) => {
+const sendOneEmail = async (encodedMailString, gmailToken) => {
   const oAuth2Client = new google.auth.OAuth2(
     googleClientId,
     googleClientSecret,
@@ -69,12 +61,12 @@ const sendOneEmail = async (encodedMail, gmailToken) => {
 
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
-  console.log(encodedMail);
+  console.log(encodedMailString);
   // await gmail.users.messages.send(
   //   {
   //     userId: "me",
   //     resource: {
-  //       raw: encodedMail
+  //       raw: encodedMailString
   //     }
   //   },
   //   (err, result) => {
