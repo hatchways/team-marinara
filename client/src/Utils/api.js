@@ -170,9 +170,9 @@ export {
   getCampaign,
   addProspectsToCampaign,
   getCampaignProspects,
+  getCampaignSteps,
+  editStepContent,
   getTemplates,
   createTemplate,
-  editTemplate,
-  getCampaignSteps,
-  editStepContent
+  editTemplate
 };
