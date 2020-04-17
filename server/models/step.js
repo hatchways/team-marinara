@@ -35,7 +35,8 @@ const StepSchema = new Schema({
           "Opted out"
         ],
         default: "Draft"
-      }
+      },
+      gmailThreadId: { type: String }
     }
   ]
 });
