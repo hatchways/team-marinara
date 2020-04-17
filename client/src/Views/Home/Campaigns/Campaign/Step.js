@@ -72,7 +72,10 @@ const Step = props => {
     <Grid item container alignItems="center" className={classes.root}>
       <Grid item>
         <EmailTooltip title="Edit Email">
-          <IconButton className={classes.button}>
+          <IconButton
+            className={classes.button}
+            onClick={() => props.openEditor(props.step)}
+          >
             <EmailIcon />
           </IconButton>
         </EmailTooltip>
