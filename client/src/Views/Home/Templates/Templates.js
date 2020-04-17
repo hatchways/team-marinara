@@ -1,8 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import {
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import DashboardSidebar from "Components/Sidebar/DashboardSidebar";
 
 import TemplatesHeader from "./TemplatesHeader";
@@ -18,90 +15,83 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Templates = props => {
-    const context = useContext(AuthUserContext);
-    const classes = useStyles();
-    const [templates, setTemplates] = useState([]);
-    const [filteredTemplates, setFilteredTemplates] = useState([]);
-    const [recentlyFetched, setRecentlyFetched] = useState(false);
-    const [user, setUser] = useState({});
-    const [errors, setErrors] = useState({});
-    const [modalOpen, setModalOpen] = useState(false);
-    const [template, setTemplate] = useState();
+  const context = useContext(AuthUserContext);
+  const classes = useStyles();
+  const [templates, setTemplates] = useState([]);
+  const [filteredTemplates, setFilteredTemplates] = useState([]);
+  const [recentlyFetched, setRecentlyFetched] = useState(false);
+  const [user, setUser] = useState({});
+  const [errors, setErrors] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [template, setTemplate] = useState();
 
-    const sidebarCheckboxes = [
-      
-    ]
+  const sidebarCheckboxes = [];
 
-    const headerColumns = [
-      "Title", "Subject", "Created", "Author"
-    ];
+  const headerColumns = ["Title", "Subject", "Created", "Author"];
 
-  useEffect( () => {
-      
+  useEffect(() => {
     setUser(context.user);
 
     const fetchTemplates = async () => {
-        try {
-            const res = await getTemplates();
-            setTemplates(res.data);
-            setFilteredTemplates(res.data);
-
-        } catch (error) {
-            setErrors(error);
-            console.log(errors)
-        }
-    }
+      try {
+        const res = await getTemplates();
+        setTemplates(res.data);
+        setFilteredTemplates(res.data);
+      } catch (error) {
+        setErrors(error);
+        console.log(errors);
+      }
+    };
     if (!recentlyFetched) {
       fetchTemplates();
       setRecentlyFetched(true);
     }
-}, [recentlyFetched]);
+  }, [recentlyFetched, context.user, errors]);
 
-const handleFieldChange = (elementId, value) => {
-  const newFilteredTemplateList = templates.filter(t =>
-    t.name.toLowerCase().includes(value.toLowerCase())
-  );
-  setFilteredTemplates(newFilteredTemplateList);
-};
+  const handleFieldChange = (elementId, value) => {
+    const newFilteredTemplateList = templates.filter(t =>
+      t.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredTemplates(newFilteredTemplateList);
+  };
 
-const viewTemplate = (template) => {
-  setModalOpen(true);
-  setTemplate(template);
-}
+  const viewTemplate = template => {
+    setModalOpen(true);
+    setTemplate(template);
+  };
 
   return (
     <Grid item container className={classes.root}>
       <Grid item xs={3}>
-            <DashboardSidebar 
-              handleFieldChange={handleFieldChange}
-              sidebarCheckboxes={sidebarCheckboxes}/>
-        </Grid>
-        
-        <Grid item xs={9}>
-          <TemplatesHeader 
-            modalOpen={modalOpen} 
-            setModalOpen={setModalOpen} 
-            templates={templates}
-            setRecentlyFetched={setRecentlyFetched}/>
-          <TemplatesTable 
-            viewTemplate={viewTemplate}
-            filteredTemplates={filteredTemplates}
-            headerColumns={headerColumns}
-            user={user}
-            />
-        </Grid>
-        <Modal
-            open={modalOpen}
-            setModalOpen={setModalOpen}
-            template={template}
-            setTemplate={setTemplate}
-            setRecentlyFetched={setRecentlyFetched}
-          />
+        <DashboardSidebar
+          handleFieldChange={handleFieldChange}
+          sidebarCheckboxes={sidebarCheckboxes}
+        />
+      </Grid>
+
+      <Grid item xs={9}>
+        <TemplatesHeader
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          templates={templates}
+          setRecentlyFetched={setRecentlyFetched}
+        />
+        <TemplatesTable
+          viewTemplate={viewTemplate}
+          filteredTemplates={filteredTemplates}
+          headerColumns={headerColumns}
+          user={user}
+        />
+      </Grid>
+      <Modal
+        open={modalOpen}
+        setModalOpen={setModalOpen}
+        template={template}
+        setTemplate={setTemplate}
+        setRecentlyFetched={setRecentlyFetched}
+      />
     </Grid>
   );
-  }
-
-Templates.contextType = AuthUserContext;
-
+};
 
 export default Templates;

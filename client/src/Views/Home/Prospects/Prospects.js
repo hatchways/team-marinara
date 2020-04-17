@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core/";
 import { getProspectData } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
-import Paper from '@material-ui/core/Paper';
 import styles from "Components/Table/ProspectTableStyles";
 import CloudIcon from "@material-ui/icons/Cloud";
 import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
@@ -225,10 +224,9 @@ class Prospects extends Component {
                   direction="column"
                   alignContent="center"
                   alignItems="center"
-                  spacing={7}
                   className={this.props.classes.root}
                 >
-                  <Paper
+                  <Grid
                     item
                     container
                     direction="column"
@@ -295,7 +293,7 @@ class Prospects extends Component {
                         <TableBody>{filteredProspectList}</TableBody>
                       </Table>
                     </React.Fragment>
-                  </Paper>
+                  </Grid>
                   {prospects.length === 0 ? (
                     <Typography
                       style={{ color: "black" }}

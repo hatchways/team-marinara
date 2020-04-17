@@ -1,6 +1,5 @@
 import React from "react";
 import { Grid, Typography, makeStyles } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
 
 import StyledButton from "Components/Button/StyledButton";
 
@@ -18,32 +17,20 @@ const useStyles = makeStyles({
   }
 });
 
-const CampaignHeader = props => {
+const CampaignProspectsHeader = props => {
   const classes = useStyles();
 
-  const handleAddProspects = () => {
-    props.history.push(`/home/prospects`);
-  };
-
-  const handleAddStep = () => {
-    props.history.push(`${props.match.url}/step`);
-  };
-
   return (
-    <Grid item container className={classes.root} spacing={4}>
+    <Grid item container className={classes.root}>
       <Grid item className={classes.title}>
         <Typography className={classes.name}>{props.name}</Typography>
       </Grid>
 
       <Grid item>
-        <StyledButton onClick={handleAddStep}>Add Step</StyledButton>
-      </Grid>
-
-      <Grid item>
-        <StyledButton onClick={handleAddProspects}>Add Prospects</StyledButton>
+        <StyledButton>Move to Step</StyledButton>
       </Grid>
     </Grid>
   );
 };
 
-export default withRouter(CampaignHeader);
+export default CampaignProspectsHeader;
