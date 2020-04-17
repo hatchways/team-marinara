@@ -381,6 +381,7 @@ router.post(
         });
       }
 
+      step.name = subject;
       step.subject = subject;
       step.content = content;
       await step.save();
