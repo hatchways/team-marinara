@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     height: "100vh",
     width: "100%"
   },
-  textField: {
+  searchBar: {
     width: "60%",
     marginLeft: "auto",
     marginRight: "auto",
@@ -68,7 +68,7 @@ const DashboardSidebar = props => {
         wrap="nowrap"
       >
         <TextField
-          className={classes.textField}
+          className={classes.searchBar}
           onChange={handleInputChange}
           value={props.value}
           id="outlined-basic"

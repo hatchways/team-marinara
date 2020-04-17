@@ -26,12 +26,11 @@ const styles = () => ({
   }
 });
 
-const TemplatesHeader = (props) => {
-  
+const TemplatesHeader = props => {
   const handleCreateTemplate = () => {
     props.setModalOpen(true);
   };
-  
+
   return (
     <Grid
       item
@@ -53,27 +52,23 @@ const TemplatesHeader = (props) => {
         spacing={4}
         className={props.classes.toggle}
       >
-        
         <Grid item>
           <FlashOnIcon className={props.classes.mainHeaderIcon} />
         </Grid>
         <Grid item>
           <MailIcon className={props.classes.mainHeaderIcon} />
         </Grid>
-        
-
 
         <Grid item>
-          <StyledAddProspectButton
-          onClick={handleCreateTemplate}>
+          <StyledAddProspectButton onClick={handleCreateTemplate}>
             Create New Template
           </StyledAddProspectButton>
         </Grid>
         <Modal
-            open={props.modalOpen}
-            setModalOpen={props.setModalOpen}
-            setRecentlyFetched={props.setRecentlyFetched}
-          />
+          open={props.modalOpen}
+          setModalOpen={props.setModalOpen}
+          setRecentlyFetched={props.setRecentlyFetched}
+        />
       </Grid>
     </Grid>
   );
