@@ -20,17 +20,21 @@ const sendEmailsProcess = async data => {
       "prospects.prospectId",
       "firstName lastName email"
     );
-    console.log("step content: ", step.content);
 
     const emailSubject = step.subject;
-    const emailContent = draftToHtml(step.content);
+    const emailContent = draftToHtml(JSON.parse(step.content));
 
     console.log("Email content:", emailContent);
     // Loop through prospects
     for (const prospect of step.prospects) {
       // Build email
 
-      // TODO: Use handlebars
+      // TODO: Replace handlebars
+      // Find all text inside {{ }} and replace it
+      const regEx = /{{.+?}}/g;
+      emailContent.replace(regEx, match => {
+        return prospect[variables.match];
+      });
 
       // Generate RFC822 formatted e-mail message that can be streamed to SMTP
       const encodedMail = await new mailComposer({

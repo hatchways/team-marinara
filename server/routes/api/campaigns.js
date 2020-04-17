@@ -294,6 +294,43 @@ router.post(
   }
 );
 
+// @route GET /api/campaigns/:campaignId/steps
+// @desc Get all the steps of a campaign
+// @access Authenticated Users
+router.get(
+  "/:campaignId/steps",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const campaignId = req.params.campaignId;
+
+    try {
+      const campaign = await Campaign.findById(campaignId);
+
+      if (!campaign) {
+        return res
+          .status(404)
+          .json({ error: `Campaign with id ${campaignId} not found` });
+      }
+
+      const userId = req.user._id;
+
+      if (campaign.ownedBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+          error: `Campaign ${campaignId} not owned by user ${userId}`
+        });
+      }
+
+      const steps = await Promise.all(
+        campaign.steps.map(curr => Step.findById(curr))
+      );
+      res.json(steps);
+    } catch (error) {
+      res.status(500).json({ error: "Error getting steps " });
+      console.log(error);
+    }
+  }
+);
+
 // @route POST /api/campaigns/:campaignId/steps
 // @desc Add a step to a campaign. Requires step name in request body.
 // @access Authenticated Users
@@ -382,6 +419,7 @@ router.post(
         });
       }
 
+      step.name = subject;
       step.subject = subject;
       step.content = content;
       await step.save();

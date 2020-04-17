@@ -27,14 +27,15 @@ const CampaignSchema = new Schema({
       step: { type: Schema.Types.ObjectId, ref: "Step" }
     }
   ],
-  // stepsSummary are counts of campaign.steps.prospects.status
+  // stepsSummary are sums of campaign.steps.summary
   stepsSummary: {
     sent: { type: Number, default: 0, required: true },
     delivered: { type: Number, default: 0, required: true },
     opened: { type: Number, default: 0, required: true },
     clicked: { type: Number, default: 0, required: true },
     replied: { type: Number, default: 0, required: true },
-    bounced: { type: Number, default: 0, required: true }
+    bounced: { type: Number, default: 0, required: true },
+    optedOut: { type: Number, default: 0, required: true }
   },
   steps: [{ type: Schema.Types.ObjectId, ref: "Step", index: true }]
 });

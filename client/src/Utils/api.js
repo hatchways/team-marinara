@@ -39,17 +39,17 @@ const uploadProspectCsv = async formData => {
 };
 
 const getTemplates = () => {
-  return axios.get("/api/templates")
-}
+  return axios.get("/api/templates");
+};
 
-const createTemplate = (template) => {
+const createTemplate = template => {
   return axios.post("/api/templates/", template);
-}
+};
 
 const editTemplate = (template, id) => {
   const url = "/api/templates/" + id;
   return axios.put(url, template);
-}
+};
 
 /*
  * Check if current user has given permission for Mail Sender to access their
@@ -140,9 +140,19 @@ const getCampaignProspects = campaignId => {
   return axios.get(`/api/campaigns/prospects/${campaignId}`);
 };
 
-const addStepToCampaign = async data => {
-  const response = await axios.post("/api/campaigns/step", data);
-  return response;
+const getCampaignSteps = campaignId => {
+  return axios.get(`/api/campaigns/${campaignId}/steps`);
+};
+
+const addStepToCampaign = (campaignId, name) => {
+  return axios.post(`/api/campaigns/${campaignId}/steps`, { name });
+};
+
+const editStepContent = (campaignId, stepId, fields) => {
+  return axios.post(
+    `/api/campaigns/${campaignId}/steps/${stepId}/content`,
+    fields
+  );
 };
 
 export {
@@ -162,5 +172,7 @@ export {
   getCampaignProspects,
   getTemplates,
   createTemplate,
-  editTemplate
+  editTemplate,
+  getCampaignSteps,
+  editStepContent
 };

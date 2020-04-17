@@ -15,54 +15,61 @@ const useStyles = makeStyles(theme => ({
     borderBottom: `1px solid ${colors.midGray}`,
     alignItems: "center",
     justifyContent: "flex-start",
-    direction: "row"
+    width: "100%"
   },
   stepName: {
     fontWeight: "bold",
-    borderRight: `1px solid ${colors.midGray}`
+    borderRight: `1px solid ${colors.midGray}`,
+    paddingRight: "1rem"
   },
   editTemplateText: {
     color: colors.darkGray,
-    paddingLeft: "1rem"
+    paddingLeft: "1rem",
+    flexGrow: 1,
+    width: "auto"
   },
   typeSubjectRows: {
     alignItems: "center",
     padding: "0.5rem 0 0.5rem 0",
-    borderBottom: `1px solid ${colors.midGray}`
+    borderBottom: `1px solid ${colors.midGray}`,
+    width: "100%"
   },
   typeSubjectTitles: {
-    color: colors.darkGray
+    color: colors.darkGray,
+    width: "auto",
+    paddingRight: "1rem"
   },
-  formControl: {
-    minWidth: 120
+  subjectInput: {
+    width: "auto",
+    flexGrow: 1
   }
 }));
 
 const AddStepHeader = props => {
   const classes = useStyles();
-  const { handleClose, subject, setSubject } = props;
+  const { handleClose, subject, setSubject, step } = props;
 
   return (
-    <Grid container>
-      <Grid container item xs={12} className={classes.header}>
-        <Grid item className={classes.stepName} xs={2}>
-          <Typography variant="h4">Step 1</Typography>
+    <Grid container direction="column">
+      <Grid container item className={classes.header}>
+        <Grid item className={classes.stepName}>
+          <Typography variant="h4">{step ? step.name : "New Step"}</Typography>
         </Grid>
-        <Grid item container className={classes.editTemplateText} xs={8}>
+        <Grid item container className={classes.editTemplateText}>
           <Typography variant="h6">Edit Template</Typography>
         </Grid>
-        <Grid item container xs={2} alignItems="flex-start" justify="flex-end">
+        <Grid item>
           <IconButton onClick={handleClose}>
             <Clear />
           </IconButton>
         </Grid>
       </Grid>
 
-      <Grid container item className={classes.typeSubjectRows} xs={12}>
-        <Grid item className={classes.typeSubjectTitles} xs={1}>
+      <Grid container item className={classes.typeSubjectRows}>
+        <Grid item className={classes.typeSubjectTitles}>
           <Typography>Subject</Typography>
         </Grid>
-        <Grid item xs={10}>
+        <Grid className={classes.subjectInput}>
           <InputBase
             id="subject"
             autoComplete="off"
