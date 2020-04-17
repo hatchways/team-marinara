@@ -19,12 +19,15 @@ const sendEmailsProcess = async data => {
       "firstName lastName email"
     );
 
-    // Loop through prospects
     const emailSubject = step.subject;
     const emailContent = step.content;
 
+    // Loop through prospects
     for (const prospect of step.prospects) {
       // Build email
+      // TODO: Use handlebars
+
+      // Generate RFC822 formatted e-mail message that can be streamed to SMTP
       const encodedMail = await new mailComposer({
         to: prospect.email,
         subject: emailSubject,
@@ -34,15 +37,25 @@ const sendEmailsProcess = async data => {
         .compile()
         .build();
 
+      // Convert RFC822 message to Buffer String
       const encodedMailString = Buffer.from(encodedMail)
         .toString("base64")
         .replace(/\+/g, "-")
         .replace(/\//g, "_")
         .replace(/=+$/, "");
 
-      // Send email
       console.log("Calling sendOneMail");
-      await sendOneEmail(encodedMailString, data.gmailToken);
+
+      // Staggers sending of emails to 1 second each
+      await new Promise(resolve =>
+        setTimeout(
+          () => resolve(sendOneEmail(encodedMailString, data.gmailToken)),
+          1000
+        )
+      );
+
+      // TO DO: If successfully sent, update step.prospects.status to sent
+      // If failed, update to relevant status
     }
 
     return true;
@@ -62,6 +75,7 @@ const sendOneEmail = async (encodedMailString, gmailToken) => {
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
   console.log(encodedMailString);
+  return Promise.resolve(true);
   // await gmail.users.messages.send(
   //   {
   //     userId: "me",
