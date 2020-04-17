@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Dialog,
@@ -7,7 +7,7 @@ import {
   DialogContentText,
   makeStyles
 } from "@material-ui/core";
-import { EditorState, convertToRaw, Modifier } from "draft-js";
+import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
 import { addStepToCampaign, editStepContent } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
@@ -35,7 +35,25 @@ const StepEditor = props => {
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [saveSuccess, setSaveSuccess] = useState(null);
+  const [recentlyOpened, setRecentlyOpened] = useState(true);
   const classes = useStyles();
+
+  useEffect(() => {
+    if (recentlyOpened) {
+      if (!props.step) {
+        setSubject("");
+        setEditorState(EditorState.createEmpty());
+      } else {
+        setSubject(props.step.subject);
+        setEditorState(
+          EditorState.createWithContent(
+            convertFromRaw(JSON.parse(props.step.content))
+          )
+        );
+      }
+      setRecentlyOpened(false);
+    }
+  }, [subject, editorState, recentlyOpened, props.step]);
 
   const handleVariableValueClick = value => {
     let textToInsert;
@@ -82,6 +100,8 @@ const StepEditor = props => {
       if (!props.step) {
         const res = await addStepToCampaign(props.campaignId, subject);
         stepId = res.data._id;
+      } else {
+        stepId = props.step._id;
       }
 
       await editStepContent(props.campaignId, stepId, {
@@ -106,6 +126,7 @@ const StepEditor = props => {
     <Dialog
       open={props.open}
       onClose={props.onClose}
+      onEnter={() => setRecentlyOpened(true)}
       fullWidth={false}
       maxWidth="md"
       className={classes.root}

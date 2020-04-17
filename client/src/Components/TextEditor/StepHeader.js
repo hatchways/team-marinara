@@ -53,9 +53,7 @@ const AddStepHeader = props => {
     <Grid container direction="column">
       <Grid container item className={classes.header}>
         <Grid item className={classes.stepName}>
-          <Typography variant="h4">
-            {props.step ? props.step.name : "New Step"}
-          </Typography>
+          <Typography variant="h4">{step ? step.name : "New Step"}</Typography>
         </Grid>
         <Grid item container className={classes.editTemplateText}>
           <Typography variant="h6">Edit Template</Typography>
