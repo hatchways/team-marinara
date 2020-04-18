@@ -30,6 +30,7 @@ const StepSchema = new Schema({
         ],
         default: "Draft"
       },
+      gmailMessageId: { type: String },
       gmailThreadId: { type: String }
     }
   ],

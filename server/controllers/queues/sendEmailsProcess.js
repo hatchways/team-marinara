@@ -14,33 +14,29 @@ const Variable = require("../../models/variable");
  * Send one email via Gmail from user represented by gmailToken
  */
 const sendOneEmail = async (encodedMailString, gmailToken) => {
-  const oAuth2Client = new google.auth.OAuth2(
-    googleClientId,
-    googleClientSecret,
-    googleRedirectUrl
-  );
-  oAuth2Client.setCredentials({ refresh_token: gmailToken });
+  try {
+    const oAuth2Client = new google.auth.OAuth2(
+      googleClientId,
+      googleClientSecret,
+      googleRedirectUrl
+    );
+    oAuth2Client.setCredentials({ refresh_token: gmailToken });
 
-  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
-  await gmail.users.messages.send(
-    {
+    const gmailResponse = await gmail.users.messages.send({
       userId: "me",
       resource: {
         raw: encodedMailString
       }
-    },
-    (err, result) => {
-      if (err) {
-        return console.log("Gmail send returned an error: " + err);
-      }
+    });
 
-      // In app we'd save result.data.threadId to database so can track later
-
-      console.log("Send email success. Reply from server:", result.data);
-      return Promise.resolve();
-    }
-  );
+    return Promise.resolve(gmailResponse.data);
+  } catch (error) {
+    console.log("Gmail send returned an error: " + error);
+    // send Promise.resolve() as we want to continue sending other emails
+    return Promise.resolve(error);
+  }
 };
 
 /*
@@ -90,18 +86,18 @@ const convertToBufferString = async (
  */
 const sendEmailsProcess = async data => {
   try {
-    console.log("sendEmailsProcess Starting...");
     const step = await Step.findById(data.stepId).populate(
       "prospects.prospectId",
       "firstName lastName email"
     );
+    const variables = await Variable.find();
 
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
 
-    const variables = await Variable.find();
-    // Loop through prospects
-    for (const prospect of step.prospects) {
+    for (let i = 0; i < step.prospects.length; i++) {
+      const prospect = step.prospects[i];
+
       // Replace variables with content
       const emailWithVariables = replaceVariables(
         prospect,
@@ -116,15 +112,22 @@ const sendEmailsProcess = async data => {
       );
 
       //Staggers sending of emails to 1 per second
-      await new Promise(resolve =>
+      const gmailResponse = await new Promise(resolve =>
         setTimeout(
           () => resolve(sendOneEmail(encodedMailString, data.gmailToken)),
           1000
         )
       );
 
-      // TO DO: If successfully sent, update step.prospects.status to sent
-      // If failed, update to relevant status
+      console.log("gmailResponse", gmailResponse);
+
+      if (!gmailResponse.errors) {
+        step.prospects[i].status = "Sent";
+        step.prospects[i].gmailMessageId = gmailResponse.id;
+        step.prospects[i].gmailThreadId = gmailResponse.threadId;
+        step.summary.sent++;
+        step.save();
+      }
     }
 
     return true;

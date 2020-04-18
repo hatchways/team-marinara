@@ -15,15 +15,15 @@ const sendEmailsQueue = async (campaignId, stepId, userId, gmailToken) => {
       await sendEmailsProcess(job.data);
     });
 
-    const sendEmailsJob = await sendEmailsQueue.add({
+    await sendEmailsQueue.add({
       campaignId: campaignId,
       stepId: stepId,
       userId: userId,
       gmailToken: gmailToken
     });
 
-    sendEmailsQueue.on("completed", (job, result) => {
-      console.log(`Job completed with result ${result}`);
+    sendEmailsQueue.on("completed", job => {
+      console.log(`Job ${job.id} completed`);
     });
   } catch (error) {
     console.log("Error adding job to queue: ", error);
