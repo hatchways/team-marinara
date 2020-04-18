@@ -62,7 +62,18 @@ const Step = props => {
 
   const moveProspects = async () => {
     try {
-      const prospectIds = props.prevStep.prospects.map(curr => curr.prospectId);
+      const prospectIds = [];
+
+      props.prevStep.prospects.forEach(prevProspect => {
+        //Check if prospect already exists in current step
+        const duplicate = props.step.prospects.some(curr => {
+          return curr.prospectId === prevProspect.prospectId;
+        });
+        if (!duplicate) {
+          prospectIds.push(prevProspect.prospectId);
+        }
+      });
+
       await moveProspectsToStep(props.campaignId, props.step._id, prospectIds);
     } catch (error) {
       console.log(error);
