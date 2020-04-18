@@ -10,7 +10,6 @@ import {
 import { Email, Send } from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
-import { sendStepEmails } from "Utils/api";
 import DataColumn from "Components/DataColumn/DataColumn";
 
 const useStyles = makeStyles({
@@ -82,9 +81,12 @@ const Step = props => {
         <EmailTooltip title="Send Emails">
           <IconButton
             className={classes.button}
-            onClick={() => {
-              sendStepEmails(props.campaignId, props.step._id);
-            }}
+            onClick={() =>
+              props.handleSendEmails(
+                props.step._id,
+                props.step.prospects.length
+              )
+            }
           >
             <Send />
           </IconButton>
