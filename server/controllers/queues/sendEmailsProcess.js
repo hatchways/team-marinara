@@ -1,3 +1,7 @@
+/*
+ * Send emails to all prospects in a step
+ */
+
 const { google } = require("googleapis");
 const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const draftToHtml = require("draftjs-to-html");
@@ -82,7 +86,7 @@ const convertToBufferString = async (
 };
 
 /*
- * @params: data: {campaignId, stepId, userId}
+ * @params: data: {stepId, userId}
  */
 const sendEmailsProcess = async data => {
   try {

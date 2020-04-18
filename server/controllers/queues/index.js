@@ -6,7 +6,7 @@ const Queue = require("bull");
 const REDIS_URL = require("../../config/config").redisURL;
 const { sendEmailsProcess } = require("./sendEmailsProcess");
 
-const sendEmailsQueue = async (campaignId, stepId, userId, gmailToken) => {
+const sendEmailsQueue = async (stepId, userId, gmailToken) => {
   try {
     // Create or connect to queue
     const sendEmailsQueue = new Queue("sendEmails", REDIS_URL);
@@ -16,7 +16,6 @@ const sendEmailsQueue = async (campaignId, stepId, userId, gmailToken) => {
     });
 
     await sendEmailsQueue.add({
-      campaignId: campaignId,
       stepId: stepId,
       userId: userId,
       gmailToken: gmailToken

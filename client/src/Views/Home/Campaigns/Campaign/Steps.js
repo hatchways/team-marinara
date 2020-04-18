@@ -35,7 +35,12 @@ const Steps = props => {
   };
 
   const steps = props.steps.map(curr => (
-    <Step key={curr._id} step={curr} openEditor={openEditor} />
+    <Step
+      key={curr._id}
+      step={curr}
+      campaignId={props.campaignId}
+      openEditor={openEditor}
+    />
   ));
 
   return (
