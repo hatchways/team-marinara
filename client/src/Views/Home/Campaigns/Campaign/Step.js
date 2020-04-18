@@ -4,10 +4,15 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  Menu,
+  MenuItem,
   makeStyles,
   withStyles
 } from "@material-ui/core";
-import EmailIcon from "@material-ui/icons/Email";
+import {
+  Email as EmailIcon,
+  MoreVert as MoreVertIcon
+} from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
 
@@ -45,6 +50,15 @@ const EmailTooltip = withStyles({
 
 const Step = props => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const openMenu = e => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
 
   const generateColumns = summary => {
     const columns = [];
@@ -85,6 +99,20 @@ const Step = props => {
       </Grid>
       <DataColumn label="Prospects" value={props.step.prospects.length} />
       {generateColumns(props.step.summary)}
+      <Grid item>
+        <IconButton onClick={openMenu}>
+          <MoreVertIcon />
+        </IconButton>
+      </Grid>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        getContentAnchorEl={null}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      >
+        <MenuItem>Move prospects to this step</MenuItem>
+      </Menu>
     </Grid>
   );
 };
