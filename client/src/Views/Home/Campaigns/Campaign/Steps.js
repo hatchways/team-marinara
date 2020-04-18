@@ -51,6 +51,8 @@ const Steps = props => {
         step={props.steps[i]}
         openEditor={openEditor}
         prevStep={prevStep}
+        campaignId={props.campaign._id}
+        triggerFetch={props.triggerFetch}
       />
     );
   }

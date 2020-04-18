@@ -140,6 +140,7 @@ const getCampaignProspects = campaignId => {
   return axios.get(`/api/campaigns/prospects/${campaignId}`);
 };
 
+//API calls for campaign steps
 const getCampaignSteps = campaignId => {
   return axios.get(`/api/campaigns/${campaignId}/steps`);
 };
@@ -153,6 +154,12 @@ const editStepContent = (campaignId, stepId, fields) => {
     `/api/campaigns/${campaignId}/steps/${stepId}/content`,
     fields
   );
+};
+
+const moveProspectsToStep = (campaignId, stepId, prospects) => {
+  return axios.post(`/api/campaigns/${campaignId}/steps/${stepId}/prospects`, {
+    prospects
+  });
 };
 
 export {
@@ -172,6 +179,7 @@ export {
   getCampaignProspects,
   getCampaignSteps,
   editStepContent,
+  moveProspectsToStep,
   getTemplates,
   createTemplate,
   editTemplate

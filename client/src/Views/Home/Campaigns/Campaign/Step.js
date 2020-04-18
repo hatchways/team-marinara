@@ -15,8 +15,8 @@ import {
 } from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
-
 import DataColumn from "Components/DataColumn/DataColumn";
+import { moveProspectsToStep } from "Utils/api";
 
 const useStyles = makeStyles({
   root: {
@@ -58,6 +58,17 @@ const Step = props => {
 
   const closeMenu = () => {
     setAnchorEl(null);
+  };
+
+  const moveProspects = async () => {
+    try {
+      const prospectIds = props.prevStep.prospects.map(curr => curr.prospectId);
+      await moveProspectsToStep(props.campaignId, props.step._id, prospectIds);
+    } catch (error) {
+      console.log(error);
+    }
+    props.triggerFetch();
+    closeMenu();
   };
 
   const generateColumns = summary => {
@@ -111,7 +122,7 @@ const Step = props => {
         getContentAnchorEl={null}
         anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
-        <MenuItem>Move prospects to this step</MenuItem>
+        <MenuItem onClick={moveProspects}>Move prospects to this step</MenuItem>
       </Menu>
     </Grid>
   );
