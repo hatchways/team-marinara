@@ -5,7 +5,7 @@ node_modules/
 
 
 # production
-/build/
+/client/build/
 /server/database
 
 # misc
@@ -25,4 +25,4 @@ yarn-error.log*
 
 
 #TODO add .env to your gitignore
-
+app.yaml
