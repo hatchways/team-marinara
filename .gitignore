@@ -25,4 +25,4 @@ yarn-error.log*
 
 
 #TODO add .env to your gitignore
-app.yaml
+env_variables.yaml

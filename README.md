@@ -31,3 +31,17 @@
 ### Stop the app
 
 1. Run `npm stop` from the `/server` directory to stop the mongoDB server
+
+## Deployment setup
+
+1. Download and install Google Cloud SDK following the instructions [here](https://cloud.google.com/sdk/docs#mac) including running `gcloud init` and logging in with your Google credentials
+
+2. Ensure you have the `env_variables.yaml` file in /server/config/ (this contains API keys and should not be commited to git)
+
+Note: app.yaml contains gcloud deployment settings
+
+## Deploying
+
+1. Run `npm build` from the /client directory to build the prodution React app
+
+2. Deploy the app by running `gcloud app deploy` from the app's parent folder. This will update the app deployed at mailsender.dev

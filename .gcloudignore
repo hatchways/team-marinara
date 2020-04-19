@@ -1,8 +1,7 @@
-/server/database
-/server/node_modules
-/client/node_modules
-/client/src
-/client/public
+/server/database/
+node_modules/
+/client/src/
+/client/public/
 /client/package*
 /client/README.md
 /client/jsconfig.json
