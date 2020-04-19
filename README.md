@@ -48,4 +48,6 @@
 
 1. Run `npm build` from the /client directory to build the prodution React app
 
-2. Deploy the app by running `gcloud app deploy` from the app's parent folder. This will update the app deployed at mailsender.dev
+2. Ensure package.json in the project root contains all server dependencies. App Engine uses the package.json file in the project root directory to install dependencies in the hosting container and starts the server with the `npm start` script in this file.
+
+3. Deploy the app by running `gcloud app deploy` from the app's parent folder. This will update the app deployed at mailsender.dev
