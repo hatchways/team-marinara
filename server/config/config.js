@@ -1,7 +1,6 @@
 const config = {
   mongoURI:
-    process.env.MONGO_URI ||
-    "mongodb+srv://umbauk:lasgdar82@cluster0-trix2.gcp.mongodb.net/mail-sender-dev?retryWrites=true&w=majority", //"mongodb://localhost:27017/mail-sender-dev",
+    process.env.MONGO_URI || "mongodb://localhost:27017/mail-sender-dev",
   appSecret: process.env.APP_SECRET || "secret",
   googleClientSecret:
     process.env.GOOGLE_CLIENT_SECRET ||
