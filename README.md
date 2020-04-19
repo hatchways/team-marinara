@@ -38,7 +38,11 @@
 
 2. Ensure you have the `env_variables.yaml` file in /server/config/ (this contains API keys and should not be commited to git)
 
-Note: app.yaml contains gcloud deployment settings
+### Notes:
+
+- app.yaml contains gcloud deployment settings
+- The database can be accessed at [cloud.mongodb.com](cloud.mongodb.com) The project is called Mail Sender.
+- The project is hosted on GCP App Engine and can be managed at [console.cloud.google.com](console.cloud.google.com). The project is called Mail Sender
 
 ## Deploying
 
