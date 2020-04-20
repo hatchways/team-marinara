@@ -6,7 +6,7 @@ import CampaignProspectsStepBar from "./CampaignProspectsStepBar";
 
 const useStyles = makeStyles({
   root: {
-    width: "auto",
+    width: "100%",
     padding: "2rem 3rem"
   },
   title: {

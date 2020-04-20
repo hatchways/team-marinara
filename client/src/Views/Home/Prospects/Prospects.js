@@ -62,9 +62,7 @@ class Prospects extends Component {
     // if 'check all' checkbox was selected ...
     if (prospectId === "all") {
       let obj = this.state.prospectChecked;
-      console.log(obj);
       for (const property in obj) {
-        console.log(property);
         obj[property] = event.target.checked;
       }
       this.setState({
