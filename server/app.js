@@ -21,13 +21,14 @@ mongoose
     useCreateIndex: true
   })
   .then(() => {
-    console.log("Connected to database...");
+    console.log("Connected to MongoDB...");
   });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // Connect to Redis
-const redisClient = redis.createClient(config.redisHost, config.redisURI);
+const redisClient = redis.createClient(config.redisPort, config.redisHost);
+redisClient.auth(config.redisAuth);
 redisClient.on("connect", () => console.log("Connected to Redis..."));
 redisClient.on("error", error => console.error(error));
 
@@ -43,7 +44,6 @@ app.use(express.static(join(__dirname, "public")));
 app.use(passport.initialize());
 
 app.use("/", routes);
-// app.use(/^(?!.*_ah).*$/, routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

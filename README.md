@@ -45,8 +45,9 @@
 ### Notes:
 
 - app.yaml contains gcloud deployment settings
-- The database can be accessed at [cloud.mongodb.com](cloud.mongodb.com) The project is called Mail Sender.
+- The MongoDB database can be accessed at [cloud.mongodb.com](cloud.mongodb.com) The project is called Mail Sender.
 - The project is hosted on GCP App Engine and can be managed at [console.cloud.google.com](console.cloud.google.com). The project is called Mail Sender
+- The Redis database can be accessed at [app.redislabs.com](app.redislabs.com)
 
 ## Deploying
 

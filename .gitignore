@@ -7,7 +7,7 @@ node_modules/
 # production
 /client/build/
 /server/database
-dump.rdb
+/server/dump*
 
 # misc
 .DS_Store

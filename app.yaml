@@ -6,14 +6,15 @@ includes:
 
 handlers:
   - url: /api/.*
-    secure: always
     script: auto
-  - url: /
+
+  - url: /static
+    static_dir: client/build/static
+
+  - url: /(.*\.(json|ico|js))$
+    static_files: client/build/\1
+    upload: client/build/.*\.(json|ico|js)$
+
+  - url: .*
     static_files: client/build/index.html
     upload: client/build/index.html
-  - url: /
-    static_dir: client/build
-  - url: /.*
-    secure: always
-    redirect_http_response_code: 301
-    script: auto
