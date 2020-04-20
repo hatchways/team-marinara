@@ -7,10 +7,9 @@ import {
   makeStyles,
   withStyles
 } from "@material-ui/core";
-import EmailIcon from "@material-ui/icons/Email";
+import { Email, Send } from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
-
 import DataColumn from "Components/DataColumn/DataColumn";
 
 const useStyles = makeStyles({
@@ -76,7 +75,20 @@ const Step = props => {
             className={classes.button}
             onClick={() => props.openEditor(props.step)}
           >
-            <EmailIcon />
+            <Email />
+          </IconButton>
+        </EmailTooltip>
+        <EmailTooltip title="Send Emails">
+          <IconButton
+            className={classes.button}
+            onClick={() =>
+              props.handleSendEmails(
+                props.step._id,
+                props.step.prospects.length
+              )
+            }
+          >
+            <Send />
           </IconButton>
         </EmailTooltip>
       </Grid>

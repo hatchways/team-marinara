@@ -22,15 +22,19 @@
 
 4. Create a database directory at `/server/database`. This will hold the database files and should not be committed to git as it will be a 300MB+ directory.
 
+### Redis setup
+
+5. If you do not have Redis installed, download it from [here](https://redis.io/download) or run `brew install redis` on mac
+
 ## Run the app
 
-1. Run `npm run dev` from the `/server` directory. This will start the mongoDB server and the app server
+1. Run `npm run dev` from the `/server` directory. This will start the mongoDB server, the Redis server and the app server
 
 2. Run `npm start` from the `/client` directory. This will start the React front-end app.
 
 ### Stop the app
 
-1. Run `npm stop` from the `/server` directory to stop the mongoDB server
+1. Run `npm stop` from the `/server` directory to stop the mongoDB and Redis servers
 
 ## Deployment setup
 

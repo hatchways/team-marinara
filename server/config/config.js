@@ -7,7 +7,12 @@ const config = {
     require("./gmail-secret.json").client_secret,
   googleClientId:
     process.env.GOOGLE_CLIENT_ID || require("./gmail-secret.json").client_id,
-  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads"
+  googleRedirectUrl:
+    process.env.GOOGLE_REDIRECT_URL ||
+    require("./gmail-secret.json").redirect_uri,
+  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads",
+  redisURI: process.env.REDIS_HOST || "127.0.0.1",
+  redisPort: process.env.REDIS_PORT || "6379"
 };
 
 module.exports = config;
