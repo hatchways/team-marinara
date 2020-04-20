@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 
 import colors from "Components/Styles/Colors";
-import Row from "./ProspectRow";
+import Row from "./TemplatesTableRow";
 
 const useStyles = makeStyles({
   root: {
@@ -19,9 +19,8 @@ const useStyles = makeStyles({
     padding: "0 3rem"
   },
   tableContainer: {
-    padding: 10,
+    minWidth: "500px",
     backgroundColor: `${colors.white}`,
-    //border: `1px solid ${colors.darkGray}`,
     borderRadius: 7
   },
   headRow: {
@@ -30,7 +29,8 @@ const useStyles = makeStyles({
   headCell: {
     fontSize: "1rem",
     fontWeight: "bold",
-    height: "3rem",
+    height: "2rem",
+    width: "50px",
     color: `${colors.white}`,
     "&:first-child": {
       borderRadius: "7px 0 0 7px"
@@ -40,32 +40,37 @@ const useStyles = makeStyles({
     }
   },
   table: {
-    borderCollapse: "separate"
+    borderCollapse: "separate",
+    margin: "25px 0px 75px 0px",
+    padding: "15px"
   }
 });
 
-const CampaignProspectsTable = props => {
+const TemplatesTable = props => {
   const classes = useStyles();
-  const rows = props.prospects.map(curr => (
-    <Row prospect={curr} key={curr.prospectId._id} />
+
+  const headers = props.headerColumns.map(header => (
+    <TableCell align="center" key={header} className={classes.headCell}>
+      {header}
+    </TableCell>
+  ));
+
+  const rows = props.filteredTemplates.map(template => (
+    <Row
+      align="center"
+      viewTemplate={props.viewTemplate}
+      user={props.user}
+      template={template}
+      key={template._id}
+      handleChange={props.handleChange}
+    />
   ));
   return (
     <Grid item className={classes.root}>
       <Paper className={classes.tableContainer}>
         <Table className={classes.table}>
           <TableHead className={classes.headRow}>
-            <TableRow className={classes.headRow}>
-              <TableCell className={classes.headCell}>Email</TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                First Name
-              </TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Last Name
-              </TableCell>
-              <TableCell align="center" className={classes.headCell}>
-                Status
-              </TableCell>
-            </TableRow>
+            <TableRow className={classes.headRow}>{headers}</TableRow>
           </TableHead>
           <TableBody>{rows}</TableBody>
         </Table>
@@ -74,4 +79,4 @@ const CampaignProspectsTable = props => {
   );
 };
 
-export default CampaignProspectsTable;
+export default TemplatesTable;

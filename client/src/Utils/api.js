@@ -38,6 +38,19 @@ const uploadProspectCsv = async formData => {
   }
 };
 
+const getTemplates = () => {
+  return axios.get("/api/templates");
+};
+
+const createTemplate = template => {
+  return axios.post("/api/templates/", template);
+};
+
+const editTemplate = (template, id) => {
+  const url = "/api/templates/" + id;
+  return axios.put(url, template);
+};
+
 /*
  * Check if current user has given permission for Mail Sender to access their
  * gmail account
@@ -127,6 +140,7 @@ const getCampaignProspects = campaignId => {
   return axios.get(`/api/campaigns/prospects/${campaignId}`);
 };
 
+//API calls for campaign steps
 const getCampaignSteps = campaignId => {
   return axios.get(`/api/campaigns/${campaignId}/steps`);
 };
@@ -140,6 +154,12 @@ const editStepContent = (campaignId, stepId, fields) => {
     `/api/campaigns/${campaignId}/steps/${stepId}/content`,
     fields
   );
+};
+
+const moveProspectsToStep = (campaignId, stepId, prospects) => {
+  return axios.post(`/api/campaigns/${campaignId}/steps/${stepId}/prospects`, {
+    prospects
+  });
 };
 
 export {
@@ -158,5 +178,9 @@ export {
   addProspectsToCampaign,
   getCampaignProspects,
   getCampaignSteps,
-  editStepContent
+  editStepContent,
+  moveProspectsToStep,
+  getTemplates,
+  createTemplate,
+  editTemplate
 };
