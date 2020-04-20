@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
-  Grid,
   makeStyles,
   Table,
   TableHead,
@@ -16,12 +14,14 @@ const useStyles = makeStyles({
   },
   stepButton: {
     color: `${colors.black}`,
-    height: "1rem",
-    width: "75px",
+    fontSize: ".8rem",
+    padding: "10px 0px 10px 0px",
+    height: ".8rem",
+    minWidth: "75px",
     textAlign: "center",
-    borderRight: "1px solid #bbb",
-    borderBottom: "1px solid #bbb",
-    borderTop: "1px solid #bbb",
+    borderRight: `1px solid ${colors.borderGray}`,
+    borderBottom: `1px solid ${colors.borderGray}`,
+    borderTop: `1px solid ${colors.borderGray}`,
     borderSpacing: "0",
     borderCollapse: "separate",
     "&:hover": {
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
       color: `${colors.white}`
     },
     "&:first-child": {
-      borderLeft: "1px solid #bbb",
+      borderLeft: `1px solid ${colors.borderGray}`,
       borderTopLeftRadius: "6px",
       borderBottomLeftRadius: "6px"
     },
@@ -41,15 +41,18 @@ const useStyles = makeStyles({
   stepButtonColored: {
     backgroundColor: `${colors.green}`,
     color: "#ffffff",
-    width: "75px",
+    fontSize: ".8rem",
+    height: ".8rem",
+    padding: "10px 0px 10px 0px",
+    minWidth: "75px",
     textAlign: "center",
-    borderRight: "1px solid #bbb",
-    borderBottom: "1px solid #bbb",
-    borderTop: "1px solid #bbb",
+    borderRight: `1px solid ${colors.borderGray}`,
+    borderBottom: `1px solid ${colors.borderGray}`,
+    borderTop: `1px solid ${colors.borderGray}`,
     borderSpacing: "0",
     borderCollapse: "separate",
     "&:first-child": {
-      borderLeft: "1px solid #bbb",
+      borderLeft: `1px solid ${colors.borderGray}`,
       borderTopLeftRadius: "6px",
       borderBottomLeftRadius: "6px"
     },
@@ -59,7 +62,10 @@ const useStyles = makeStyles({
   },
 
   stepBar: {
-    borderCollapse: "separate"
+    borderCollapse: "separate",
+    fontSize: ".8rem",
+    height: ".8rem",
+    padding: "10px 0px 10px 0px"
   }
 });
 

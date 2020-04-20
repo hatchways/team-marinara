@@ -23,10 +23,6 @@ const CampaignProspects = props => {
       setFilteredProspects(props.prospects);
       setRecentlyFetched(true);
     }
-
-    /*if (!recentlyFetched) {
-      getCampaignProspects();
-    }*/
   });
 
   const handleStepSelect = stepName => {
@@ -61,9 +57,6 @@ const CampaignProspects = props => {
       prospect => prospect.prospectId
     );
     let totalProspects = prospectsList;
-
-    console.log(totalActiveProspects);
-    console.log(totalProspects);
     setFilteredProspects(
       totalProspects.filter(
         prospect => !totalActiveProspects.includes(prospect.prospectId._id)

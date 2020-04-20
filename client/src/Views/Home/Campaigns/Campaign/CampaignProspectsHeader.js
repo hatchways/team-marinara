@@ -6,7 +6,7 @@ import CampaignProspectsStepBar from "./CampaignProspectsStepBar";
 
 const useStyles = makeStyles({
   root: {
-    width: "100%",
+    width: "auto",
     padding: "2rem 3rem"
   },
   title: {
@@ -15,6 +15,10 @@ const useStyles = makeStyles({
   name: {
     fontSize: "2rem",
     fontWeight: "bold"
+  },
+  stepBar: {
+    marginTop: "2rem",
+    width: "50%"
   }
 });
 
@@ -27,13 +31,7 @@ const CampaignProspectsHeader = props => {
 
   return (
     <Grid item container className={classes.root}>
-      <Grid
-        className={classes.root}
-        container
-        direction="row"
-        alignItems="center"
-        wrap="nowrap"
-      >
+      <Grid container direction="row" alignItems="center">
         <Grid item className={classes.title}>
           <Typography className={classes.name}>{props.name}</Typography>
         </Grid>
@@ -42,8 +40,13 @@ const CampaignProspectsHeader = props => {
           <StyledButton>Move to Step</StyledButton>
         </Grid>
       </Grid>
-      <Grid container direction="column" alignItems="center">
-        <Grid item>
+      <Grid
+        container
+        className={classes.stepBar}
+        direction="column"
+        alignItems="right"
+      >
+        <Grid item alignItems="right">
           <CampaignProspectsStepBar
             handleStepSelect={handleStepSelect}
             steps={props.steps}
