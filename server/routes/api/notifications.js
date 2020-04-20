@@ -12,6 +12,7 @@ const {
 const User = require("../../models/user");
 const Campaign = require("../../models/campaign");
 const Step = require("../../models/step");
+const Prospect = require("../../models/prospect");
 
 // @route POST /api/notifications
 // @desc Receive push notifications from Gmail
@@ -89,21 +90,43 @@ const getEmail = async (gmailToken, historyId) => {
 
   // Update the prospect status in the step
   await Promise.all(
-    emailsData.map(email => {
-      // get the latest step in campaign
-      const campaign = Campaign.findOne({
+    emailsData.map(async email => {
+      // get the prospectId
+      const prospectId = await Prospect.findOne(
+        { email: email.prospectEmailAddr },
+        "_id"
+      );
+
+      // get the campaign and sort to get latest step
+      const campaign = await Campaign.findOne({
         gmailLabelId: email.labelId
-      }).populate("steps", "_id, created, prospects, summary");
+      })
+        .populate("steps", "_id, created, prospects, summary")
+        .sort({ "steps.created": "-1" });
+      console.log("Latest step date", campaign.steps[0].created);
+
+      const prospectIndex = campaign.prospects.findIndex(
+        prospect => prospect.prospectId === prospectId
+      );
+      campaign.prospects[prospectIndex].status = "Replied";
 
       // find the prospect in the step and update their status
+      //get the latest step
+      // const latestStepDate = Math.max(
+      //   ...campaign.steps.map(step => step.created)
+      // );
+
       // update the Step status
+      const stepProspectIndex = campaign.steps[0].prospects.findIndex(
+        prospect => prospect.prospectId === prospectId
+      );
+      campaign.steps[0].prospects[stepProspectIndex].status = "Replied";
+      campaign.steps[0].summary.replied++;
+
       // update the campaign.stepsSummary
-      campaign;
+      campaign.stepsSummary.replied++;
     })
   );
-
-  const thread = await gmail.users.threads.get({ userId: "me", id: threadId });
-  console.log(thread.data.messages[0]);
 };
 
 modules.export = router;
