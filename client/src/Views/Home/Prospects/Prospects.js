@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core/";
 import { getProspectData } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
-import Paper from '@material-ui/core/Paper';
+import Paper from "@material-ui/core/Paper";
 import styles from "Components/Table/ProspectTableStyles";
 import CloudIcon from "@material-ui/icons/Cloud";
 import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
@@ -63,7 +63,9 @@ class Prospects extends Component {
     // if 'check all' checkbox was selected ...
     if (prospectId === "all") {
       let obj = this.state.prospectChecked;
+      console.log(obj);
       for (const property in obj) {
+        console.log(property);
         obj[property] = event.target.checked;
       }
       this.setState({
