@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   },
   stepBar: {
     marginTop: "2rem",
-    width: "50%"
+    width: "100%"
   }
 });
 
@@ -31,7 +31,7 @@ const CampaignProspectsHeader = props => {
 
   return (
     <Grid item container className={classes.root}>
-      <Grid container direction="row" alignItems="center">
+      <Grid container direction="row">
         <Grid item className={classes.title}>
           <Typography className={classes.name}>{props.name}</Typography>
         </Grid>
@@ -43,10 +43,11 @@ const CampaignProspectsHeader = props => {
       <Grid
         container
         className={classes.stepBar}
-        direction="column"
+        direction="row"
         alignItems="right"
       >
-        <Grid item alignItems="right">
+        <Grid item xs={4}></Grid>
+        <Grid item xs={8}>
           <CampaignProspectsStepBar
             handleStepSelect={handleStepSelect}
             steps={props.steps}

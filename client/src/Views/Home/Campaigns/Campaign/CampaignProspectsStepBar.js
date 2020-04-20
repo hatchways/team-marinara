@@ -15,9 +15,11 @@ const useStyles = makeStyles({
   stepButton: {
     color: `${colors.black}`,
     fontSize: ".8rem",
+    fontWeight: "bold",
     padding: "10px 0px 10px 0px",
     height: ".8rem",
     minWidth: "75px",
+    maxWidth: "150px",
     textAlign: "center",
     borderRight: `1px solid ${colors.borderGray}`,
     borderBottom: `1px solid ${colors.borderGray}`,
@@ -25,7 +27,7 @@ const useStyles = makeStyles({
     borderSpacing: "0",
     borderCollapse: "separate",
     "&:hover": {
-      backgroundColor: `${colors.green}`,
+      backgroundColor: `${colors.lightGreen}`,
       color: `${colors.white}`
     },
     "&:first-child": {
@@ -39,8 +41,10 @@ const useStyles = makeStyles({
   },
 
   stepButtonColored: {
-    backgroundColor: `${colors.green}`,
+    backgroundColor: `${colors.lightGreen}`,
     color: "#ffffff",
+    fontWeight: "bold",
+    maxWidth: "150px",
     fontSize: ".8rem",
     height: ".8rem",
     padding: "10px 0px 10px 0px",
@@ -80,21 +84,21 @@ const CampaignProspectsStepBar = props => {
   useEffect(() => {
     if (props.steps.length > 0 && !recentlyFetched) {
       let result = props.steps.map(step => step.name);
-      setStepBarArray(defaultStepOptions.concat(result));
       result = defaultStepOptions.concat(result);
-      let activeArray = [];
+      setStepBarArray(result);
+      let buttonActiveArray = [];
       if (selectedButton.length > 0) {
-        activeArray = selectedButton;
+        buttonActiveArray = selectedButton;
       } else {
         for (let i = 0; i < result.length; i++) {
-          if (i == 0) {
-            activeArray.push(true);
+          if (i === 0) {
+            buttonActiveArray.push(true);
           } else {
-            activeArray.push(false);
+            buttonActiveArray.push(false);
           }
         }
       }
-      setSelectedButton(activeArray);
+      setSelectedButton(buttonActiveArray);
       setRecentlyFetched(true);
     }
   });
@@ -102,8 +106,9 @@ const CampaignProspectsStepBar = props => {
   const handleClick = e => {
     const buttonPosition = e.target.getAttribute("buttonposition");
     let buttonArray = selectedButton;
+    //reset all button values except one to false
     for (let i = 0; i < selectedButton.length; i++) {
-      if (i == buttonPosition) {
+      if (i === parseInt(buttonPosition)) {
         buttonArray[i] = true;
       } else {
         buttonArray[i] = false;
@@ -120,8 +125,9 @@ const CampaignProspectsStepBar = props => {
       className={
         selectedButton[i] ? classes.stepButtonColored : classes.stepButton
       }
-      buttonPosition={i}
+      buttonposition={i}
       value={step}
+      key={step.concat(i)}
     >
       {step}
     </TableCell>

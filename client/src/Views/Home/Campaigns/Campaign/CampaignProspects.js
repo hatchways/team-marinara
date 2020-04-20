@@ -26,7 +26,6 @@ const CampaignProspects = props => {
   });
 
   const handleStepSelect = stepName => {
-    console.log("Filtering for : " + stepName);
     if (stepName === "All") {
       setFilteredProspects(prospectsList);
     } else if (stepName === "Pending") {
@@ -37,9 +36,7 @@ const CampaignProspects = props => {
       });
 
       let stepProspects = [];
-      for (let i = 0; i < step.prospects.length; i++) {
-        stepProspects.push(step.prospects[i].prospectId);
-      }
+      stepProspects = step.prospects.map(prospect => prospect.prospectId);
       let newFilteredProspectList = [];
       newFilteredProspectList = prospectsList.filter(prospect =>
         stepProspects.includes(prospect.prospectId._id)
