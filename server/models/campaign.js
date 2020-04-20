@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const randToken = require("rand-token");
 
 const CampaignSchema = new Schema({
   name: { type: String, required: true },
@@ -37,7 +38,14 @@ const CampaignSchema = new Schema({
     bounced: { type: Number, default: 0, required: true },
     optedOut: { type: Number, default: 0, required: true }
   },
-  steps: [{ type: Schema.Types.ObjectId, ref: "Step", index: true }]
+  steps: [{ type: Schema.Types.ObjectId, ref: "Step", index: true }],
+  gmailLabelId: {
+    // unique id to add to all emails in campaign
+    type: String,
+    default: () => `mscId${randToken.generate(8)}`,
+    required: true,
+    index: true
+  }
 });
 
 module.exports = mongoose.model("Campaign", CampaignSchema);

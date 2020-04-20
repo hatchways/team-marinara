@@ -2,7 +2,6 @@ const { google } = require("googleapis");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
 const { googleClientSecret, googleClientId } = require("../../config/config");
 
@@ -110,29 +109,5 @@ router.post(
     }
   }
 );
-
-/*
- * Test function to show read email functionality
- * @param {string} threadId - id of gmail email thread to read
- * @param req.query.redirectUrl {string} - URL to redirect to
- * after Google auth process
- */
-async function readEmail(threadId) {
-  const oAuth2Client = new google.auth.OAuth2(
-    googleClientId,
-    googleClientSecret,
-    req.query.redirectUrl
-  );
-  oAuth2Client.setCredentials(tokens);
-  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-  // get list of email threads
-  const threads = await gmail.users.threads.list({ userId: "me" });
-  threadId = threads.data.threads[0].id;
-
-  // get latest thread details
-  const thread = await gmail.users.threads.get({ userId: "me", id: threadId });
-  console.log(thread.data.messages[0]);
-}
 
 module.exports = router;
