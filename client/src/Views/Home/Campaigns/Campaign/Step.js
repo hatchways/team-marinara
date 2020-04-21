@@ -4,13 +4,20 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  Menu,
+  MenuItem,
   makeStyles,
   withStyles
 } from "@material-ui/core";
-import { Email, Send } from "@material-ui/icons";
+import {
+  Email as EmailIcon,
+  MoreVert as MoreVertIcon,
+  Send as SendIcon
+} from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
 import DataColumn from "Components/DataColumn/DataColumn";
+import { moveProspectsToStep } from "Utils/api";
 
 const useStyles = makeStyles({
   root: {
@@ -44,6 +51,37 @@ const EmailTooltip = withStyles({
 
 const Step = props => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const openMenu = e => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const moveProspects = async () => {
+    try {
+      const prospectIds = [];
+
+      props.prevStep.prospects.forEach(prevProspect => {
+        //Check if prospect already exists in current step
+        const duplicate = props.step.prospects.some(curr => {
+          return curr.prospectId === prevProspect.prospectId;
+        });
+        if (!duplicate) {
+          prospectIds.push(prevProspect.prospectId);
+        }
+      });
+
+      await moveProspectsToStep(props.campaignId, props.step._id, prospectIds);
+    } catch (error) {
+      console.log(error);
+    }
+    props.triggerFetch();
+    closeMenu();
+  };
 
   const generateColumns = summary => {
     const columns = [];
@@ -75,7 +113,7 @@ const Step = props => {
             className={classes.button}
             onClick={() => props.openEditor(props.step)}
           >
-            <Email />
+            <EmailIcon />
           </IconButton>
         </EmailTooltip>
         <EmailTooltip title="Send Emails">
@@ -88,7 +126,7 @@ const Step = props => {
               )
             }
           >
-            <Send />
+            <SendIcon />
           </IconButton>
         </EmailTooltip>
       </Grid>
@@ -97,6 +135,20 @@ const Step = props => {
       </Grid>
       <DataColumn label="Prospects" value={props.step.prospects.length} />
       {generateColumns(props.step.summary)}
+      <Grid item>
+        <IconButton onClick={openMenu}>
+          <MoreVertIcon />
+        </IconButton>
+      </Grid>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        getContentAnchorEl={null}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+      >
+        <MenuItem onClick={moveProspects}>Move prospects to this step</MenuItem>
+      </Menu>
     </Grid>
   );
 };

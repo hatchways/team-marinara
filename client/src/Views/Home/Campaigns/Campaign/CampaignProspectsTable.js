@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 const CampaignProspectsTable = props => {
   const classes = useStyles();
   const rows = props.prospects.map(curr => (
-    <Row prospect={curr} key={curr._id} />
+    <Row prospect={curr} key={curr.prospectId._id} />
   ));
   return (
     <Grid item className={classes.root}>

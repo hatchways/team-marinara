@@ -10,7 +10,6 @@ const {
   googleClientSecret,
   googleClientId,
   googleRedirectUrl,
-  mailSenderGmailLabel
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");

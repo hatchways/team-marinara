@@ -277,12 +277,12 @@ router.post(
           `Campaign ${campaignId} owned by ${userId} cannot be found`
         );
 
-      await sendEmailsQueue(
-        stepId,
-        req.user.id,
-        req.user.gmailToken,
-        req.user.gmailLabelId
-      );
+      await sendEmailsQueue.add({
+        stepId: stepId,
+        userId: req.user.id,
+        gmailToken: req.user.gmailToken,
+        gmailLabelId: req.user.gmailLabelId
+      });
 
       res.status(200).json({
         result: "Emails being sent"
