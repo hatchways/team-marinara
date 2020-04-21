@@ -1,9 +1,20 @@
 import React, { useState } from "react";
-import { Grid, makeStyles, withStyles } from "@material-ui/core";
+import {
+  Grid,
+  makeStyles,
+  withStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button
+} from "@material-ui/core";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 import Step from "./Step";
 import StepEditor from "./StepEditor";
+import { sendStepEmails } from "Utils/api";
 
 const useStyles = makeStyles({
   root: {
@@ -12,7 +23,7 @@ const useStyles = makeStyles({
   }
 });
 
-const Button = withStyles({
+const AddStepButton = withStyles({
   root: {
     backgroundColor: "inherit"
   }
@@ -22,6 +33,9 @@ const Steps = props => {
   const classes = useStyles();
   const [editorOpen, setEditorOpen] = useState(false);
   const [selectedStep, setSelectedStep] = useState(null);
+  const [sendConfirmation, setSendConfirmation] = useState(false);
+  const [sendEmailsObj, setSendEmailsObj] = useState({});
+  const [sendingConfirmation, setSendingConfirmation] = useState(false);
 
   const handleClose = () => {
     setEditorOpen(false);
@@ -32,6 +46,17 @@ const Steps = props => {
   const openEditor = step => {
     setSelectedStep(step);
     setEditorOpen(true);
+  };
+
+  const confirmSendEmails = (stepId, numOfEmails) => {
+    setSendEmailsObj({ stepId: stepId, numOfEmails: numOfEmails });
+    setSendConfirmation(true);
+  };
+
+  const handleSendEmails = async () => {
+    await sendStepEmails(props.campaign._id, sendEmailsObj.stepId);
+    setSendConfirmation(false);
+    setSendingConfirmation(true);
   };
 
   const steps = [];
@@ -53,15 +78,58 @@ const Steps = props => {
         prevStep={prevStep}
         campaignId={props.campaign._id}
         triggerFetch={props.triggerFetch}
+        handleSendEmails={confirmSendEmails}
       />
     );
   }
+
+  const ConfirmSendEmails = () => (
+    <Dialog
+      open={sendConfirmation}
+      onClose={() => setSendConfirmation(false)}
+      maxWidth="md"
+    >
+      <DialogTitle>Send Emails?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {`You are about to send ${sendEmailsObj.numOfEmails} emails.\n\n`}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setSendConfirmation(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleSendEmails} color="primary" autoFocus>
+          Ok
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  const ConfirmEmailsSending = () => (
+    <Dialog
+      open={sendingConfirmation}
+      onClose={() => setSendingConfirmation(false)}
+      maxWidth="md"
+    >
+      <DialogTitle>Emails Sending</DialogTitle>
+      <DialogActions>
+        <Button
+          onClick={() => setSendingConfirmation(false)}
+          color="primary"
+          autoFocus
+        >
+          Ok
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <Grid item container direction="column" className={classes.root}>
       {steps}
       <Grid item>
-        <Button onClick={() => openEditor(null)}>Add Step</Button>
+        <AddStepButton onClick={() => openEditor(null)}>Add Step</AddStepButton>
       </Grid>
       <StepEditor
         open={editorOpen}
@@ -70,6 +138,8 @@ const Steps = props => {
         step={selectedStep}
         triggerFetch={props.triggerFetch}
       />
+      <ConfirmSendEmails />
+      <ConfirmEmailsSending />
     </Grid>
   );
 };

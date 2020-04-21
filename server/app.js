@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const config = require("./config/config.js");
 const routes = require("./routes/index");
 const passport = require("passport");
+const redis = require("redis");
 
 // Passport config
 require("./config/passport")(passport);
@@ -24,6 +25,11 @@ mongoose
   });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+// Connect to Redis
+const redisClient = redis.createClient(config.redisHost, config.redisURI);
+redisClient.on("connect", () => console.log("Connected to Redis..."));
+redisClient.on("error", error => console.error(error));
 
 const { json, urlencoded } = express;
 
