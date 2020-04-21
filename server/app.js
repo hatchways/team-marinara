@@ -13,7 +13,7 @@ const redis = require("redis");
 require("./config/passport")(passport);
 
 // Connect to the database
-const mongoDB = `${config.mongoURI}:${config.mongoPort}/${config.mongoDB}`;
+const mongoDB = `${config.mongoURI}`;
 mongoose
   .connect(mongoDB, {
     useNewUrlParser: true,

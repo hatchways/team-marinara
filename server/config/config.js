@@ -1,7 +1,6 @@
 const config = {
-  mongoURI: process.env.MONGO_URI || "mongodb://localhost",
-  mongoPort: process.env.MONGO_PORT || "27017",
-  mongoDB: process.env.MONGO_DB || "mail-sender-dev",
+  mongoURI:
+    process.env.MONGO_URI || "mongodb://localhost:27017/mail-sender-dev",
   appSecret: process.env.APP_SECRET || "secret",
   googleClientSecret:
     process.env.GOOGLE_CLIENT_SECRET ||
@@ -13,6 +12,7 @@ const config = {
     require("./gmail-secret.json").redirect_uri,
   redisURI: process.env.REDIS_HOST || "127.0.0.1",
   redisPort: process.env.REDIS_PORT || "6379"
+  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads"
 };
 
 module.exports = config;

@@ -59,14 +59,29 @@ const Steps = props => {
     setSendingConfirmation(true);
   };
 
-  const steps = props.steps.map(curr => (
-    <Step
-      key={curr._id}
-      step={curr}
-      openEditor={openEditor}
-      handleSendEmails={confirmSendEmails}
-    />
-  ));
+  const steps = [];
+
+  for (let i = 0; i < props.steps.length; i++) {
+    let prevStep;
+
+    if (i === 0) {
+      prevStep = props.campaign;
+    } else {
+      prevStep = props.steps[i - 1];
+    }
+
+    steps.push(
+      <Step
+        key={props.steps[i]._id}
+        step={props.steps[i]}
+        openEditor={openEditor}
+        prevStep={prevStep}
+        campaignId={props.campaign._id}
+        triggerFetch={props.triggerFetch}
+        handleSendEmails={confirmSendEmails}
+      />
+    );
+  }
 
   const ConfirmSendEmails = () => (
     <Dialog
@@ -119,7 +134,7 @@ const Steps = props => {
       <StepEditor
         open={editorOpen}
         onClose={handleClose}
-        campaignId={props.campaignId}
+        campaignId={props.campaign._id}
         step={selectedStep}
         triggerFetch={props.triggerFetch}
       />
