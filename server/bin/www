@@ -22,6 +22,7 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+const io = require("socket.io")(server);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -87,3 +88,13 @@ function onListening() {
 
   console.log("Listening on " + bind);
 }
+
+let socket;
+
+io.on("connect", connection => {
+  const { userId } = connection.handshake.query;
+  console.log(`User ${userId} connected`);
+  socket = connection;
+});
+
+module.exports = exports = socket;
