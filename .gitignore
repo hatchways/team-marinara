@@ -5,8 +5,9 @@ node_modules/
 
 
 # production
-/build/
+/client/build/
 /server/database
+dump.rdb
 
 # misc
 .DS_Store
@@ -16,13 +17,11 @@ node_modules/
 .env.production.local
 .env
 
-# Gmail secrets
+# Secrets
 gmail-secret.json
+env_variables.yaml
+pubSubServiceKey.json
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-
-#TODO add .env to your gitignore
-

@@ -12,4 +12,8 @@ router.use("/api/gmail-auth", gmailAuth);
 router.use("/api/campaigns", campaigns);
 router.use("/api/templates", templates);
 
+router.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/build/index.html"));
+});
+
 module.exports = router;

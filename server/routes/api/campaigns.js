@@ -9,6 +9,7 @@ const {
   validateCampaignInput,
   validateStepInput
 } = require("../../validation/campaign");
+const { sendEmailsQueue } = require("../../controllers/queues/index");
 
 // @route POST /api/campaigns
 // @desc Create a Campaign object. Requires 'name' (campaign name)
@@ -31,7 +32,7 @@ router.post(
       res.status(200).json(campaign);
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error saving campaign" });
+      res.status(500).json({ error: "Error saving campaign" });
     }
   }
 );
@@ -50,7 +51,7 @@ router.get(
       res.status(200).json(campaigns);
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error getting campaigns" });
+      res.status(500).json({ error: "Error getting campaigns" });
     }
   }
 );
@@ -80,7 +81,7 @@ router.get(
       }
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error getting campaign" });
+      res.status(500).json({ error: "Error getting campaign" });
     }
   }
 );
@@ -94,7 +95,6 @@ router.delete(
   async (req, res) => {
     try {
       const userId = req.user.id;
-      console.log();
       const campaignId = req.params.campaignId;
 
       const results = await Campaign.deleteOne({
@@ -105,7 +105,7 @@ router.delete(
       res.status(200).json({ id: `${results} removed` });
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error deleting campaign" });
+      res.status(500).json({ error: "Error deleting campaign" });
     }
   }
 );
@@ -165,7 +165,7 @@ router.post(
       }
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error saving prospects to Campaign" });
+      res.status(500).json({ error: "Error saving prospects to Campaign" });
     }
   }
 );
@@ -198,7 +198,7 @@ router.get(
       }
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error getting prospects" });
+      res.status(500).json({ error: "Error getting prospects" });
     }
   }
 );
@@ -251,7 +251,44 @@ router.delete(
       });
     } catch (error) {
       console.log(error);
-      res.json({ error: "Error deleting prospects" });
+      res.status(500).json({ error: "Error deleting prospects" });
+    }
+  }
+);
+
+// @route POST /api/campaigns/:campaignId/steps/:stepId/sendEmails
+// @desc Send email in step to all prospects in that step
+// @access Authenticated Users
+router.post(
+  "/:campaignId/steps/:stepId/sendEmails",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { campaignId, stepId } = req.params;
+      const userId = req.user.id;
+
+      const campaign = await Campaign.findOne({
+        _id: campaignId,
+        ownedBy: userId
+      });
+
+      if (!campaign)
+        throw new Error(
+          `Campaign ${campaignId} owned by ${userId} cannot be found`
+        );
+
+      await sendEmailsQueue.add({
+        stepId: stepId,
+        userId: req.user.id,
+        gmailToken: req.user.gmailToken
+      });
+
+      res.status(200).json({
+        result: "Emails being sent"
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error sending emails" });
     }
   }
 );

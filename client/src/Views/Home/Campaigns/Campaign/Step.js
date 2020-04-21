@@ -11,7 +11,8 @@ import {
 } from "@material-ui/core";
 import {
   Email as EmailIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
+  Send as SendIcon
 } from "@material-ui/icons";
 
 import colors from "Components/Styles/Colors";
@@ -113,6 +114,19 @@ const Step = props => {
             onClick={() => props.openEditor(props.step)}
           >
             <EmailIcon />
+          </IconButton>
+        </EmailTooltip>
+        <EmailTooltip title="Send Emails">
+          <IconButton
+            className={classes.button}
+            onClick={() =>
+              props.handleSendEmails(
+                props.step._id,
+                props.step.prospects.length
+              )
+            }
+          >
+            <SendIcon />
           </IconButton>
         </EmailTooltip>
       </Grid>

@@ -1,0 +1,19 @@
+runtime: nodejs12
+env: standard
+
+includes:
+  - server/config/env_variables.yaml
+
+handlers:
+  - url: /api/.*
+    secure: always
+    script: auto
+  - url: /
+    static_files: client/build/index.html
+    upload: client/build/index.html
+  - url: /
+    static_dir: client/build
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto
