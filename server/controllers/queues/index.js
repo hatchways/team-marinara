@@ -6,27 +6,14 @@ const Queue = require("bull");
 const REDIS_URL = require("../../config/config").redisURL;
 const { sendEmailsProcess } = require("./sendEmailsProcess");
 
-const sendEmailsQueue = async (stepId, userId, gmailToken) => {
-  try {
-    // Create or connect to queue
-    const sendEmailsQueue = new Queue("sendEmails", REDIS_URL);
+const sendEmailsQueue = new Queue("sendEmails", REDIS_URL);
 
-    sendEmailsQueue.process(async job => {
-      await sendEmailsProcess(job.data);
-    });
+sendEmailsQueue.process(async job => {
+  await sendEmailsProcess(job.data);
+});
 
-    await sendEmailsQueue.add({
-      stepId: stepId,
-      userId: userId,
-      gmailToken: gmailToken
-    });
-
-    sendEmailsQueue.on("completed", job => {
-      console.log(`Job ${job.id} completed`);
-    });
-  } catch (error) {
-    console.log("Error adding job to queue: ", error);
-  }
-};
+sendEmailsQueue.on("completed", job => {
+  console.log(`Job ${job.id} completed`);
+});
 
 module.exports = { sendEmailsQueue };
