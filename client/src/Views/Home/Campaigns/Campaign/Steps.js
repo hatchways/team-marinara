@@ -54,7 +54,7 @@ const Steps = props => {
   };
 
   const handleSendEmails = async () => {
-    await sendStepEmails(props.campaignId, sendEmailsObj.stepId);
+    await sendStepEmails(props.campaign._id, sendEmailsObj.stepId);
     setSendConfirmation(false);
     setSendingConfirmation(true);
   };
@@ -117,7 +117,7 @@ const Steps = props => {
         <Button
           onClick={() => setSendingConfirmation(false)}
           color="primary"
-          autofocus
+          autoFocus
         >
           Ok
         </Button>
