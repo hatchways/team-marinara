@@ -123,7 +123,6 @@ const StepEditor = props => {
   };
 
   const handleSaveAsTemplate = async () => {
-    console.log("save as template");
     try {
       if (subject && editorState.getCurrentContent().hasText()) {
         await createTemplate({
