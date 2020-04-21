@@ -13,6 +13,7 @@ const {
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");
+const socketApi = require("../../socket/socketApi");
 
 /*
  * Send one email via Gmail from user represented by gmailToken
