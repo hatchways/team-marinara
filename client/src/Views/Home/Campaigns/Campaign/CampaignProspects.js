@@ -18,12 +18,12 @@ const CampaignProspects = props => {
   const [recentlyFetched, setRecentlyFetched] = useState(false);
 
   useEffect(() => {
-    if (props.prospects.length > 0 && !recentlyFetched) {
+    if (props.prospects.length > 0) {
       setProspectsList(props.prospects);
       setFilteredProspects(props.prospects);
       setRecentlyFetched(true);
     }
-  });
+  }, [props]);
 
   const handleStepSelect = stepName => {
     if (stepName === "All") {

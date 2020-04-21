@@ -77,7 +77,6 @@ const defaultStepOptions = ["All", "Pending"];
 
 const CampaignProspectsStepBar = props => {
   const classes = useStyles();
-  const [stepBarArray, setStepBarArray] = useState([]);
   const [recentlyFetched, setRecentlyFetched] = useState(false);
   const [selectedButton, setSelectedButton] = useState([]);
 
@@ -85,7 +84,6 @@ const CampaignProspectsStepBar = props => {
     if (props.steps.length > 0 && !recentlyFetched) {
       let result = props.steps.map(step => step.name);
       result = defaultStepOptions.concat(result);
-      setStepBarArray(result);
       let buttonActiveArray = [];
       if (selectedButton.length > 0) {
         buttonActiveArray = selectedButton;
@@ -101,7 +99,7 @@ const CampaignProspectsStepBar = props => {
       setSelectedButton(buttonActiveArray);
       setRecentlyFetched(true);
     }
-  });
+  }, [props]);
 
   const handleClick = e => {
     const buttonPosition = e.target.getAttribute("buttonposition");
@@ -119,15 +117,20 @@ const CampaignProspectsStepBar = props => {
     props.handleStepSelect(e.target.getAttribute("value"));
   };
 
-  const stepBar = stepBarArray.map((step, i) => (
+  const stepBarArrays = [
+    "All",
+    "Pending",
+    ...props.steps.map(step => step.name)
+  ];
+  const stepBar = stepBarArrays.map((step, i) => (
     <TableCell
       onClick={e => handleClick(e)}
       className={
         selectedButton[i] ? classes.stepButtonColored : classes.stepButton
       }
+      key={i}
       buttonposition={i}
       value={step}
-      key={step.concat(i)}
     >
       {step}
     </TableCell>
