@@ -25,7 +25,10 @@ router.post("/", async (req, res) => {
     }
 
     // message.data is base64 encoded JSON object
-    const decodedData = Buffer.from(req.body.message.data, "base64").toJSON();
+    const decodedData = await Buffer.from(
+      req.body.message.data,
+      "base64"
+    ).toString();
     console.log("decodedData:", decodedData);
     const userEmail = decodedData.emailAddress;
     const historyId = decodedData.historyId;
