@@ -10,9 +10,10 @@ const config = {
   googleRedirectUrl:
     process.env.GOOGLE_REDIRECT_URL ||
     require("./gmail-secret.json").redirect_uri,
-  redisURI: process.env.REDIS_HOST || "127.0.0.1",
+  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads",
+  redisHost: process.env.REDIS_HOST || "127.0.0.1",
   redisPort: process.env.REDIS_PORT || "6379",
-  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads"
+  redisAuth: process.env.REDIS_AUTH || ""
 };
 
 module.exports = config;
