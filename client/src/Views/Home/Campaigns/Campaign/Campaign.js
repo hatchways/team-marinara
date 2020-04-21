@@ -60,7 +60,7 @@ const Campaign = props => {
       <Sidebar campaignId={campaignId} />
       <Switch>
         <Route path="/home/campaigns/*/prospects">
-          <Prospects campaign={campaign} prospects={prospects} />
+          <Prospects steps={steps} campaign={campaign} prospects={prospects} />
         </Route>
         <Route path={["/home/campaigns/*", "/home/campaigns/*/summary"]}>
           <Summary
