@@ -1,0 +1,7 @@
+/server/database/
+node_modules/
+/client/src/
+/client/public/
+/client/package*
+/client/README.md
+/client/jsconfig.json

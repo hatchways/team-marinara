@@ -156,6 +156,10 @@ const editStepContent = (campaignId, stepId, fields) => {
   );
 };
 
+const sendStepEmails = (campaignId, stepId) => {
+  return axios.post(`/api/campaigns/${campaignId}/steps/${stepId}/sendEmails`);
+};
+
 const moveProspectsToStep = (campaignId, stepId, prospects) => {
   return axios.post(`/api/campaigns/${campaignId}/steps/${stepId}/prospects`, {
     prospects
@@ -182,5 +186,6 @@ export {
   moveProspectsToStep,
   getTemplates,
   createTemplate,
-  editTemplate
+  editTemplate,
+  sendStepEmails
 };

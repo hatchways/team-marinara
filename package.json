@@ -1,13 +1,14 @@
 {
-  "name": "server",
+  "name": "mail-sender",
   "version": "0.0.0",
-  "private": true,
   "scripts": {
-    "predev": "mongod --dbpath=./database & redis-server &",
+    "start": "nodemon ./server/bin/www",
+    "predev": "mongod --dbpath=./database &",
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "stop": "mongo admin --eval \"db.shutdownServer()\" & redis-server stop"
+    "stop": "mongo admin --eval \"db.shutdownServer()\"",
+    "deploy": "npm run build --prefix ./client && gcloud app deploy"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -31,10 +32,5 @@
     "passport-jwt": "^4.0.0",
     "redis": "^3.0.2",
     "validator": "^13.0.0"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "mocha": "^6.2.0"
   }
 }
