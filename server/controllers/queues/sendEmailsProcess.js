@@ -123,8 +123,6 @@ const sendEmailsProcess = async data => {
         )
       );
 
-      console.log("gmailResponse", gmailResponse);
-
       if (!gmailResponse.errors) {
         step.prospects[i].status = "Sent";
         step.prospects[i].gmailMessageId = gmailResponse.id;
