@@ -3,7 +3,12 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../../models/user.js");
-const { googleClientSecret, googleClientId } = require("../../config/config");
+const {
+  googleClientSecret,
+  googleClientId,
+  mailSenderGmailLabel,
+  pubSubTopicName
+} = require("../../config/config");
 
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
@@ -12,7 +17,8 @@ const { googleClientSecret, googleClientId } = require("../../config/config");
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/gmail.compose",
-  "https://www.googleapis.com/auth/gmail.send"
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.labels"
 ];
 
 /*
@@ -85,12 +91,6 @@ router.post(
       // Store the token to db under user
       const user = await User.findById(req.user.id);
       user.gmailToken = tokens.refresh_token;
-      await user.save().then((result, err) => {
-        if (err) {
-          console.log("Error writing token to users collection:", err);
-          res.status(500).send("Error writing to database");
-        }
-      });
 
       oAuth2Client.setCredentials(tokens);
 
@@ -102,6 +102,12 @@ router.post(
           return response.data.emailAddress;
         });
 
+      if (!user.gmailLabelId) {
+        const labelId = await setUpGmailWatch(gmail);
+        user.gmailLabelId = labelId;
+      }
+      await user.save();
+
       res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
     } catch (error) {
       console.error("Error retrieving access token", error);
@@ -109,5 +115,36 @@ router.post(
     }
   }
 );
+
+/*
+ * Set up subscription to users email address. We will be notified of all emails
+ * received with mailSenderGmailLabelId as a label
+ */
+const setUpGmailWatch = async gmail => {
+  try {
+    // create a label in user's account which will be attached to all mailsender
+    // sent and received email
+    const label = await gmail.users.labels.create({
+      userId: "me",
+      requestBody: {
+        labelListVisibility: "labelHide", // do not show label in user's label list
+        messageListVisibility: "show", // show emails with this label in user's inbox
+        name: mailSenderGmailLabel
+      }
+    });
+
+    await gmail.users.watch({
+      userId: "me",
+      requestBody: {
+        labelIds: [label.data.id],
+        labelFilterAction: "include",
+        topicName: pubSubTopicName
+      }
+    });
+    return label.data.id;
+  } catch (error) {
+    console.log("Error setting up watch on user.", error);
+  }
+};
 
 module.exports = router;

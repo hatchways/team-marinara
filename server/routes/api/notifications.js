@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 const passport = require("passport");
-const { mailSenderGmailLabelId } = require("../../config/config");
+const { pubSubSubscriptionName } = require("../../config/config");
 
 const {
   googleClientSecret,
@@ -12,23 +12,17 @@ const {
 const User = require("../../models/user");
 const Campaign = require("../../models/campaign");
 const Step = require("../../models/step");
-const Prospect = require("../../models/prospect");
+const Prospect = require("../../models/Prospect");
 
 // @route POST /api/notifications
 // @desc Receive push notifications from Gmail
 // @access all
 router.post("/", async (req, res) => {
   try {
-    // TODO: authorization and/or validation
-    if (
-      req.body.subscription !==
-      "projects/mail-sender-1/subscriptions/gmail-notifications"
-    ) {
+    if (req.body.subscription !== pubSubSubscriptionName) {
       res.status(400).send("Bad Request");
       return;
     }
-    // Gmail requires a 200 status acknowledgment
-    res.status(200).send("OK");
 
     // message.data is base64 encoded JSON object
     const decodedData = atob(req.message.data);
@@ -36,10 +30,16 @@ router.post("/", async (req, res) => {
     const userEmail = decodedData.emailAddress;
     const historyId = decodedData.historyId;
 
-    const gmailToken = User.findOne({ email: userEmail }, "gmailToken");
+    const { gmailToken, gmailLabelId } = await User.findOne(
+      { email: userEmail },
+      "gmailToken gmailLabelId"
+    );
 
     // Get emails with history.list()
-    getEmail(gmailToken, historyId);
+    await getEmail(gmailToken, historyId, gmailLabelId);
+
+    // Gmail requires a 200 status acknowledgment
+    res.status(200).send("OK");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error saving campaign" });
@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
  * @param req.query.redirectUrl {string} - URL to redirect to
  * after Google auth process
  */
-const getEmail = async (gmailToken, historyId) => {
+const getEmail = async (gmailToken, historyId, gmailLabelId) => {
   const oAuth2Client = new google.auth.OAuth2(
     googleClientId,
     googleClientSecret,
@@ -65,10 +65,11 @@ const getEmail = async (gmailToken, historyId) => {
   const history = await gmail.users.history.list({
     userId: "me",
     startHistoryId: historyId,
-    labelId: mailSenderGmailLabelId
+    labelId: gmailLabelId
   });
   console.log("history:", history);
   const messageIds = history[0].messages.map(message => message.id);
+  console.log("messageIds:", messageIds);
 
   // get latest messages to see which campaigns and prospects they are from
   const emails = await Promise.all(
@@ -87,6 +88,7 @@ const getEmail = async (gmailToken, historyId) => {
       prospectEmailAddr: email.body.from
     };
   });
+  console.log("emailsData:", emailsData);
 
   // Update the prospect status in the step
   await Promise.all(
@@ -127,6 +129,7 @@ const getEmail = async (gmailToken, historyId) => {
       campaign.stepsSummary.replied++;
     })
   );
+  await campaign.save();
 };
 
-modules.export = router;
+module.exports = router;
