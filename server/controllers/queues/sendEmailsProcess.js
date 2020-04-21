@@ -9,7 +9,8 @@ const draftToHtml = require("draftjs-to-html");
 const {
   googleClientSecret,
   googleClientId,
-  googleRedirectUrl
+  googleRedirectUrl,
+  mailSenderGmailLabel
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");
@@ -17,7 +18,7 @@ const Variable = require("../../models/variable");
 /*
  * Send one email via Gmail from user represented by gmailToken
  */
-const sendOneEmail = async (encodedMailString, gmailToken) => {
+const sendOneEmail = async (encodedMailString, gmailToken, gmailLabelId) => {
   try {
     const oAuth2Client = new google.auth.OAuth2(
       googleClientId,
@@ -31,7 +32,8 @@ const sendOneEmail = async (encodedMailString, gmailToken) => {
     const gmailResponse = await gmail.users.messages.send({
       userId: "me",
       resource: {
-        raw: encodedMailString
+        raw: encodedMailString,
+        labelIds: [gmailLabelId]
       }
     });
 
@@ -115,10 +117,17 @@ const sendEmailsProcess = async data => {
         emailWithVariables
       );
 
-      //Staggers sending of emails to 1 per second
+      //Staggers sending of emails by 1 per second
       const gmailResponse = await new Promise(resolve =>
         setTimeout(
-          () => resolve(sendOneEmail(encodedMailString, data.gmailToken)),
+          () =>
+            resolve(
+              sendOneEmail(
+                encodedMailString,
+                data.gmailToken,
+                data.gmailLabelId
+              )
+            ),
           1000
         )
       );

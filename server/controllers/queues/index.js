@@ -6,7 +6,7 @@ const Queue = require("bull");
 const { redisHost, redisPort, redisAuth } = require("../../config/config");
 const { sendEmailsProcess } = require("./sendEmailsProcess");
 
-const sendEmailsQueue = async (stepId, userId, gmailToken) => {
+const sendEmailsQueue = async (stepId, userId, gmailToken, gmailLabelId) => {
   try {
     // Create or connect to queue
     const sendEmailsQueue = new Queue("sendEmails", {
@@ -24,7 +24,8 @@ const sendEmailsQueue = async (stepId, userId, gmailToken) => {
     await sendEmailsQueue.add({
       stepId: stepId,
       userId: userId,
-      gmailToken: gmailToken
+      gmailToken: gmailToken,
+      gmailLabelId: gmailLabelId
     });
 
     sendEmailsQueue.on("completed", job => {
