@@ -283,6 +283,9 @@ router.post(
         gmailToken: req.user.gmailToken
       });
 
+      const jobs = await sendEmailsQueue.getJobCounts();
+      console.log(jobs);
+
       res.status(200).json({
         result: "Emails being sent"
       });

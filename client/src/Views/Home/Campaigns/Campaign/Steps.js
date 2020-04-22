@@ -8,7 +8,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button
+  Button,
+  LinearProgress,
+  Typography
 } from "@material-ui/core";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
@@ -38,15 +40,6 @@ const Steps = props => {
   const [sendConfirmation, setSendConfirmation] = useState(false);
   const [sendEmailsObj, setSendEmailsObj] = useState({});
   const [sendingConfirmation, setSendingConfirmation] = useState(false);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("email sent", data => {
-        const { sent, total } = data;
-        console.log(`${sent}/${total} emails sent`);
-      });
-    }
-  }, [socket]);
 
   const handleClose = () => {
     setEditorOpen(false);
@@ -117,24 +110,38 @@ const Steps = props => {
     </Dialog>
   );
 
-  const ConfirmEmailsSending = () => (
-    <Dialog
-      open={sendingConfirmation}
-      onClose={() => setSendingConfirmation(false)}
-      maxWidth="md"
-    >
-      <DialogTitle>Emails Sending</DialogTitle>
-      <DialogActions>
-        <Button
-          onClick={() => setSendingConfirmation(false)}
-          color="primary"
-          autoFocus
-        >
-          Ok
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  const ConfirmEmailsSending = () => {
+    const [sent, setSent] = useState(0);
+    const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+      if (socket) {
+        socket.on("email sent", data => {
+          setSent(data.sent);
+          setTotal(data.total);
+        });
+      }
+    });
+
+    const handleClose = () => {
+      props.triggerFetch();
+      setSendingConfirmation(false);
+    };
+
+    return (
+      <Dialog open={sendingConfirmation} onClose={handleClose} maxWidth="md">
+        <DialogContent>
+          <LinearProgress variant="determinate" value={(sent / total) * 100} />
+          <Typography>{`${sent}/${total} emails sent`}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   return (
     <Grid item container direction="column" className={classes.root}>

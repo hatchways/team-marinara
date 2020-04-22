@@ -99,6 +99,7 @@ const sendEmailsProcess = async data => {
 
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
+    socketApi.emitEmailSent(data.userId, 0, step.prospects.length);
 
     for (let i = 0; i < step.prospects.length; i++) {
       const prospect = step.prospects[i];
@@ -129,11 +130,7 @@ const sendEmailsProcess = async data => {
         step.prospects[i].gmailMessageId = gmailResponse.id;
         step.prospects[i].gmailThreadId = gmailResponse.threadId;
         step.summary.sent++;
-        socketApi.emitEmailSent(
-          data.userId,
-          step.summary.sent,
-          step.prospects.length
-        );
+        socketApi.emitEmailSent(data.userId, i + 1, step.prospects.length);
       }
     }
 
