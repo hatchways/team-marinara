@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
     await user.save();
 
     // Gmail requires a 200 status acknowledgment
+    console.log("FINISHED, sending res(200)...");
     res.status(200).send("OK");
   } catch (error) {
     console.log(error);
@@ -77,8 +78,8 @@ const getEmail = async (gmailToken, startHistoryId) => {
     // labelId: gmailLabelId
   });
 
-  console.log("history:", history);
-  console.log("history.data:", history.data);
+  // console.log("history:", history);
+  // console.log("history.data:", history.data);
   if (!history.data.history) {
     // no new messages
     console.log("No new messages");
@@ -87,7 +88,7 @@ const getEmail = async (gmailToken, startHistoryId) => {
 
   // See https://developers.google.com/gmail/api/v1/reference/users/history/list for rough data structure of history
   const messageData = history.data.history.flat();
-  console.log(">>>>>>messageData:", messageData);
+  // console.log(">>>>>>messageData:", messageData);
 
   // get only the threads that have received new messages
   const messagesAdded = messageData
@@ -99,26 +100,28 @@ const getEmail = async (gmailToken, startHistoryId) => {
     console.log("No new messages added");
     return true;
   }
-  console.log(">>>>>>>>messagesAdded:", messagesAdded);
+  // console.log(">>>>>>>>messagesAdded:", messagesAdded);
 
   const msgThreadIds = messagesAdded
     .map(message => {
-      console.log("message:", message);
+      // console.log("message:", message);
       return message.map(msg => {
-        console.log("msg:", msg);
+        // console.log("msg:", msg);
         return { messageId: msg.message.id, threadId: msg.message.threadId };
       });
     })
     .flat();
-  console.log(">>>>>>>messageIds:", msgThreadIds);
+  // console.log(">>>>>>>messageIds:", msgThreadIds);
 
   // Find the prospects with this Thread ID
-  const threadRecords = msgThreadIds.map(async msgThreadId => {
-    const threadRecord = await Thread.findOne({
-      threadId: msgThreadId.threadId
-    });
-    return threadRecord;
-  });
+  const threadRecords = await Promise.all(
+    msgThreadIds.map(async msgThreadId => {
+      const threadRecord = await Thread.findOne({
+        threadId: msgThreadId.threadId
+      });
+      return threadRecord;
+    })
+  );
 
   // // get latest threads to see which campaigns and prospects they are from
   // const threads = await Promise.all(
@@ -165,27 +168,29 @@ const getEmail = async (gmailToken, startHistoryId) => {
   // Update the prospect status in the step
   await Promise.all(
     threadRecords.map(async threadRecord => {
-      const campaign = Campaign.findById(threadRecord.campaignId);
-      const step = Step.findById(threadRecord.stepId);
+      if (threadRecord) {
+        console.log(">>>>>>>>>>>>threadRecord: ", threadRecord);
+        const campaign = await Campaign.findById(threadRecord.campaignId);
+        const step = await Step.findById(threadRecord.stepId);
 
-      const prospectIndex = campaign.prospects.findIndex(
-        prospect => prospect.prospectId === threadRecord.prospectId
-      );
-      console.log("prospectIndex", prospectIndex);
-      campaign.prospects[prospectIndex].status = "Replied";
-      campaign.stepsSummary.replied++;
+        const prospectIndex = campaign.prospects.findIndex(prospect =>
+          prospect.prospectId.equals(threadRecord.prospectId)
+        );
+        campaign.prospects[prospectIndex].status = "Replied";
+        campaign.stepsSummary.replied++;
 
-      // update the Step status
-      step.summary.replied++;
-      const stepProspectIndex = step.prospects.findIndex(
-        prospect => prospect.prospectId === threadRecord.prospectId
-      );
-      step.prospects[stepProspectIndex].status = "Replied";
+        // update the Step status
+        step.summary.replied++;
+        const stepProspectIndex = step.prospects.findIndex(prospect =>
+          prospect.prospectId.equals(threadRecord.prospectId)
+        );
+        step.prospects[stepProspectIndex].status = "Replied";
+        console.log("SAVING.........");
+        await campaign.save();
+        await step.save();
+      }
     })
   );
-  console.log("SAVING.........");
-  await campaign.save();
-  await step.save();
 };
 
 module.exports = router;
