@@ -134,8 +134,9 @@ const setUpGmailWatch = async gmail => {
     await gmail.users.watch({
       userId: "me",
       requestBody: {
-        labelIds: [label.data.id],
-        labelFilterAction: "include",
+        labelIds: ["INBOX"],
+        // labelIds: [label.data.id],
+        // labelFilterAction: "include",
         topicName: pubSubTopicName
       }
     });

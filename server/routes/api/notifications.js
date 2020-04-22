@@ -13,6 +13,7 @@ const User = require("../../models/user");
 const Campaign = require("../../models/campaign");
 const Step = require("../../models/step");
 const Prospect = require("../../models/Prospect");
+const Thread = require("../../models/thread");
 
 // @route POST /api/notifications
 // @desc Receive push notifications from Gmail
@@ -51,7 +52,7 @@ router.post("/", async (req, res) => {
 });
 
 /*
- * Test function to show read email functionality
+ * Gets email
  * @param {string} threadId - id of gmail email thread to read
  * @param req.query.redirectUrl {string} - URL to redirect to
  * after Google auth process
@@ -68,10 +69,12 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
   // get list of emailIds that have been received
   const history = await gmail.users.history.list({
     userId: "me",
-    startHistoryId: historyId,
-    labelId: gmailLabelId
+    startHistoryId: historyId
+    // labelId: gmailLabelId
   });
 
+  console.log("history:", history);
+  console.log("history.data:", history.data);
   if (!history.data.history) {
     // no new messages
     console.log("No new messages");
@@ -105,97 +108,80 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
     .flat();
   console.log(">>>>>>>messageIds:", msgThreadIds);
 
-  // get latest threads to see which campaigns and prospects they are from
-  const threads = await Promise.all(
-    msgThreadIds.map(async messageThreadId => {
-      const thread = await gmail.users.threads.get({
-        userId: "me",
-        id: messageThreadId.threadId,
-        format: "metadata" // return only headers, ids and labels
-      });
-      thread.messageId = messageThreadId.messageId;
-      return thread;
-    })
-  );
-  threads.forEach(thread => {
-    console.log("thread.data:", thread.messages);
+  // Find the prospects with this Thread ID
+  const threadRecords = msgThreadIds.map(async msgThreadId => {
+    const threadRecord = await Thread.findOne({
+      threadId: msgThreadId.threadId
+    });
+    return threadRecord;
   });
 
-  // \u003cdarrengreenfield555@gmail.com\u003e
-  // get labelId which identifies the campaign and prospect email address
-  const emailsData = threads.map(thread => {
-    const labelId = thread.messages[0].labelIds.find(labelId =>
-      labelId.startsWith("mscId")
-    );
+  // // get latest threads to see which campaigns and prospects they are from
+  // const threads = await Promise.all(
+  //   msgThreadIds.map(async messageThreadId => {
+  //     const thread = await gmail.users.threads.get({
+  //       userId: "me",
+  //       id: messageThreadId.threadId,
+  //       format: "metadata" // return only headers, ids and labels
+  //     });
+  //     thread.messageId = messageThreadId.messageId;
+  //     return thread;
+  //   })
+  // );
+  // threads.forEach(thread => {
+  //   console.log("thread.data:", thread.messages);
+  // });
 
-    const newMessage = thread.messages.find(
-      message => message.id === thread.messageId
-    );
+  // // \u003cdarrengreenfield555@gmail.com\u003e
+  // // get labelId which identifies the campaign and prospect email address
+  // const emailsData = threads.map(thread => {
+  //   const labelId = thread.messages[0].labelIds.find(labelId =>
+  //     labelId.startsWith("mscId")
+  //   );
 
-    const fromObj = newMessage.payload.headers.find(
-      header => header["name"] === "From"
-    );
-    console.log("fromObj.value", fromObj["value"]);
-    const emailAddr = fromObj["value"].match(/<(.*)>/);
-    console.log("email address:", emailAddr[1]);
-    return {
-      labelId: labelId,
-      prospectEmailAddr: emailAddr[1]
-    };
-  });
-  for (const email of emailsData) {
-    console.log(">>>>>>>>>>>>>emailsData:", email);
-  }
+  //   const newMessage = thread.messages.find(
+  //     message => message.id === thread.messageId
+  //   );
+
+  //   const fromObj = newMessage.payload.headers.find(
+  //     header => header["name"] === "From"
+  //   );
+  //   console.log("fromObj.value", fromObj["value"]);
+  //   const emailAddr = fromObj["value"].match(/<(.*)>/);
+  //   console.log("email address:", emailAddr[1]);
+  //   return {
+  //     labelId: labelId,
+  //     prospectEmailAddr: emailAddr[1]
+  //   };
+  // });
+  // for (const email of emailsData) {
+  //   console.log(">>>>>>>>>>>>>emailsData:", email);
+  // }
 
   // Update the prospect status in the step
   await Promise.all(
-    emailsData.map(async email => {
-      // get the prospectId
-      const prospectId = await Prospect.findOne(
-        { email: email.prospectEmailAddr },
-        "_id"
-      );
-
-      console.log("prospectId:", prospectId);
-
-      // get the campaign and sort to get latest step
-      const campaign = await Campaign.findOne({
-        gmailLabelId: email.labelId
-      })
-        .populate("steps", "_id, created, prospects, summary")
-        .sort({ "steps.created": "-1" });
-
-      if (!campaign) {
-        console.log(`No campaign found with gmailLabelId: ${email.labelId}`);
-        return true;
-      }
-      console.log("Latest step date", campaign.steps[0].created);
+    threadRecords.map(async threadRecord => {
+      const campaign = Campaign.findById(threadRecord.campaignId);
+      const step = Step.findById(threadRecord.stepId);
 
       const prospectIndex = campaign.prospects.findIndex(
-        prospect => prospect.prospectId === prospectId
+        prospect => prospect.prospectId === threadRecord.prospectId
       );
       console.log("prospectIndex", prospectIndex);
       campaign.prospects[prospectIndex].status = "Replied";
-
-      // find the prospect in the step and update their status
-      //get the latest step
-      // const latestStepDate = Math.max(
-      //   ...campaign.steps.map(step => step.created)
-      // );
+      campaign.stepsSummary.replied++;
 
       // update the Step status
-      const stepProspectIndex = campaign.steps[0].prospects.findIndex(
-        prospect => prospect.prospectId === prospectId
+      step.summary.replied++;
+      const stepProspectIndex = step.prospects.findIndex(
+        prospect => prospect.prospectId === threadRecord.prospectId
       );
-      campaign.steps[0].prospects[stepProspectIndex].status = "Replied";
-      campaign.steps[0].summary.replied++;
-
-      // update the campaign.stepsSummary
-      campaign.stepsSummary.replied++;
+      step.prospects[stepProspectIndex].status = "Replied";
     })
   );
   console.log("SAVING.........");
   await campaign.save();
+  await step.save();
 };
 
 module.exports = router;

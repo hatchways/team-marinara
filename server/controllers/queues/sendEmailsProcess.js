@@ -13,7 +13,7 @@ const {
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");
-const Campaign = require("../../models/campaign");
+const Thread = require("../../models/thread");
 
 const getGmail = gmailToken => {
   const oAuth2Client = new google.auth.OAuth2(
@@ -38,9 +38,9 @@ const sendOneEmail = async (
   try {
     const gmailResponse = await gmail.users.messages.send({
       userId: "me",
-      resource: {
-        raw: encodedMailString,
-        labelIds: [gmailLabelId, campaignGmailLabelId]
+      requestBody: {
+        raw: encodedMailString
+        // LabelIds: [gmailLabelId, campaignGmailLabelId]
       }
     });
 
@@ -104,7 +104,6 @@ const sendEmailsProcess = async data => {
       "_id firstName lastName email"
     );
     const variables = await Variable.find();
-    const campaign = await Campaign.findById(data.campaignId);
 
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
@@ -128,16 +127,21 @@ const sendEmailsProcess = async data => {
       const gmail = getGmail(data.gmailToken);
 
       // If a gmail label hasn't been created for this campaign, create one
-      if (!data.campaignGmailLabelId) {
-        gmail.users.labels.create({
-          userId: "me",
-          requestBody: {
-            labelListVisibility: "labelHide", // do not show label in user's label list
-            messageListVisibility: "show", // show emails with this label in user's inbox
-            name: campaignGmailLabel
-          }
-        });
-      }
+      // if (!data.campaignGmailLabelId) {
+      //   const label = await gmail.users.labels.create({
+      //     userId: "me",
+      //     requestBody: {
+      //       labelListVisibility: "labelHide", // do not show label in user's label list
+      //       messageListVisibility: "show", // show emails with this label in user's inbox
+      //       name: data.campaignGmailLabel
+      //     }
+      //   });
+      //   data.campaignGmailLabelId = label.data.id;
+
+      //   const campaign = await Campaign.findById(data.campaignId);
+      //   campaign.gmailLabelId = label.data.id;
+      //   await campaign.save();
+      // }
 
       //Staggers sending of emails by 1 per second
       const gmailResponse = await new Promise(resolve =>
@@ -162,7 +166,16 @@ const sendEmailsProcess = async data => {
         step.prospects[i].gmailMessageId = gmailResponse.id;
         step.prospects[i].gmailThreadId = gmailResponse.threadId;
         step.summary.sent++;
-        step.save();
+        await step.save();
+
+        const newThread = new Thread({
+          threadId: gmailResponse.threadId,
+          stepId: data.stepId,
+          campaignId: data.campaignId,
+          prospectId: step.prospects[i].prospectId._id,
+          userId: data.userId
+        });
+        await newThread.save();
       }
     }
 
