@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, makeStyles, Popover, List, Modal } from "@material-ui/core";
+import { Grid, makeStyles, Popover, List } from "@material-ui/core";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
