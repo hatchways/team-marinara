@@ -13,6 +13,9 @@ const Campaign = props => {
   const [campaign, setCampaign] = useState({});
   const [prospects, setProspects] = useState([]);
   const [steps, setSteps] = useState([]);
+  const [activeStep, setActiveStep] = useState("All");
+  const [stepBarArray, setStepBarArray] = useState([]);
+  const [filteredProspects, setFilteredProspects] = useState([]);
   const [recentlyFetched, setRecentlyFetched] = useState(false);
 
   useEffect(() => {
@@ -29,6 +32,7 @@ const Campaign = props => {
       try {
         const res = await getCampaignProspects(campaignId);
         setProspects(res.data);
+        setFilteredProspects(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -38,6 +42,12 @@ const Campaign = props => {
       try {
         const res = await getCampaignSteps(campaignId);
         setSteps(res.data);
+        const stepArray = [
+          "All",
+          "Pending",
+          ...res.data.map(step => step.name)
+        ];
+        setStepBarArray(stepArray);
       } catch (error) {
         console.log(error);
       }
@@ -55,12 +65,58 @@ const Campaign = props => {
     setRecentlyFetched(false);
   };
 
+  const handleStepSelect = stepName => {
+    setActiveStep(stepName);
+    if (stepName === "All") {
+      setFilteredProspects(prospects);
+    } else if (stepName === "Pending") {
+      filterPendingProspects();
+    } else {
+      const step = steps.find(step => {
+        return step.name === stepName;
+      });
+
+      let stepProspects = [];
+
+      stepProspects = step.prospects.map(prospect => prospect.prospectId);
+      console.log(stepProspects);
+      let newFilteredProspectList = [];
+      newFilteredProspectList = prospects.filter(prospect =>
+        stepProspects.includes(prospect.prospectId._id)
+      );
+      setFilteredProspects(newFilteredProspectList);
+    }
+  };
+
+  const filterPendingProspects = () => {
+    let totalActiveProspects = [];
+    steps.forEach(step => {
+      totalActiveProspects = totalActiveProspects.concat(step.prospects);
+    });
+    totalActiveProspects = totalActiveProspects.map(
+      prospect => prospect.prospectId
+    );
+    let totalProspects = prospects;
+    setFilteredProspects(
+      totalProspects.filter(
+        prospect => !totalActiveProspects.includes(prospect.prospectId._id)
+      )
+    );
+  };
+
   return (
     <React.Fragment>
       <Sidebar campaignId={campaignId} />
       <Switch>
         <Route path="/home/campaigns/*/prospects">
-          <Prospects steps={steps} campaign={campaign} prospects={prospects} />
+          <Prospects
+            steps={steps}
+            campaign={campaign}
+            prospects={filteredProspects}
+            stepBarArray={stepBarArray}
+            activeStep={activeStep}
+            handleStepSelect={handleStepSelect}
+          />
         </Route>
         <Route path={["/home/campaigns/*", "/home/campaigns/*/summary"]}>
           <Summary

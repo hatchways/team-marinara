@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     padding: "10px 0px 10px 0px",
     height: ".8rem",
     minWidth: "75px",
-    maxWidth: "150px",
+    maxWidth: "120px",
     textAlign: "center",
     borderRight: `1px solid ${colors.borderGray}`,
     borderBottom: `1px solid ${colors.borderGray}`,
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     backgroundColor: `${colors.lightGreen}`,
     color: "#ffffff",
     fontWeight: "bold",
-    maxWidth: "150px",
+    maxWidth: "120px",
     fontSize: ".8rem",
     height: ".8rem",
     padding: "10px 0px 10px 0px",
@@ -73,60 +73,21 @@ const useStyles = makeStyles({
   }
 });
 
-const defaultStepOptions = ["All", "Pending"];
-
 const CampaignProspectsStepBar = props => {
   const classes = useStyles();
-  const [recentlyFetched, setRecentlyFetched] = useState(false);
-  const [selectedButton, setSelectedButton] = useState([]);
 
-  useEffect(() => {
-    if (props.steps.length > 0 && !recentlyFetched) {
-      let result = props.steps.map(step => step.name);
-      result = defaultStepOptions.concat(result);
-      let buttonActiveArray = [];
-      if (selectedButton.length > 0) {
-        buttonActiveArray = selectedButton;
-      } else {
-        for (let i = 0; i < result.length; i++) {
-          if (i === 0) {
-            buttonActiveArray.push(true);
-          } else {
-            buttonActiveArray.push(false);
-          }
-        }
-      }
-      setSelectedButton(buttonActiveArray);
-      setRecentlyFetched(true);
-    }
-  }, [props]);
+  const { stepBarArray, handleStepSelect, activeStep } = props;
 
   const handleClick = e => {
-    const buttonPosition = e.target.getAttribute("buttonposition");
-    let buttonArray = selectedButton;
-    //reset all button values except one to false
-    for (let i = 0; i < selectedButton.length; i++) {
-      if (i === parseInt(buttonPosition)) {
-        buttonArray[i] = true;
-      } else {
-        buttonArray[i] = false;
-      }
-    }
-    setSelectedButton(buttonArray);
-    setRecentlyFetched(false);
-    props.handleStepSelect(e.target.getAttribute("value"));
+    const selected = e.target.getAttribute("value");
+    handleStepSelect(selected);
   };
 
-  const stepBarArrays = [
-    "All",
-    "Pending",
-    ...props.steps.map(step => step.name)
-  ];
-  const stepBar = stepBarArrays.map((step, i) => (
+  const stepBar = stepBarArray.map((step, i) => (
     <TableCell
       onClick={e => handleClick(e)}
       className={
-        selectedButton[i] ? classes.stepButtonColored : classes.stepButton
+        activeStep === step ? classes.stepButtonColored : classes.stepButton
       }
       key={i}
       buttonposition={i}

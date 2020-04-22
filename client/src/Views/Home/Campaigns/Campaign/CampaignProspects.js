@@ -13,52 +13,9 @@ const useStyles = makeStyles({
 
 const CampaignProspects = props => {
   const classes = useStyles();
-  const [prospectsList, setProspectsList] = useState(props.prospects);
-  const [filteredProspects, setFilteredProspects] = useState(props.prospects);
-  const [recentlyFetched, setRecentlyFetched] = useState(false);
-
-  useEffect(() => {
-    if (props.prospects.length > 0) {
-      setProspectsList(props.prospects);
-      setFilteredProspects(props.prospects);
-      setRecentlyFetched(true);
-    }
-  }, [props]);
 
   const handleStepSelect = stepName => {
-    if (stepName === "All") {
-      setFilteredProspects(prospectsList);
-    } else if (stepName === "Pending") {
-      filterPendingProspects();
-    } else {
-      const step = props.steps.find(step => {
-        return step.name === stepName;
-      });
-
-      let stepProspects = [];
-      stepProspects = step.prospects.map(prospect => prospect.prospectId);
-      let newFilteredProspectList = [];
-      newFilteredProspectList = prospectsList.filter(prospect =>
-        stepProspects.includes(prospect.prospectId._id)
-      );
-      setFilteredProspects(newFilteredProspectList);
-    }
-  };
-
-  const filterPendingProspects = () => {
-    let totalActiveProspects = [];
-    props.steps.forEach(step => {
-      totalActiveProspects = totalActiveProspects.concat(step.prospects);
-    });
-    totalActiveProspects = totalActiveProspects.map(
-      prospect => prospect.prospectId
-    );
-    let totalProspects = prospectsList;
-    setFilteredProspects(
-      totalProspects.filter(
-        prospect => !totalActiveProspects.includes(prospect.prospectId._id)
-      )
-    );
+    props.handleStepSelect(stepName);
   };
 
   return (
@@ -67,8 +24,10 @@ const CampaignProspects = props => {
         handleStepSelect={handleStepSelect}
         steps={props.steps}
         name={props.campaign.name}
+        stepBarArray={props.stepBarArray}
+        activeStep={props.activeStep}
       />
-      <Table prospects={filteredProspects} />
+      <Table prospects={props.prospects} />
     </Grid>
   );
 };
