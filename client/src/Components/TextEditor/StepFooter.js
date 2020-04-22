@@ -6,7 +6,7 @@ import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
 import StyledButtonText from "Components/Button/StyledButtonText";
 import ListItemBtn from "Components/TextEditor/ListItemBtn";
 import colors from "Components/Styles/Colors";
-import TemplateModal from "./SelectTemplateModal";
+import DataSelectDialog from "Components/Dialog/DataSelectDialog";
 
 const useStyles = makeStyles(theme => ({
   buttonBar: {
@@ -96,10 +96,12 @@ const StepFooter = props => {
         <StyledButtonText onClick={handleClose}>Cancel</StyledButtonText>
         <StyledButtonOutline onClick={handleSave}>Save</StyledButtonOutline>
       </Grid>
-      <TemplateModal
+      <DataSelectDialog
         handleCloseTemplateModal={handleCloseTemplateModal}
         open={modalOpen}
         setModalOpen={setModalOpen}
+        data={props.templates}
+        dataType="Template"
       />
     </Grid>
   );

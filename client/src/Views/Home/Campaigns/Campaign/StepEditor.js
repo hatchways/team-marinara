@@ -199,6 +199,7 @@ const StepEditor = props => {
             handleSave={handleSave}
             handleSaveAsTemplate={handleSaveAsTemplate}
             handleLoadTemplate={handleLoadTemplate}
+            templates={props.templates}
           />
         </Grid>
       </DialogContent>

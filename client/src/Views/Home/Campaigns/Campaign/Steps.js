@@ -137,6 +137,7 @@ const Steps = props => {
         campaignId={props.campaign._id}
         step={selectedStep}
         triggerFetch={props.triggerFetch}
+        templates={props.templates}
       />
       <ConfirmSendEmails />
       <ConfirmEmailsSending />
