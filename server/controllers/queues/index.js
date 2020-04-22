@@ -3,10 +3,16 @@
  */
 
 const Queue = require("bull");
-const REDIS_URL = require("../../config/config").redisURL;
+const { redisHost, redisPort, redisAuth } = require("../../config/config");
 const { sendEmailsProcess } = require("./sendEmailsProcess");
 
-const sendEmailsQueue = new Queue("sendEmails", REDIS_URL);
+const sendEmailsQueue = new Queue("sendEmails", {
+  redis: {
+    port: redisPort,
+    host: redisHost,
+    password: redisAuth
+  }
+});
 
 sendEmailsQueue.process(async job => {
   await sendEmailsProcess(job.data);

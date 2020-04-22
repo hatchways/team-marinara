@@ -7,14 +7,17 @@
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "stop": "mongo admin --eval \"db.shutdownServer()\""
+    "stop": "mongo admin --eval \"db.shutdownServer()\"",
+    "deploy": "npm run build --prefix ./client && gcloud app deploy"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bull": "^3.13.0",
     "cookie-parser": "~1.4.4",
     "csv-parser": "^2.3.2",
     "debug": "~2.6.9",
     "dotenv": "^8.0.0",
+    "draftjs-to-html": "^0.9.1",
     "express": "~4.16.1",
     "fs": "0.0.1-security",
     "googleapis": "^48.0.0",
@@ -27,6 +30,7 @@
     "nodemon": "^1.19.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "redis": "^3.0.2",
     "validator": "^13.0.0"
   }
 }
