@@ -7,7 +7,7 @@ const UserSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   gmailToken: { type: String }, // token for accessing user's gmail account
-  gmailLabelId: { type: String } // labelId which will be applied to all email sent by MailSender on user's behalf
+  gmailHistoryId: { type: String } // historyId of mailsender's last sync with user's gmail account
 });
 
 module.exports = mongoose.model("User", UserSchema);

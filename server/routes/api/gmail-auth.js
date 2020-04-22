@@ -100,10 +100,8 @@ router.post(
           return response.data.emailAddress;
         });
 
-      if (!user.gmailLabelId) {
-        const labelId = await setUpGmailWatch(gmail);
-        user.gmailLabelId = labelId;
-      }
+      const historyId = await setUpGmailWatch(gmail);
+      user.gmailHistoryId = historyId;
       await user.save();
 
       res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
@@ -122,16 +120,16 @@ const setUpGmailWatch = async gmail => {
   try {
     // create a label in user's account which will be attached to all mailsender
     // sent and received email
-    const label = await gmail.users.labels.create({
-      userId: "me",
-      requestBody: {
-        labelListVisibility: "labelHide", // do not show label in user's label list
-        messageListVisibility: "show", // show emails with this label in user's inbox
-        name: mailSenderGmailLabel
-      }
-    });
+    // const label = await gmail.users.labels.create({
+    //   userId: "me",
+    //   requestBody: {
+    //     labelListVisibility: "labelHide", // do not show label in user's label list
+    //     messageListVisibility: "show", // show emails with this label in user's inbox
+    //     name: mailSenderGmailLabel
+    //   }
+    // });
 
-    await gmail.users.watch({
+    const watchResponse = await gmail.users.watch({
       userId: "me",
       requestBody: {
         labelIds: ["INBOX"],
@@ -140,7 +138,7 @@ const setUpGmailWatch = async gmail => {
         topicName: pubSubTopicName
       }
     });
-    return label.data.id;
+    return watchResponse.data.historyId;
   } catch (error) {
     console.log("Error setting up watch on user.", error);
   }

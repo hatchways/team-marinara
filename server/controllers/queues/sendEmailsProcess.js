@@ -43,7 +43,6 @@ const sendOneEmail = async (
         // LabelIds: [gmailLabelId, campaignGmailLabelId]
       }
     });
-
     return Promise.resolve(gmailResponse.data);
   } catch (error) {
     console.log("Gmail send returned an error: " + error);

@@ -36,12 +36,16 @@ router.post("/", async (req, res) => {
     console.log("userEmail:", userEmail);
     const user = await User.findOne(
       { email: userEmail },
-      "gmailToken gmailLabelId"
+      "gmailToken gmailHistoryId"
     );
     console.log("user:", user);
 
     // Get emails with history.list()
-    await getEmail(user.gmailToken, historyId, user.gmailLabelId);
+    await getEmail(user.gmailToken, user.gmailHistoryId);
+
+    // Replace last synced historyId for user with latest
+    user.gmailHistoryId = historyId;
+    await user.save();
 
     // Gmail requires a 200 status acknowledgment
     res.status(200).send("OK");
@@ -57,7 +61,7 @@ router.post("/", async (req, res) => {
  * @param req.query.redirectUrl {string} - URL to redirect to
  * after Google auth process
  */
-const getEmail = async (gmailToken, historyId, gmailLabelId) => {
+const getEmail = async (gmailToken, startHistoryId) => {
   const oAuth2Client = new google.auth.OAuth2(
     googleClientId,
     googleClientSecret,
@@ -69,7 +73,7 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
   // get list of emailIds that have been received
   const history = await gmail.users.history.list({
     userId: "me",
-    startHistoryId: historyId
+    startHistoryId: startHistoryId
     // labelId: gmailLabelId
   });
 
