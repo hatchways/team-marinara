@@ -148,7 +148,6 @@ const TemplateEditor = props => {
       }
     } catch (error) {
       // Launches error dialog
-      //if(error.sta)
       console.log(error);
       if (error.response.status === 409) {
         setErrorMessage(duplicateTitle);
@@ -156,6 +155,7 @@ const TemplateEditor = props => {
       setSaveSuccess(false);
     }
   };
+
   const errorDialogClose = () => {
     setSaveSuccess(null);
   };

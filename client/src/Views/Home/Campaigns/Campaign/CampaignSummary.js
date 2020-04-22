@@ -20,6 +20,7 @@ const CampaignSummary = props => {
         campaign={props.campaign}
         steps={props.steps}
         triggerFetch={props.triggerFetch}
+        templates={props.templates}
       />
     </Grid>
   );

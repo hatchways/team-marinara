@@ -6,6 +6,7 @@ import StyledButtonTransparent from "Components/Button/StyledButtonTransparent";
 import StyledButtonText from "Components/Button/StyledButtonText";
 import ListItemBtn from "Components/TextEditor/ListItemBtn";
 import colors from "Components/Styles/Colors";
+import DataSelectDialog from "Components/Dialog/DataSelectDialog";
 
 const useStyles = makeStyles(theme => ({
   buttonBar: {
@@ -18,9 +19,16 @@ const useStyles = makeStyles(theme => ({
 
 const StepFooter = props => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const classes = useStyles();
-  const { handleClose, handleSave, handleVariableValueClick } = props;
+  const {
+    handleClose,
+    handleSave,
+    handleVariableValueClick,
+    handleSaveAsTemplate,
+    handleLoadTemplate
+  } = props;
 
   const handleVariablesBtnClick = event => {
     setAnchorEl(event.currentTarget);
@@ -31,14 +39,31 @@ const StepFooter = props => {
     setAnchorEl(null);
   };
 
+  const saveAsTemplate = () => {
+    handleSaveAsTemplate();
+  };
+
+  const handleCloseTemplateModal = template => {
+    setModalOpen(false);
+    handleLoadTemplate(template);
+  };
+
+  const handleOpenTemplateModal = () => {
+    setModalOpen(true);
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   return (
     <Grid container item className={classes.buttonBar} xs={12}>
       <Grid item xs={8}>
-        <StyledButtonTransparent>Templates</StyledButtonTransparent>
-        <StyledButtonTransparent>Save as Template</StyledButtonTransparent>
+        <StyledButtonTransparent onClick={handleOpenTemplateModal}>
+          Templates
+        </StyledButtonTransparent>
+        <StyledButtonTransparent onClick={saveAsTemplate}>
+          Save as Template
+        </StyledButtonTransparent>
         <StyledButtonTransparent
           id="variablesBtn"
           onClick={handleVariablesBtnClick}
@@ -71,6 +96,13 @@ const StepFooter = props => {
         <StyledButtonText onClick={handleClose}>Cancel</StyledButtonText>
         <StyledButtonOutline onClick={handleSave}>Save</StyledButtonOutline>
       </Grid>
+      <DataSelectDialog
+        handleCloseTemplateModal={handleCloseTemplateModal}
+        open={modalOpen}
+        setModalOpen={setModalOpen}
+        data={props.templates}
+        dataType="Template"
+      />
     </Grid>
   );
 };
