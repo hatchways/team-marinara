@@ -40,8 +40,7 @@ const Campaign = props => {
       }
     };
 
-    const getTemplatesFromApi = async () => {
-      console.log("Getting templates");
+    const retrieveTemplates = async () => {
       try {
         const res = await getTemplates();
         setTemplates(res.data);
@@ -63,7 +62,7 @@ const Campaign = props => {
       fetchCampaign(campaignId);
       getProspects(campaignId);
       getSteps(campaignId);
-      getTemplatesFromApi();
+      retrieveTemplates();
       setRecentlyFetched(true);
     }
   }, [recentlyFetched, campaignId, props]);

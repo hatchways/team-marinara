@@ -215,7 +215,7 @@ const StepEditor = props => {
           <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {saveSuccess ? "Template saved" : errorMessage}
+              {saveSuccess ? "Save successful" : errorMessage}
             </DialogContentText>
           </DialogContent>
         </Dialog>
