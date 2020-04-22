@@ -25,21 +25,22 @@ router.post("/", async (req, res) => {
     }
 
     // message.data is base64 encoded JSON object
-    const decodedData = await Buffer.from(
-      req.body.message.data,
-      "base64"
-    ).toString();
+    const decodedData = await JSON.parse(
+      Buffer.from(req.body.message.data, "base64").toString()
+    );
     console.log("decodedData:", decodedData);
     const userEmail = decodedData.emailAddress;
     const historyId = decodedData.historyId;
 
-    const { gmailToken, gmailLabelId } = await User.findOne(
+    console.log("userEmail:", userEmail);
+    const user = await User.findOne(
       { email: userEmail },
       "gmailToken gmailLabelId"
     );
+    console.log("user:", user);
 
     // Get emails with history.list()
-    await getEmail(gmailToken, historyId, gmailLabelId);
+    await getEmail(user.gmailToken, historyId, user.gmailLabelId);
 
     // Gmail requires a 200 status acknowledgment
     res.status(200).send("OK");
@@ -61,7 +62,7 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
     googleClientSecret,
     googleRedirectUrl
   );
-  oAuth2Client.setCredentials(gmailToken);
+  oAuth2Client.setCredentials({ refresh_token: gmailToken });
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
   // get list of emailIds that have been received
@@ -70,28 +71,81 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
     startHistoryId: historyId,
     labelId: gmailLabelId
   });
-  console.log("history:", history);
-  const messageIds = history[0].messages.map(message => message.id);
-  console.log("messageIds:", messageIds);
 
-  // get latest messages to see which campaigns and prospects they are from
-  const emails = await Promise.all(
-    messageIds.map(messageId => {
-      return gmail.users.messages.get({
-        userId: "me",
-        id: messageId
+  if (!history.data.history) {
+    // no new messages
+    console.log("No new messages");
+    return true;
+  }
+
+  // See https://developers.google.com/gmail/api/v1/reference/users/history/list for rough data structure of history
+  const messageData = history.data.history.flat();
+  console.log(">>>>>>messageData:", messageData);
+
+  // get only the threads that have received new messages
+  const messagesAdded = messageData
+    .filter(thread => thread.messagesAdded)
+    .map(thread => thread.messagesAdded);
+
+  if (messagesAdded.length === 0) {
+    // no new messages
+    console.log("No new messages added");
+    return true;
+  }
+  console.log(">>>>>>>>messagesAdded:", messagesAdded);
+
+  const msgThreadIds = messagesAdded
+    .map(message => {
+      console.log("message:", message);
+      return message.map(msg => {
+        console.log("msg:", msg);
+        return { messageId: msg.message.id, threadId: msg.message.threadId };
       });
     })
-  );
+    .flat();
+  console.log(">>>>>>>messageIds:", msgThreadIds);
 
+  // get latest threads to see which campaigns and prospects they are from
+  const threads = await Promise.all(
+    msgThreadIds.map(async messageThreadId => {
+      const thread = await gmail.users.threads.get({
+        userId: "me",
+        id: messageThreadId.threadId,
+        format: "metadata" // return only headers, ids and labels
+      });
+      thread.messageId = messageThreadId.messageId;
+      return thread;
+    })
+  );
+  threads.forEach(thread => {
+    console.log("thread.data:", thread.messages);
+  });
+
+  // \u003cdarrengreenfield555@gmail.com\u003e
   // get labelId which identifies the campaign and prospect email address
-  const emailsData = emails.map(email => {
+  const emailsData = threads.map(thread => {
+    const labelId = thread.messages[0].labelIds.find(labelId =>
+      labelId.startsWith("mscId")
+    );
+
+    const newMessage = thread.messages.find(
+      message => message.id === thread.messageId
+    );
+
+    const fromObj = newMessage.payload.headers.find(
+      header => header["name"] === "From"
+    );
+    console.log("fromObj.value", fromObj["value"]);
+    const emailAddr = fromObj["value"].match(/<(.*)>/);
+    console.log("email address:", emailAddr[1]);
     return {
-      labelId: email.labelIds.find(labelId => labelId.startsWith("mscId")),
-      prospectEmailAddr: email.body.from
+      labelId: labelId,
+      prospectEmailAddr: emailAddr[1]
     };
   });
-  console.log("emailsData:", emailsData);
+  for (const email of emailsData) {
+    console.log(">>>>>>>>>>>>>emailsData:", email);
+  }
 
   // Update the prospect status in the step
   await Promise.all(
@@ -102,17 +156,25 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
         "_id"
       );
 
+      console.log("prospectId:", prospectId);
+
       // get the campaign and sort to get latest step
       const campaign = await Campaign.findOne({
         gmailLabelId: email.labelId
       })
         .populate("steps", "_id, created, prospects, summary")
         .sort({ "steps.created": "-1" });
+
+      if (!campaign) {
+        console.log(`No campaign found with gmailLabelId: ${email.labelId}`);
+        return true;
+      }
       console.log("Latest step date", campaign.steps[0].created);
 
       const prospectIndex = campaign.prospects.findIndex(
         prospect => prospect.prospectId === prospectId
       );
+      console.log("prospectIndex", prospectIndex);
       campaign.prospects[prospectIndex].status = "Replied";
 
       // find the prospect in the step and update their status
@@ -132,6 +194,7 @@ const getEmail = async (gmailToken, historyId, gmailLabelId) => {
       campaign.stepsSummary.replied++;
     })
   );
+  console.log("SAVING.........");
   await campaign.save();
 };
 

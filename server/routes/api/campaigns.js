@@ -280,8 +280,11 @@ router.post(
       await sendEmailsQueue.add({
         stepId: stepId,
         userId: req.user.id,
+        campaignGmailLabelId: campaign.gmailLabelId,
+        campaignGmailLabel: campaign.gmailLabel,
         gmailToken: req.user.gmailToken,
-        gmailLabelId: req.user.gmailLabelId
+        gmailLabelId: req.user.gmailLabelId,
+        campaignId: campaignId
       });
 
       res.status(200).json({

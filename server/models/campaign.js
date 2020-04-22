@@ -25,7 +25,8 @@ const CampaignSchema = new Schema({
         ],
         default: "Draft"
       },
-      step: { type: Schema.Types.ObjectId, ref: "Step" }
+      step: { type: Schema.Types.ObjectId, ref: "Step" },
+      gmailLabelId: { type: String }
     }
   ],
   // stepsSummary are sums of campaign.steps.summary
@@ -39,13 +40,14 @@ const CampaignSchema = new Schema({
     optedOut: { type: Number, default: 0, required: true }
   },
   steps: [{ type: Schema.Types.ObjectId, ref: "Step", index: true }],
-  gmailLabelId: {
-    // unique id to add to all emails in campaign
+  gmailLabel: {
+    // unique Label to add to all emails in campaign
     type: String,
     default: () => `mscId${randToken.generate(8)}`,
     required: true,
     index: true
-  }
+  },
+  gmailLabelId: { type: String } // id of above label from gmail
 });
 
 module.exports = mongoose.model("Campaign", CampaignSchema);

@@ -55,8 +55,7 @@ router.get(
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: "offline",
       scope: SCOPES,
-      // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
-      ...(!process.env.NODE_ENV && { prompt: "consent" })
+      prompt: "consent"
     });
 
     res.status(200).json({ authUrl: authUrl });
@@ -76,7 +75,6 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      console.log("Process Token running...");
       if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
       const oAuth2Client = new google.auth.OAuth2(
