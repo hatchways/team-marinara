@@ -29,18 +29,12 @@ const getGmail = gmailToken => {
 /*
  * Send one email via Gmail from user represented by gmailToken
  */
-const sendOneEmail = async (
-  encodedMailString,
-  gmailLabelId,
-  campaignGmailLabelId,
-  gmail
-) => {
+const sendOneEmail = async (encodedMailString, gmail) => {
   try {
     const gmailResponse = await gmail.users.messages.send({
       userId: "me",
       requestBody: {
         raw: encodedMailString
-        // LabelIds: [gmailLabelId, campaignGmailLabelId]
       }
     });
     return Promise.resolve(gmailResponse.data);
@@ -94,7 +88,7 @@ const convertToBufferString = async (
 };
 
 /*
- * @params: data: {stepId, userId, campaignGmailLabelId, campaignGmailLabel, gmailToken, gmailLabelId, campaignId}
+ * @params: data: {stepId, userId, gmailToken, campaignId}
  */
 const sendEmailsProcess = async data => {
   try {
@@ -125,37 +119,9 @@ const sendEmailsProcess = async data => {
 
       const gmail = getGmail(data.gmailToken);
 
-      // If a gmail label hasn't been created for this campaign, create one
-      // if (!data.campaignGmailLabelId) {
-      //   const label = await gmail.users.labels.create({
-      //     userId: "me",
-      //     requestBody: {
-      //       labelListVisibility: "labelHide", // do not show label in user's label list
-      //       messageListVisibility: "show", // show emails with this label in user's inbox
-      //       name: data.campaignGmailLabel
-      //     }
-      //   });
-      //   data.campaignGmailLabelId = label.data.id;
-
-      //   const campaign = await Campaign.findById(data.campaignId);
-      //   campaign.gmailLabelId = label.data.id;
-      //   await campaign.save();
-      // }
-
       //Staggers sending of emails by 1 per second
       const gmailResponse = await new Promise(resolve =>
-        setTimeout(
-          () =>
-            resolve(
-              sendOneEmail(
-                encodedMailString,
-                data.gmailLabelId,
-                data.campaignGmailLabelId,
-                gmail
-              )
-            ),
-          1000
-        )
+        setTimeout(() => resolve(sendOneEmail(encodedMailString, gmail)), 1000)
       );
 
       console.log("gmailResponse", gmailResponse);

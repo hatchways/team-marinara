@@ -6,7 +6,6 @@ const User = require("../../models/user.js");
 const {
   googleClientSecret,
   googleClientId,
-  mailSenderGmailLabel,
   pubSubTopicName
 } = require("../../config/config");
 
@@ -114,27 +113,14 @@ router.post(
 
 /*
  * Set up subscription to users email address. We will be notified of all emails
- * received with mailSenderGmailLabelId as a label
+ * received
  */
 const setUpGmailWatch = async gmail => {
   try {
-    // create a label in user's account which will be attached to all mailsender
-    // sent and received email
-    // const label = await gmail.users.labels.create({
-    //   userId: "me",
-    //   requestBody: {
-    //     labelListVisibility: "labelHide", // do not show label in user's label list
-    //     messageListVisibility: "show", // show emails with this label in user's inbox
-    //     name: mailSenderGmailLabel
-    //   }
-    // });
-
     const watchResponse = await gmail.users.watch({
       userId: "me",
       requestBody: {
         labelIds: ["INBOX"],
-        // labelIds: [label.data.id],
-        // labelFilterAction: "include",
         topicName: pubSubTopicName
       }
     });
