@@ -9,11 +9,13 @@ const draftToHtml = require("draftjs-to-html");
 const {
   googleClientSecret,
   googleClientId,
-  googleRedirectUrl
+  googleRedirectUrl,
+  pubSubTopicName
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");
 const Thread = require("../../models/thread");
+const User = require("../../models/user");
 
 const getGmail = gmailToken => {
   const oAuth2Client = new google.auth.OAuth2(
@@ -48,7 +50,8 @@ const sendOneEmail = async (encodedMailString, gmail) => {
 /*
  * Replace variables in step e.g. {{firstName}} with relevant content
  */
-const replaceVariables = (prospect, emailContent, variables) => {
+const replaceVariables = async (prospect, emailContent) => {
+  const variables = await Variable.find();
   const regEx = /{{(.+?)}}/g;
 
   return emailContent.replace(regEx, (match, bracketsContent) => {
@@ -88,6 +91,31 @@ const convertToBufferString = async (
 };
 
 /*
+ * Set up subscription to users email address. We will be notified of all emails
+ * received
+ */
+const setUpGmailWatch = async gmail => {
+  try {
+    const watchResponse = await gmail.users.watch({
+      userId: "me",
+      requestBody: {
+        labelIds: ["INBOX"],
+        topicName: pubSubTopicName
+      }
+    });
+    const historyId = watchResponse.data.historyId;
+
+    const user = await User.find(userId);
+    user.gmailHistoryId = historyId;
+    await user.save();
+    return true;
+  } catch (error) {
+    console.log("Error setting up watch on user.", error);
+    return false;
+  }
+};
+
+/*
  * @params: data: {stepId, userId, gmailToken, campaignId}
  */
 const sendEmailsProcess = async data => {
@@ -96,7 +124,6 @@ const sendEmailsProcess = async data => {
       "prospects.prospectId",
       "_id firstName lastName email"
     );
-    const variables = await Variable.find();
 
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
@@ -105,11 +132,7 @@ const sendEmailsProcess = async data => {
       const prospect = step.prospects[i];
 
       // Replace variables with content
-      const emailWithVariables = replaceVariables(
-        prospect,
-        emailContent,
-        variables
-      );
+      const emailWithVariables = await replaceVariables(prospect, emailContent);
 
       const encodedMailString = await convertToBufferString(
         prospect,
@@ -118,6 +141,12 @@ const sendEmailsProcess = async data => {
       );
 
       const gmail = getGmail(data.gmailToken);
+
+      // Set up a watch on the user's email inbox and record the date watch was set up for future pulls
+      const watchSetup = await setUpGmailWatch(gmail);
+      if (!watchSetup) {
+        return false;
+      }
 
       //Staggers sending of emails by 1 per second
       const gmailResponse = await new Promise(resolve =>

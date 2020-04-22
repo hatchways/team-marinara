@@ -99,8 +99,6 @@ router.post(
           return response.data.emailAddress;
         });
 
-      const historyId = await setUpGmailWatch(gmail);
-      user.gmailHistoryId = historyId;
       await user.save();
 
       res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
@@ -110,24 +108,5 @@ router.post(
     }
   }
 );
-
-/*
- * Set up subscription to users email address. We will be notified of all emails
- * received
- */
-const setUpGmailWatch = async gmail => {
-  try {
-    const watchResponse = await gmail.users.watch({
-      userId: "me",
-      requestBody: {
-        labelIds: ["INBOX"],
-        topicName: pubSubTopicName
-      }
-    });
-    return watchResponse.data.historyId;
-  } catch (error) {
-    console.log("Error setting up watch on user.", error);
-  }
-};
 
 module.exports = router;

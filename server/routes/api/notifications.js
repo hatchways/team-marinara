@@ -34,7 +34,6 @@ router.post("/", async (req, res) => {
       { email: userEmail },
       "gmailToken gmailHistoryId"
     );
-    console.log("user:", user);
 
     await getEmail(user.gmailToken, user.gmailHistoryId);
 
@@ -44,7 +43,7 @@ router.post("/", async (req, res) => {
 
     // Gmail requires a 200 status acknowledgment to stop sending notifications
     console.log(
-      `FINISHED processing notificatio for ${userEmail}, sending res(200)...`
+      `FINISHED processing notification for ${userEmail}, sending res(200)...`
     );
     res.status(200).send("OK");
   } catch (error) {
@@ -119,7 +118,6 @@ const getEmail = async (gmailToken, startHistoryId) => {
   await Promise.all(
     threadRecords.map(async threadRecord => {
       if (threadRecord) {
-        console.log(">>>>>>>>>>>>threadRecord: ", threadRecord);
         const campaign = await Campaign.findById(threadRecord.campaignId);
         const step = await Step.findById(threadRecord.stepId);
 
@@ -135,7 +133,6 @@ const getEmail = async (gmailToken, startHistoryId) => {
         );
         step.prospects[stepProspectIndex].status = "Replied";
 
-        console.log("SAVING.........");
         await campaign.save();
         await step.save();
       }
