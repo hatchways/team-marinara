@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Grid,
   makeStyles,
@@ -15,6 +15,7 @@ import StyledButtonOutline from "Components/Button/StyledButtonOutline";
 import Step from "./Step";
 import StepEditor from "./StepEditor";
 import { sendStepEmails } from "Utils/api";
+import AuthUserContext from "Components/Session/AuthUserContext";
 
 const useStyles = makeStyles({
   root: {
@@ -31,11 +32,21 @@ const AddStepButton = withStyles({
 
 const Steps = props => {
   const classes = useStyles();
+  const socket = useContext(AuthUserContext).socket;
   const [editorOpen, setEditorOpen] = useState(false);
   const [selectedStep, setSelectedStep] = useState(null);
   const [sendConfirmation, setSendConfirmation] = useState(false);
   const [sendEmailsObj, setSendEmailsObj] = useState({});
   const [sendingConfirmation, setSendingConfirmation] = useState(false);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("email sent", data => {
+        const { sent, total } = data;
+        console.log(`${sent}/${total} emails sent`);
+      });
+    }
+  }, [socket]);
 
   const handleClose = () => {
     setEditorOpen(false);

@@ -129,11 +129,16 @@ const sendEmailsProcess = async data => {
         step.prospects[i].gmailMessageId = gmailResponse.id;
         step.prospects[i].gmailThreadId = gmailResponse.threadId;
         step.summary.sent++;
-        step.save();
+        socketApi.emitEmailSent(
+          data.userId,
+          step.summary.sent,
+          step.prospects.length
+        );
       }
     }
 
-    return true;
+    step.save();
+    return Promise.resolve(true);
   } catch (error) {
     console.log("Error running sendEmailsProcess: ", error);
   }

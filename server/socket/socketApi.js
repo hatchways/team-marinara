@@ -16,4 +16,9 @@ socketApi.io.on("connect", socket => {
   socketApi.sockets.push(socket);
 });
 
+socketApi.emitEmailSent = (userId, sent, total) => {
+  const socket = socketApi.sockets.find(curr => curr.userId == userId);
+  socket.emit("email sent", { sent, total });
+};
+
 module.exports = socketApi;
