@@ -13,6 +13,7 @@ const {
 } = require("../../config/config");
 const Step = require("../../models/step");
 const Variable = require("../../models/variable");
+const socketApi = require("../../socket/socketApi");
 
 /*
  * Send one email via Gmail from user represented by gmailToken
@@ -98,6 +99,7 @@ const sendEmailsProcess = async data => {
 
     const emailSubject = step.subject;
     const emailContent = draftToHtml(JSON.parse(step.content));
+    socketApi.emitEmailSent(data.userId, 0, step.prospects.length);
 
     for (let i = 0; i < step.prospects.length; i++) {
       const prospect = step.prospects[i];
@@ -128,11 +130,12 @@ const sendEmailsProcess = async data => {
         step.prospects[i].gmailMessageId = gmailResponse.id;
         step.prospects[i].gmailThreadId = gmailResponse.threadId;
         step.summary.sent++;
-        step.save();
+        socketApi.emitEmailSent(data.userId, i + 1, step.prospects.length);
       }
     }
 
-    return true;
+    step.save();
+    return Promise.resolve(true);
   } catch (error) {
     console.log("Error running sendEmailsProcess: ", error);
   }

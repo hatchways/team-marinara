@@ -26,12 +26,6 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// Connect to Redis
-const redisClient = redis.createClient(config.redisPort, config.redisHost);
-redisClient.auth(config.redisAuth);
-redisClient.on("connect", () => console.log("Connected to Redis..."));
-redisClient.on("error", error => console.error(error));
-
 const { json, urlencoded } = express;
 
 const app = express();
