@@ -6,6 +6,7 @@ import Paper from "@material-ui/core/Paper";
 import colors from "Components/Styles/Colors";
 import { uploadProspectCsv } from "Utils/api";
 import Dropzone from "react-dropzone";
+import ProspectUploadForm from "./ProspectUploadForm";
 
 const styles = theme => ({
   root: {
@@ -16,7 +17,7 @@ const styles = theme => ({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 600,
+      width: 900,
       marginLeft: "auto",
       marginRight: "auto"
     }
@@ -72,7 +73,6 @@ class ProspectsUpload extends Component {
   };
 
   onsubmit = async e => {
-    console.log(this.state.file);
     let file = this.state.file;
     let formData = new FormData();
     formData.append("file", file);
@@ -145,36 +145,44 @@ class ProspectsUpload extends Component {
                   <Typography component="h1" variant="h4" align="center">
                     Prospects Upload
                   </Typography>
-
+                  {this.state.file ? (
+                    <ProspectUploadForm file={this.state.file} />
+                  ) : (
+                    ""
+                  )}
                   <div className={classes.upload} align="center">
                     <form encType="multipart/form-data">
-                      <Dropzone onDrop={e => this.handleFileSelect(e)}>
-                        {({ getRootProps, getInputProps }) => (
-                          <section className={classes.dropzone}>
-                            <div {...getRootProps()}>
-                              <input {...getInputProps()} />
+                      {this.state.file ? (
+                        ""
+                      ) : (
+                        <Dropzone onDrop={e => this.handleFileSelect(e)}>
+                          {({ getRootProps, getInputProps }) => (
+                            <section className={classes.dropzone}>
+                              <div {...getRootProps()}>
+                                <input {...getInputProps()} />
 
-                              {this.state.file ? (
-                                <Typography
-                                  style={{ color: "black" }}
-                                  className={classes.fileMessage}
-                                >
-                                  {" "}
-                                  {this.state.fileMessage}
-                                </Typography>
-                              ) : (
-                                <Typography
-                                  style={{ color: "black" }}
-                                  className={classes.fileMessage}
-                                >
-                                  Click here to select a file. Or Drag and Drop.
-                                </Typography>
-                              )}
-                            </div>
-                          </section>
-                        )}
-                      </Dropzone>
-
+                                {this.state.file ? (
+                                  <Typography
+                                    style={{ color: "black" }}
+                                    className={classes.fileMessage}
+                                  >
+                                    {" "}
+                                    {this.state.fileMessage}
+                                  </Typography>
+                                ) : (
+                                  <Typography
+                                    style={{ color: "black" }}
+                                    className={classes.fileMessage}
+                                  >
+                                    Click here to select a file. Or Drag and
+                                    Drop.
+                                  </Typography>
+                                )}
+                              </div>
+                            </section>
+                          )}
+                        </Dropzone>
+                      )}
                       <Grid item xs={12} sm={6}>
                         <Button
                           className={classes.uploadButton}

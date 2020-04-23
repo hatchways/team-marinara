@@ -150,7 +150,6 @@ class Prospects extends Component {
   };
 
   handleCreateProspectSubmit = async e => {
-    //e.preventDefault();
     let data = {
       firstName: this.state.createFormFirstName,
       lastName: this.state.createFormLastName,
