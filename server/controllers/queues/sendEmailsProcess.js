@@ -94,7 +94,7 @@ const convertToBufferString = async (
  * Set up subscription to users email address. We will be notified of all emails
  * received
  */
-const setUpGmailWatch = async gmail => {
+const setUpGmailWatch = async (gmail, userId) => {
   try {
     const watchResponse = await gmail.users.watch({
       userId: "me",
@@ -105,7 +105,7 @@ const setUpGmailWatch = async gmail => {
     });
     const historyId = watchResponse.data.historyId;
 
-    const user = await User.find(userId);
+    const user = await User.findById(userId);
     user.gmailHistoryId = historyId;
     await user.save();
     return true;
@@ -143,7 +143,7 @@ const sendEmailsProcess = async data => {
       const gmail = getGmail(data.gmailToken);
 
       // Set up a watch on the user's email inbox and record the date watch was set up for future pulls
-      const watchSetup = await setUpGmailWatch(gmail);
+      const watchSetup = await setUpGmailWatch(gmail, data.userId);
       if (!watchSetup) {
         return false;
       }
