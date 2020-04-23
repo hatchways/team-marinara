@@ -20,6 +20,7 @@ import ProspectSidebar from "./ProspectSidebar";
 import ProspectDashboardHeader from "./ProspectDashboardHeader";
 import CampaignSelectDialog from "Views/Home/Prospects/CampaignSelect";
 import { addProspectsToCampaign } from "Utils/api";
+import CreateProspectForm from "./CreateProspectForm";
 
 class Prospects extends Component {
   constructor(props) {
@@ -32,7 +33,8 @@ class Prospects extends Component {
       allChecked: false,
       errors: {},
       addToCampaignBtnVisible: false,
-      showCampaignDialog: false
+      showCampaignDialog: false,
+      createProspectModalOpen: false
     };
   }
 
@@ -121,6 +123,18 @@ class Prospects extends Component {
 
       addProspectsToCampaign(campaignId, selectedProspects);
     }
+  };
+
+  handleCreateProspectOpen = () => {
+    this.setState({
+      createProspectModalOpen: true
+    });
+  };
+
+  handleCreateProspectClose = () => {
+    this.setState({
+      createProspectModalOpen: false
+    });
   };
 
   render() {
@@ -217,6 +231,7 @@ class Prospects extends Component {
                 <ProspectDashboardHeader
                   addToCampaignBtnVisible={this.state.addToCampaignBtnVisible}
                   handleClick={this.handleAddToCampaign}
+                  handleCreateProspectOpen={this.handleCreateProspectOpen}
                 />
                 <Grid
                   item
@@ -313,6 +328,11 @@ class Prospects extends Component {
         <CampaignSelectDialog
           open={this.state.showCampaignDialog}
           onClose={this.handleCampaignDialogClose}
+        />
+        <CreateProspectForm
+          onClose={this.handleCreateProspectClose}
+          open={this.state.createProspectModalOpen}
+          handleCreateProspectOpen={this.handleCreateProspectOpen}
         />
       </Route>
     );

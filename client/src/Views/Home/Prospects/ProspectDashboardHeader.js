@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
 import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
+import AddProspectsButton from "./AddProspectsButton";
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
@@ -64,20 +65,15 @@ const ProspectDashboardHeader = props => {
         <Grid item>
           <MailIcon className={props.classes.mainHeaderIcon} />
         </Grid>
-        
-      <Grid item>
-        <StyledImportProspectButtonOutline>
-          Imports
-        </StyledImportProspectButtonOutline>
-      </Grid>
 
         <Grid item>
-          <StyledAddProspectButton
-          component={Link}
-          to="/home/prospects/upload">
-            Add New Prospects
-          </StyledAddProspectButton>
+          <StyledImportProspectButtonOutline>
+            Imports
+          </StyledImportProspectButtonOutline>
         </Grid>
+        <AddProspectsButton
+          handleCreateProspectOpen={props.handleCreateProspectOpen}
+        />
       </Grid>
     </Grid>
   );

@@ -19,6 +19,10 @@ const login = fields => {
   return axios.post("/api/users/login", fields);
 };
 
+const createProspect = prospect => {
+  return axios.post("/api/prospects/", prospect);
+};
+
 const getProspectData = () => {
   return axios.get("/api/prospects/");
 };
@@ -187,5 +191,6 @@ export {
   getTemplates,
   createTemplate,
   editTemplate,
-  sendStepEmails
+  sendStepEmails,
+  createProspect
 };
