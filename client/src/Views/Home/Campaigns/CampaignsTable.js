@@ -77,11 +77,9 @@ const CampaignsTable = props => {
               <TableCell className={classes.headCell}>Due</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody></TableBody>
+          <TableBody>{rows}</TableBody>
         </Table>
-        {props.campaigns.length > 0 ? (
-          rows
-        ) : (
+        {props.campaigns.length === 0 && (
           <Typography
             style={{ color: "black" }}
             className={classes.noCampaignsMessage}
