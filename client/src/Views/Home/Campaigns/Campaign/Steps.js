@@ -10,10 +10,12 @@ import {
   DialogActions,
   Button,
   LinearProgress,
-  Typography
+  Typography,
+  lighten
 } from "@material-ui/core";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
+import colors from "Components/Styles/Colors";
 import Step from "./Step";
 import StepEditor from "./StepEditor";
 import { sendStepEmails } from "Utils/api";
@@ -114,6 +116,12 @@ const Steps = props => {
     const [sent, setSent] = useState(0);
     const [total, setTotal] = useState(0);
 
+    const classes = makeStyles({
+      paper: {
+        width: "50rem"
+      }
+    })();
+
     useEffect(() => {
       if (socket) {
         socket.on("email sent", data => {
@@ -128,11 +136,26 @@ const Steps = props => {
       setSendingConfirmation(false);
     };
 
+    const ProgressBar = withStyles({
+      root: {
+        height: "1rem",
+        backgroundColor: lighten(colors.green, 0.5),
+        borderRadius: 7,
+        marginBottom: "0.5rem"
+      },
+      bar: {
+        backgroundColor: colors.green,
+        borderRadius: 7
+      }
+    })(LinearProgress);
+
     return (
       <Dialog open={sendingConfirmation} onClose={handleClose} maxWidth="md">
-        <DialogContent>
-          <LinearProgress variant="determinate" value={(sent / total) * 100} />
-          <Typography>{`${sent}/${total} emails sent`}</Typography>
+        <DialogContent className={classes.paper}>
+          <ProgressBar variant="determinate" value={(sent / total) * 100} />
+          <Typography>
+            {`${sent}/${total} email${total > 1 ? "s" : ""} sent`}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary" autoFocus>
