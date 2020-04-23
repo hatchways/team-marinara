@@ -14,8 +14,9 @@ const sendEmailsQueue = new Queue("sendEmails", {
   }
 });
 
-sendEmailsQueue.process(async job => {
+sendEmailsQueue.process(async (job, done) => {
   await sendEmailsProcess(job.data);
+  done();
 });
 
 sendEmailsQueue.on("completed", job => {

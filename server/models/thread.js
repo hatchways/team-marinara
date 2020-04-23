@@ -22,7 +22,8 @@ const ThreadSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true
-  }
+  },
+  receivedPush: { type: Boolean, default: false, required: true }
 });
 
 module.exports = mongoose.model("Thread", ThreadSchema);

@@ -110,6 +110,12 @@ const getEmail = async (gmailToken, startHistoryId) => {
       const threadRecord = await Thread.findOne({
         threadId: threadId
       });
+      // Check if this is first email in the thread, in which case it was the email mailsender sent
+      if (threadRecord && !threadRecord.receivedPush) {
+        threadRecord.receivedPush = true;
+        await threadRecord.save();
+        return false;
+      }
       return threadRecord;
     })
   );
