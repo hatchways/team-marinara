@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const randToken = require("rand-token");
 
 const CampaignSchema = new Schema({
   name: { type: String, required: true },
