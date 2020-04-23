@@ -7,6 +7,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Typography,
   makeStyles
 } from "@material-ui/core";
 
@@ -41,6 +42,11 @@ const useStyles = makeStyles({
   },
   table: {
     borderCollapse: "separate"
+  },
+  noCampaignsMessage: {
+    fontSize: "1.5rem",
+    padding: "2rem",
+    textAlign: "center"
   }
 });
 
@@ -73,6 +79,14 @@ const CampaignsTable = props => {
           </TableHead>
           <TableBody>{rows}</TableBody>
         </Table>
+        {props.campaigns.length === 0 && (
+          <Typography
+            style={{ color: "black" }}
+            className={classes.noCampaignsMessage}
+          >
+            No campaigns yet :(
+          </Typography>
+        )}
       </Paper>
     </Grid>
   );

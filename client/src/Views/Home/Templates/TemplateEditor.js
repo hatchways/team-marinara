@@ -156,7 +156,10 @@ const TemplateEditor = props => {
     }
   };
 
-  const errorDialogClose = () => {
+  const dialogClose = () => {
+    if (saveSuccess) {
+      handleClose();
+    }
     setSaveSuccess(null);
   };
 
@@ -211,7 +214,7 @@ const TemplateEditor = props => {
         {saveSuccess !== null && (
           <Dialog
             open={true}
-            onClose={errorDialogClose}
+            onClose={dialogClose}
             maxWidth="md"
             className={(classes.root, classes.dialog)}
           >
