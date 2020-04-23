@@ -19,7 +19,7 @@ import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
 import ProspectSidebar from "./ProspectSidebar";
 import ProspectDashboardHeader from "./ProspectDashboardHeader";
 import CampaignSelectDialog from "Views/Home/Prospects/CampaignSelect";
-import { addProspectsToCampaign } from "Utils/api";
+import { addProspectsToCampaign, createProspect } from "Utils/api";
 import CreateProspectForm from "./CreateProspectForm";
 
 class Prospects extends Component {
@@ -34,7 +34,13 @@ class Prospects extends Component {
       errors: {},
       addToCampaignBtnVisible: false,
       showCampaignDialog: false,
-      createProspectModalOpen: false
+      createProspectModalOpen: false,
+      createFormFirstName: "",
+      createFormLastName: "",
+      createFormEmail: "",
+      createFormStatus: "open",
+      createSuccess: null,
+      createFormErrors: {}
     };
   }
 
@@ -134,6 +140,42 @@ class Prospects extends Component {
   handleCreateProspectClose = () => {
     this.setState({
       createProspectModalOpen: false
+    });
+  };
+
+  handleFormChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  handleCreateProspectSubmit = async e => {
+    //e.preventDefault();
+    let data = {
+      firstName: this.state.createFormFirstName,
+      lastName: this.state.createFormLastName,
+      email: this.state.createFormEmail,
+      status: this.state.createFormStatus
+    };
+    console.log(data);
+    try {
+      const result = await createProspect(data);
+      this.setCreateSuccess(true);
+    } catch (error) {
+      this.setCreateFormErrors({ ...error.response.data });
+      console.log(this.state.errors);
+    }
+  };
+
+  setCreateSuccess = success => {
+    this.setState({
+      createSuccess: success
+    });
+  };
+
+  setCreateFormErrors = errors => {
+    this.setState({
+      createFormErrors: errors
     });
   };
 
@@ -332,7 +374,15 @@ class Prospects extends Component {
         <CreateProspectForm
           onClose={this.handleCreateProspectClose}
           open={this.state.createProspectModalOpen}
-          handleCreateProspectOpen={this.handleCreateProspectOpen}
+          handleCreateProspectSubmit={this.handleCreateProspectSubmit}
+          firstName={this.state.createFormFirstName}
+          lastName={this.state.createFormLastName}
+          email={this.state.createFormEmail}
+          status={this.state.createFormStatus}
+          setCreateSuccess={this.setCreateSuccess}
+          createSuccess={this.state.createSuccess}
+          errors={this.state.createFormErrors}
+          handleFormChange={this.handleFormChange}
         />
       </Route>
     );

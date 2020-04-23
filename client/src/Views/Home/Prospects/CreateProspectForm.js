@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import {
   Grid,
-  List,
-  ListItem,
-  ListItemText,
   DialogTitle,
   Typography,
-  Paper,
   TextField,
   Dialog,
+  DialogContent,
+  DialogContentText,
   Divider,
   makeStyles
 } from "@material-ui/core";
 import StyledButton from "Components/Button/StyledButton";
-import { createProspect } from "Utils/api";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import colors from "Components/Styles/Colors";
+import StyledRadio from "Components/RadioButton/StyledRadio";
 
 const useStyles = makeStyles({
   root: {
@@ -43,38 +42,41 @@ const useStyles = makeStyles({
     alignItems: "center",
     padding: "2rem",
     width: "100%"
+  },
+  statusLabel: {
+    color: `${colors.darkGray}`
   }
 });
 
 export default function CreateProspectForm(props) {
   const classes = useStyles();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("open");
-  const [errors, setErrors] = useState({});
+
+  const {
+    firstName,
+    lastName,
+    email,
+    status,
+    errors,
+    setCreateSuccess,
+    createSuccess,
+    handleCreateProspectSubmit,
+    handleFormChange
+  } = props;
 
   const handleClose = () => {
     props.onClose();
   };
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    let data = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      status: status
-    };
-    console.log(data);
-    try {
-      const result = await createProspect(data);
-      console.log(result);
-      props.onClose();
-    } catch (error) {
-      setErrors({ ...error.response.data });
-      console.log(errors);
-    }
+    handleCreateProspectSubmit();
+  };
+
+  const handleChange = e => {
+    handleFormChange(e);
+  };
+
+  const successDialogClose = () => {
+    setCreateSuccess(null);
   };
 
   return (
@@ -104,11 +106,11 @@ export default function CreateProspectForm(props) {
             <Grid item sm={12}>
               <TextField
                 label="First name"
-                name="First Name"
+                name="createFormFirstName"
                 variant="outlined"
                 fullWidth
                 hintText="First Name"
-                onChange={e => setFirstName(e.target.value)}
+                onChange={handleChange}
                 value={firstName}
                 error={"firstName" in errors}
                 helperText={errors.firstName}
@@ -117,11 +119,11 @@ export default function CreateProspectForm(props) {
             <Grid item sm={12}>
               <TextField
                 label="Last name"
-                name="Last Name"
+                name="createFormLastName"
                 variant="outlined"
                 fullWidth
                 hintText="Last Name"
-                onChange={e => setLastName(e.target.value)}
+                onChange={handleChange}
                 value={lastName}
                 error={"lastName" in errors}
                 helperText={errors.lastName}
@@ -130,10 +132,10 @@ export default function CreateProspectForm(props) {
             <Grid item sm={12}>
               <TextField
                 label="Email"
-                name="Email"
+                name="createFormEmail"
                 variant="outlined"
                 hintText="Email"
-                onChange={e => setEmail(e.target.value)}
+                onChange={handleChange}
                 value={email}
                 error={"email" in errors}
                 helperText={errors.email}
@@ -141,22 +143,24 @@ export default function CreateProspectForm(props) {
             </Grid>
             <Grid item sm={12}>
               <FormControl component="fieldset">
-                <FormLabel component="legend">Status</FormLabel>
+                <FormLabel component="legend" className={classes.statusLabel}>
+                  Status
+                </FormLabel>
                 <RadioGroup
                   aria-label="status"
-                  name="status"
+                  name="createFormStatus"
                   row
                   value={status}
-                  onChange={e => setStatus(e.target.value)}
+                  onChange={handleChange}
                 >
                   <FormControlLabel
                     value="open"
-                    control={<Radio />}
+                    control={<StyledRadio />}
                     label="Open"
                   />
                   <FormControlLabel
                     value="closed"
-                    control={<Radio />}
+                    control={<StyledRadio />}
                     label="Closed"
                   />
                 </RadioGroup>
@@ -168,6 +172,20 @@ export default function CreateProspectForm(props) {
           </Grid>
         </form>
       </div>
+      {/* Success or Failure Dialog */}
+      {createSuccess !== null && (
+        <Dialog
+          open={true}
+          maxWidth="md"
+          className={(classes.root, classes.dialog)}
+          onClose={successDialogClose}
+        >
+          <DialogTitle>Success</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Prospect Created</DialogContentText>
+          </DialogContent>
+        </Dialog>
+      )}
     </Dialog>
   );
 }
