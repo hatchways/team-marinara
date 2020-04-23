@@ -1,5 +1,6 @@
 import React from "react";
 import { Grid, withStyles } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 import Tabs from "./NavbarTabs";
 import Profile from "./Profile";
@@ -26,7 +27,9 @@ const styles = () => ({
 const HomeNavbar = props => (
   <Grid item container alignItems="center" className={props.classes.root}>
     <Grid item className={props.classes.logo}>
-      <img src={logo} alt="logo" />
+      <Link to="/home">
+        <img src={logo} alt="logo" />
+      </Link>
     </Grid>
 
     <Grid item className={props.classes.tabs}>

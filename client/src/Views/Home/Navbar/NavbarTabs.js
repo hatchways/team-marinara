@@ -40,12 +40,6 @@ const NavbarTabs = props => {
         component={Link}
         to="/home/templates"
       />
-      <StyledTab
-        label="Reporting"
-        value="reporting"
-        component={Link}
-        to="/home/reporting"
-      />
     </StyledTabs>
   );
 };
