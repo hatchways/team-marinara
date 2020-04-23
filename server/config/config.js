@@ -10,10 +10,14 @@ const config = {
   googleRedirectUrl:
     process.env.GOOGLE_REDIRECT_URL ||
     require("./gmail-secret.json").redirect_uri,
-  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads",
+  mailSenderGmailLabel: "mailsender_dev_campaign",
+  pubSubTopicName: "projects/mail-sender-1/topics/gmail-notifications",
+  pubSubSubscriptionName:
+    "projects/mail-sender-1/subscriptions/gmail-notifications",
   redisHost: process.env.REDIS_HOST || "127.0.0.1",
   redisPort: process.env.REDIS_PORT || "6379",
-  redisAuth: process.env.REDIS_AUTH || ""
+  redisAuth: process.env.REDIS_AUTH || "",
+  tmpDir: process.env.TMP_DIR || "../server/tmp/uploads"
 };
 
 module.exports = config;

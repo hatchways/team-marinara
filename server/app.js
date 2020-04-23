@@ -7,13 +7,12 @@ const mongoose = require("mongoose");
 const config = require("./config/config.js");
 const routes = require("./routes/index");
 const passport = require("passport");
-const redis = require("redis");
 
 // Passport config
 require("./config/passport")(passport);
 
 // Connect to the database
-const mongoDB = `${config.mongoURI}`;
+const mongoDB = config.mongoURI;
 mongoose
   .connect(mongoDB, {
     useNewUrlParser: true,

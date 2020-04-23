@@ -10,6 +10,7 @@
     "stop": "mongo admin --eval \"db.shutdownServer()\" & redis-server stop"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "bull": "^3.13.0",
     "cookie-parser": "~1.4.4",
