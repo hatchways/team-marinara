@@ -84,7 +84,6 @@ const CampaignsTable = props => {
             style={{ color: "black" }}
             className={classes.noCampaignsMessage}
           >
-            {" "}
             No campaigns yet :(
           </Typography>
         )}
