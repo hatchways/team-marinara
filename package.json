@@ -2,7 +2,7 @@
   "name": "mail-sender",
   "version": "0.0.0",
   "scripts": {
-    "start": "nodemon ./server/bin/www",
+    "start": "node ./server/bin/www",
     "predev": "mongod --dbpath=./database &",
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
@@ -32,7 +32,6 @@
     "nodemon": "^1.19.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "rand-token": "^1.0.1",
     "redis": "^3.0.2",
     "validator": "^13.0.0"
   }

@@ -105,45 +105,48 @@ const getEmail = async (gmailToken, startHistoryId) => {
   if (threadIds === false) return false;
 
   // Find the thread records that match the ids
-  const threadRecords = await Promise.all(
-    threadIds.map(async threadId => {
-      const threadRecord = await Thread.findOne({
-        threadId: threadId
-      });
-      // Check if this is first email in the thread, in which case it was the email mailsender sent
-      if (threadRecord && !threadRecord.receivedPush) {
+  const threadRecords = await Thread.find({ threadId: { $in: threadIds } });
+  if (threadRecords.length === 0) return false;
+
+  // Check if this is first email in the thread, in which case it was the email mailsender sent and we skip it
+  const newThreadRecords = await Promise.all(
+    threadRecords.map(async threadRecord => {
+      if (!threadRecord.receivedPush) {
         threadRecord.receivedPush = true;
         await threadRecord.save();
         return false;
+      } else {
+        return threadRecord;
       }
-      return threadRecord;
     })
   );
+  const filteredThreadRecords = newThreadRecords.filter(
+    threadRecord => threadRecord
+  );
+  if (filteredThreadRecords.length === 0) return false;
 
-  // Update the status and replied counters of relevant records
+  // Update the status and replied counters of relevant records, usually only one
   await Promise.all(
-    threadRecords.map(async threadRecord => {
-      if (threadRecord) {
-        const campaign = await Campaign.findById(threadRecord.campaignId);
-        const step = await Step.findById(threadRecord.stepId);
+    filteredThreadRecords.map(async threadRecord => {
+      const campaign = await Campaign.findById(threadRecord.campaignId);
+      const step = await Step.findById(threadRecord.stepId);
 
-        const prospectIndex = campaign.prospects.findIndex(prospect =>
-          prospect.prospectId.equals(threadRecord.prospectId)
-        );
-        campaign.prospects[prospectIndex].status = "Replied";
-        campaign.stepsSummary.replied++;
+      const prospectIndex = campaign.prospects.findIndex(prospect =>
+        prospect.prospectId.equals(threadRecord.prospectId)
+      );
+      campaign.prospects[prospectIndex].status = "Replied";
+      campaign.stepsSummary.replied++;
 
-        step.summary.replied++;
-        const stepProspectIndex = step.prospects.findIndex(prospect =>
-          prospect.prospectId.equals(threadRecord.prospectId)
-        );
-        step.prospects[stepProspectIndex].status = "Replied";
-
-        await campaign.save();
-        await step.save();
-      }
+      step.summary.replied++;
+      const stepProspectIndex = step.prospects.findIndex(prospect =>
+        prospect.prospectId.equals(threadRecord.prospectId)
+      );
+      step.prospects[stepProspectIndex].status = "Replied";
+      await campaign.save();
+      await step.save();
     })
   );
+  return true;
 };
 
 module.exports = router;
