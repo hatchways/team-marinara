@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
-import FlashOnIcon from "@material-ui/icons/FlashOn";
-import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
@@ -18,7 +16,7 @@ const styles = () => ({
     width: "auto"
   },
   header: {
-    fontSize: "1.5rem",
+    fontSize: "2rem",
     fontWeight: "bold"
   },
   mainHeaderIcon: {
@@ -58,23 +56,15 @@ const ProspectDashboardHeader = props => {
             </StyledAddProspectButton>
           )}
         </Grid>
-        <Grid item>
-          <FlashOnIcon className={props.classes.mainHeaderIcon} />
-        </Grid>
-        <Grid item>
-          <MailIcon className={props.classes.mainHeaderIcon} />
-        </Grid>
-        
-      <Grid item>
-        <StyledImportProspectButtonOutline>
-          Imports
-        </StyledImportProspectButtonOutline>
-      </Grid>
 
         <Grid item>
-          <StyledAddProspectButton
-          component={Link}
-          to="/home/prospects/upload">
+          <StyledImportProspectButtonOutline>
+            Imports
+          </StyledImportProspectButtonOutline>
+        </Grid>
+
+        <Grid item>
+          <StyledAddProspectButton component={Link} to="/home/prospects/upload">
             Add New Prospects
           </StyledAddProspectButton>
         </Grid>

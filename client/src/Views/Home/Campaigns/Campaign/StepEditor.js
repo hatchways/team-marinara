@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
-import { addStepToCampaign, editStepContent } from "Utils/api";
+import { addStepToCampaign, editStepContent, createTemplate } from "Utils/api";
 import TextEditor from "Components/TextEditor/TextEditor";
 import StepHeader from "Components/TextEditor/StepHeader";
 import StepFooter from "Components/TextEditor/StepFooter";
@@ -31,11 +31,16 @@ const useStyles = makeStyles({
   }
 });
 
+const emptyFieldMessage = "Subject and Body cannot be empty.";
+const genericErrorMessage = "Save failed. Please try again.";
+const duplicateTitle = "A template with this title already exists.";
+
 const StepEditor = props => {
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [saveSuccess, setSaveSuccess] = useState(null);
   const [recentlyOpened, setRecentlyOpened] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const classes = useStyles();
 
   useEffect(() => {
@@ -117,8 +122,51 @@ const StepEditor = props => {
     }
   };
 
-  const errorDialogClose = () => {
+  const handleSaveAsTemplate = async () => {
+    try {
+      if (subject && editorState.getCurrentContent().hasText()) {
+        await createTemplate({
+          name: subject,
+          subject: subject,
+          content: JSON.stringify(convertToRaw(editorState.getCurrentContent()))
+        });
+        // launches success dialog
+        setSaveSuccess(true);
+      } else {
+        displayErrorDialogue(emptyFieldMessage);
+        setSaveSuccess(false);
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 409) {
+        setErrorMessage(duplicateTitle);
+      }
+      setSaveSuccess(false);
+    }
+  };
+
+  const handleLoadTemplate = template => {
+    if (template) {
+      const rawContentState = convertFromRaw(JSON.parse(template.content));
+      const editorState = EditorState.createWithContent(rawContentState);
+      setEditorState(EditorState.moveSelectionToEnd(editorState));
+      setSubject(template.subject);
+    }
+  };
+
+  const dialogClose = () => {
+    if (saveSuccess) {
+      props.onClose();
+    }
     setSaveSuccess(null);
+  };
+
+  const displayErrorDialogue = message => {
+    if (message) {
+      setErrorMessage(message);
+    } else {
+      setErrorMessage(genericErrorMessage);
+    }
   };
 
   return (
@@ -152,6 +200,9 @@ const StepEditor = props => {
             handleVariableValueClick={handleVariableValueClick}
             handleClose={props.onClose}
             handleSave={handleSave}
+            handleSaveAsTemplate={handleSaveAsTemplate}
+            handleLoadTemplate={handleLoadTemplate}
+            templates={props.templates}
           />
         </Grid>
       </DialogContent>
@@ -160,14 +211,14 @@ const StepEditor = props => {
       {saveSuccess !== null && (
         <Dialog
           open={true}
-          onClose={errorDialogClose}
+          onClose={dialogClose}
           maxWidth="md"
           className={(classes.root, classes.dialog)}
         >
           <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {saveSuccess ? "Step saved" : "Save failed. Please try again."}
+              {saveSuccess ? "Save successful" : errorMessage}
             </DialogContentText>
           </DialogContent>
         </Dialog>

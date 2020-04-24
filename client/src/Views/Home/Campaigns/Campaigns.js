@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Grid, makeStyles } from "@material-ui/core";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 
 import Header from "./CampaignsHeader";
 import Table from "./CampaignsTable";
@@ -8,7 +8,7 @@ import Modal from "./CreateCampaignModal";
 
 import Campaign from "./Campaign/Campaign";
 
-import { getCampaigns } from "Utils/api";
+import { getCampaigns, checkForGmailToken } from "Utils/api";
 
 const useStyles = makeStyles({
   root: {
@@ -16,17 +16,25 @@ const useStyles = makeStyles({
   }
 });
 
-const Campaigns = () => {
+const Campaigns = props => {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
   const [recentlyFetched, setRecentlyFetched] = useState(false);
+
+  const checkGmailAuth = useCallback(async () => {
+    const gmailTokenExists = await checkForGmailToken();
+    if (!gmailTokenExists) {
+      props.history.push(`${props.location.pathname}/email-auth-dialog`);
+    }
+  }, [props]);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
         const res = await getCampaigns();
         setCampaigns(res.data);
+        checkGmailAuth();
       } catch (error) {
         console.log(error);
       }
@@ -36,7 +44,7 @@ const Campaigns = () => {
       fetchCampaigns();
       setRecentlyFetched(true);
     }
-  }, [recentlyFetched]);
+  }, [recentlyFetched, checkGmailAuth]);
 
   return (
     <Grid item container className={classes.root}>
@@ -62,4 +70,4 @@ const Campaigns = () => {
   );
 };
 
-export default Campaigns;
+export default withRouter(Campaigns);

@@ -2,9 +2,12 @@ const { google } = require("googleapis");
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const mailComposer = require("nodemailer/lib/mail-composer"); // Helps formatting of emails in base64
 const User = require("../../models/user.js");
-const { googleClientSecret, googleClientId } = require("../../config/config");
+const {
+  googleClientSecret,
+  googleClientId,
+  pubSubTopicName
+} = require("../../config/config");
 
 /*
  * Scopes dictate what we are allowed to do on behalf of the user and what the user is asked to approve
@@ -13,7 +16,8 @@ const { googleClientSecret, googleClientId } = require("../../config/config");
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
   "https://www.googleapis.com/auth/gmail.compose",
-  "https://www.googleapis.com/auth/gmail.send"
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.labels"
 ];
 
 /*
@@ -50,8 +54,7 @@ router.get(
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: "offline",
       scope: SCOPES,
-      // ONLY NEEDED IN DEV to ensure refresh token is provided every time token is requested
-      ...(!process.env.NODE_ENV && { prompt: "consent" })
+      prompt: "consent"
     });
 
     res.status(200).json({ authUrl: authUrl });
@@ -71,7 +74,6 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      console.log("Process Token running...");
       if (!req.query.code) res.status(400).send("Error: ", req.query.error);
 
       const oAuth2Client = new google.auth.OAuth2(
@@ -86,12 +88,6 @@ router.post(
       // Store the token to db under user
       const user = await User.findById(req.user.id);
       user.gmailToken = tokens.refresh_token;
-      await user.save().then((result, err) => {
-        if (err) {
-          console.log("Error writing token to users collection:", err);
-          res.status(500).send("Error writing to database");
-        }
-      });
 
       oAuth2Client.setCredentials(tokens);
 
@@ -103,6 +99,8 @@ router.post(
           return response.data.emailAddress;
         });
 
+      await user.save();
+
       res.status(200).json({ tokenSaved: true, emailAddr: emailAddr });
     } catch (error) {
       console.error("Error retrieving access token", error);
@@ -110,29 +108,5 @@ router.post(
     }
   }
 );
-
-/*
- * Test function to show read email functionality
- * @param {string} threadId - id of gmail email thread to read
- * @param req.query.redirectUrl {string} - URL to redirect to
- * after Google auth process
- */
-async function readEmail(threadId) {
-  const oAuth2Client = new google.auth.OAuth2(
-    googleClientId,
-    googleClientSecret,
-    req.query.redirectUrl
-  );
-  oAuth2Client.setCredentials(tokens);
-  const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-  // get list of email threads
-  const threads = await gmail.users.threads.list({ userId: "me" });
-  threadId = threads.data.threads[0].id;
-
-  // get latest thread details
-  const thread = await gmail.users.threads.get({ userId: "me", id: threadId });
-  console.log(thread.data.messages[0]);
-}
 
 module.exports = router;

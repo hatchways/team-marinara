@@ -50,7 +50,7 @@ const TemplatesTable = props => {
   const classes = useStyles();
 
   const headers = props.headerColumns.map(header => (
-    <TableCell align="center" key={header} className={classes.headCell}>
+    <TableCell align="left" key={header} className={classes.headCell}>
       {header}
     </TableCell>
   ));

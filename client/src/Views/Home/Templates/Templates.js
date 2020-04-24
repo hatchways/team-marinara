@@ -10,7 +10,8 @@ import Modal from "./TemplateEditor";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    overflow: "auto"
   }
 }));
 

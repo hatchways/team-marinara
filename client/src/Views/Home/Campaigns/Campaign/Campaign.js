@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Switch, Route } from "react-router-dom";
 
-import { getCampaign, getCampaignProspects, getCampaignSteps } from "Utils/api";
+import {
+  getCampaign,
+  getCampaignProspects,
+  getCampaignSteps,
+  getTemplates
+} from "Utils/api";
 
 import Prospects from "./CampaignProspects";
 import Summary from "./CampaignSummary";
@@ -16,6 +21,7 @@ const Campaign = props => {
   const [activeStep, setActiveStep] = useState("All");
   const [stepBarArray, setStepBarArray] = useState([]);
   const [filteredProspects, setFilteredProspects] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [recentlyFetched, setRecentlyFetched] = useState(false);
 
   useEffect(() => {
@@ -33,6 +39,15 @@ const Campaign = props => {
         const res = await getCampaignProspects(campaignId);
         setProspects(res.data);
         setFilteredProspects(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const retrieveTemplates = async () => {
+      try {
+        const res = await getTemplates();
+        setTemplates(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -57,6 +72,7 @@ const Campaign = props => {
       fetchCampaign(campaignId);
       getProspects(campaignId);
       getSteps(campaignId);
+      retrieveTemplates();
       setRecentlyFetched(true);
     }
   }, [recentlyFetched, campaignId, props]);
@@ -123,6 +139,7 @@ const Campaign = props => {
             campaign={campaign}
             steps={steps}
             triggerFetch={triggerFetch}
+            templates={templates}
           />
         </Route>
       </Switch>

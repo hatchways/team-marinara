@@ -10,8 +10,14 @@ const LandingFormStyles = () => ({
     fontSize: "2rem",
     fontWeight: "bold"
   },
+  subtitle: {
+    fontSize: "1.3rem"
+  },
   input: {
     width: "26rem"
+  },
+  sender: {
+    color: "#4FBE75"
   }
 });
 
