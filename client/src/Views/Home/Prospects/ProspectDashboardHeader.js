@@ -16,7 +16,7 @@ const styles = () => ({
     width: "auto"
   },
   header: {
-    fontSize: "1.5rem",
+    fontSize: "2rem",
     fontWeight: "bold"
   },
   mainHeaderIcon: {

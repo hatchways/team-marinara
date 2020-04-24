@@ -74,7 +74,6 @@ const CampaignsTable = props => {
               <TableCell align="center" className={classes.headCell}>
                 Steps
               </TableCell>
-              <TableCell className={classes.headCell}>Due</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>{rows}</TableBody>
@@ -84,7 +83,7 @@ const CampaignsTable = props => {
             style={{ color: "black" }}
             className={classes.noCampaignsMessage}
           >
-            No campaigns yet :(
+            No campaigns yet
           </Typography>
         )}
       </Paper>

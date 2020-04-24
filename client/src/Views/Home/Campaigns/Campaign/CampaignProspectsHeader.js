@@ -51,6 +51,8 @@ const CampaignProspectsHeader = props => {
           <CampaignProspectsStepBar
             handleStepSelect={handleStepSelect}
             steps={props.steps}
+            stepBarArray={props.stepBarArray}
+            activeStep={props.activeStep}
           />
         </Grid>
       </Grid>
