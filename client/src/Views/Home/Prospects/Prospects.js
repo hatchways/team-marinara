@@ -18,7 +18,8 @@ import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
 import ProspectSidebar from "./ProspectSidebar";
 import ProspectDashboardHeader from "./ProspectDashboardHeader";
 import CampaignSelectDialog from "Views/Home/Prospects/CampaignSelect";
-import { addProspectsToCampaign } from "Utils/api";
+import { addProspectsToCampaign, createProspect } from "Utils/api";
+import CreateProspectForm from "./CreateProspectForm";
 
 class Prospects extends Component {
   constructor(props) {
@@ -31,7 +32,14 @@ class Prospects extends Component {
       allChecked: false,
       errors: {},
       addToCampaignBtnVisible: false,
-      showCampaignDialog: false
+      showCampaignDialog: false,
+      createProspectModalOpen: false,
+      createFormFirstName: "",
+      createFormLastName: "",
+      createFormEmail: "",
+      createFormStatus: "open",
+      createSuccess: null,
+      createFormErrors: {}
     };
   }
 
@@ -122,15 +130,71 @@ class Prospects extends Component {
     }
   };
 
+  handleCreateProspectOpen = () => {
+    this.setState({
+      createProspectModalOpen: true
+    });
+  };
+
+  handleCreateProspectClose = () => {
+    this.setState({
+      createProspectModalOpen: false
+    });
+  };
+
+  handleFormChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value,
+      createFormErrors: {}
+    });
+  };
+
+  handleCreateProspectSubmit = async e => {
+    let data = {
+      firstName: this.state.createFormFirstName,
+      lastName: this.state.createFormLastName,
+      email: this.state.createFormEmail,
+      status: this.state.createFormStatus
+    };
+    try {
+      await createProspect(data);
+      this.setCreateSuccess(true);
+      this.fetchProspects();
+    } catch (error) {
+      this.setCreateFormErrors({ ...error.response.data });
+      console.log(this.state.errors);
+    }
+  };
+
+  fetchProspects = async () => {
+    try {
+      const res = await getProspectData(this.state.user.id);
+      this.setState({
+        prospects: res.data,
+        filteredProspects: res.data
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  setCreateSuccess = success => {
+    this.setState({
+      createSuccess: success
+    });
+  };
+
+  setCreateFormErrors = errors => {
+    this.setState({
+      createFormErrors: errors
+    });
+  };
+
   render() {
     const { filteredProspects, prospects, user } = this.state;
     const filteredProspectList = filteredProspects.length ? (
       filteredProspects.map((prospect, index) => (
-        <TableRow
-          key={prospect._id}
-          hover
-          // onClick={event => this.handleClick(event, index)}
-        >
+        <TableRow key={prospect._id} hover>
           <TableCell
             className={this.props.classes.prospect_id_cell}
             align="center"
@@ -211,6 +275,7 @@ class Prospects extends Component {
                 <ProspectDashboardHeader
                   addToCampaignBtnVisible={this.state.addToCampaignBtnVisible}
                   handleClick={this.handleAddToCampaign}
+                  handleCreateProspectOpen={this.handleCreateProspectOpen}
                 />
                 <Grid
                   item
@@ -299,6 +364,19 @@ class Prospects extends Component {
         <CampaignSelectDialog
           open={this.state.showCampaignDialog}
           onClose={this.handleCampaignDialogClose}
+        />
+        <CreateProspectForm
+          onClose={this.handleCreateProspectClose}
+          open={this.state.createProspectModalOpen}
+          handleCreateProspectSubmit={this.handleCreateProspectSubmit}
+          firstName={this.state.createFormFirstName}
+          lastName={this.state.createFormLastName}
+          email={this.state.createFormEmail}
+          status={this.state.createFormStatus}
+          setCreateSuccess={this.setCreateSuccess}
+          createSuccess={this.state.createSuccess}
+          errors={this.state.createFormErrors}
+          handleFormChange={this.handleFormChange}
         />
       </Route>
     );

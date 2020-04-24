@@ -38,31 +38,33 @@ router.post(
     if (!isValid) {
       return res.status(400).json(errors);
     }
-    Prospect.findOne({ email: req.body.email }).then(prospect => {
-      if (prospect) {
-        return res
-          .status(400)
-          .json({ email: "Prospect with this email address already exists" });
-      } else {
-        if (ownedBy !== null && !mongoose.Types.ObjectId.isValid(ownedBy)) {
+    Prospect.findOne({ email: req.body.email, ownedBy: ownedBy }).then(
+      prospect => {
+        if (prospect) {
           return res
             .status(400)
-            .json({ ownedBy: "Invalid user id provided for ownedBy" });
+            .json({ email: "Prospect with this email address already exists" });
+        } else {
+          if (ownedBy !== null && !mongoose.Types.ObjectId.isValid(ownedBy)) {
+            return res
+              .status(400)
+              .json({ ownedBy: "Invalid user id provided for ownedBy" });
+          }
+          const { firstName, lastName, email, status } = req.body;
+          const newProspect = new Prospect({
+            firstName,
+            lastName,
+            email,
+            ownedBy,
+            status
+          });
+          newProspect
+            .save()
+            .then(prospect => res.json(prospect))
+            .catch(err => console.log(err));
         }
-        const { firstName, lastName, email, status } = req.body;
-        const newProspect = new Prospect({
-          firstName,
-          lastName,
-          email,
-          ownedBy,
-          status
-        });
-        newProspect
-          .save()
-          .then(prospect => res.json(prospect))
-          .catch(err => console.log(err));
       }
-    });
+    );
   }
 );
 
@@ -225,7 +227,9 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   upload.single("file"),
   async (req, res) => {
-    console.log(req);
+    const myheaders = req.body.clientHeaders;
+    const headers = myheaders.split(",");
+
     const csvData = [];
     const file = req.file;
     const userId = req.user.id;
@@ -234,9 +238,8 @@ router.post(
     if (!isValid) {
       return res.status(400).send(errors);
     }
-
     fs.createReadStream(file.path)
-      .pipe(csv())
+      .pipe(csv({ headers: headers, skipLines: 1 }))
       .on("data", row => {
         csvData.push(row);
       })

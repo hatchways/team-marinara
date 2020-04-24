@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Grid, Typography, withStyles } from "@material-ui/core";
 import colors from "Components/Styles/Colors";
+import { Link } from "react-router-dom";
 
 import StyledImportProspectButtonOutline from "Components/Button/StyledImportProspectButtonOutline";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";
@@ -58,16 +58,15 @@ const ProspectDashboardHeader = props => {
         </Grid>
 
         <Grid item>
-          <StyledImportProspectButtonOutline>
-            Imports
+          <StyledImportProspectButtonOutline
+            onClick={props.handleCreateProspectOpen}
+          >
+            Add New Prospect
           </StyledImportProspectButtonOutline>
         </Grid>
-
-        <Grid item>
-          <StyledAddProspectButton component={Link} to="/home/prospects/upload">
-            Add New Prospects
-          </StyledAddProspectButton>
-        </Grid>
+        <StyledAddProspectButton component={Link} to="/home/prospects/upload">
+          Upload Prospects
+        </StyledAddProspectButton>
       </Grid>
     </Grid>
   );
