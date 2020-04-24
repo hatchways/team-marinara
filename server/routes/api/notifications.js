@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 const { pubSubSubscriptionName } = require("../../config/config");
+const socketApi = require("../../socket/socketApi");
 
 const {
   googleClientSecret,
@@ -12,6 +13,7 @@ const User = require("../../models/user");
 const Campaign = require("../../models/campaign");
 const Step = require("../../models/step");
 const Thread = require("../../models/thread");
+const Prospect = require("../../models/Prospect");
 
 // @route POST /api/notifications
 // @desc Receive push notifications from Gmail
@@ -130,6 +132,7 @@ const getEmail = async (gmailToken, startHistoryId) => {
     filteredThreadRecords.map(async threadRecord => {
       const campaign = await Campaign.findById(threadRecord.campaignId);
       const step = await Step.findById(threadRecord.stepId);
+      const prospect = await Prospect.findById(threadRecord.prospectId);
 
       const prospectIndex = campaign.prospects.findIndex(prospect =>
         prospect.prospectId.equals(threadRecord.prospectId)
@@ -144,6 +147,12 @@ const getEmail = async (gmailToken, startHistoryId) => {
       step.prospects[stepProspectIndex].status = "Replied";
       await campaign.save();
       await step.save();
+      socketApi.emitReplyReceived(
+        threadRecord.userId.toString(),
+        prospect.firstName,
+        prospect.lastName,
+        campaign.name
+      );
     })
   );
   return true;
