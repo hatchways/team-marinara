@@ -8,6 +8,7 @@ const templates = require("./api/templates");
 const notifications = require("./api/notifications");
 const path = require("path");
 
+router.use(express.static(path.join(__dirname, "../../client/build")));
 router.use("/api/users", users);
 router.use("/api/prospects", prospect);
 router.use("/api/gmail-auth", gmailAuth);

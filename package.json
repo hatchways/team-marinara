@@ -1,6 +1,9 @@
 {
   "name": "mail-sender",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "start": "node ./server/bin/www",
     "predev": "mongod --dbpath=./database &",

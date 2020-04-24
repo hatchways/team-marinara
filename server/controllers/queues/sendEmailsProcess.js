@@ -176,7 +176,6 @@ const sendEmailsProcess = async data => {
       }
     }
 
-    step.save();
     return Promise.resolve(true);
   } catch (error) {
     console.log("Error running sendEmailsProcess: ", error);
