@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Grid,
   makeStyles,
@@ -8,13 +8,18 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button
+  Button,
+  LinearProgress,
+  Typography,
+  lighten
 } from "@material-ui/core";
 
 import StyledButtonOutline from "Components/Button/StyledButtonOutline";
+import colors from "Components/Styles/Colors";
 import Step from "./Step";
 import StepEditor from "./StepEditor";
 import { sendStepEmails } from "Utils/api";
+import AuthUserContext from "Components/Session/AuthUserContext";
 
 const useStyles = makeStyles({
   root: {
@@ -31,6 +36,7 @@ const AddStepButton = withStyles({
 
 const Steps = props => {
   const classes = useStyles();
+  const socket = useContext(AuthUserContext).socket;
   const [editorOpen, setEditorOpen] = useState(false);
   const [selectedStep, setSelectedStep] = useState(null);
   const [sendConfirmation, setSendConfirmation] = useState(false);
@@ -106,24 +112,59 @@ const Steps = props => {
     </Dialog>
   );
 
-  const ConfirmEmailsSending = () => (
-    <Dialog
-      open={sendingConfirmation}
-      onClose={() => setSendingConfirmation(false)}
-      maxWidth="md"
-    >
-      <DialogTitle>Emails Sending</DialogTitle>
-      <DialogActions>
-        <Button
-          onClick={() => setSendingConfirmation(false)}
-          color="primary"
-          autoFocus
-        >
-          Ok
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  const ConfirmEmailsSending = () => {
+    const [sent, setSent] = useState(0);
+    const [total, setTotal] = useState(0);
+
+    const classes = makeStyles({
+      paper: {
+        width: "50rem"
+      }
+    })();
+
+    useEffect(() => {
+      if (socket) {
+        socket.on("email sent", data => {
+          setSent(data.sent);
+          setTotal(data.total);
+        });
+      }
+    });
+
+    const handleClose = () => {
+      props.triggerFetch();
+      setSendingConfirmation(false);
+    };
+
+    const ProgressBar = withStyles({
+      root: {
+        height: "1rem",
+        backgroundColor: lighten(colors.green, 0.5),
+        borderRadius: 7,
+        marginBottom: "0.5rem"
+      },
+      bar: {
+        backgroundColor: colors.green,
+        borderRadius: 7
+      }
+    })(LinearProgress);
+
+    return (
+      <Dialog open={sendingConfirmation} onClose={handleClose} maxWidth="md">
+        <DialogContent className={classes.paper}>
+          <ProgressBar variant="determinate" value={(sent / total) * 100} />
+          <Typography>
+            {`${sent}/${total} email${total > 1 ? "s" : ""} sent`}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   return (
     <Grid item container direction="column" className={classes.root}>

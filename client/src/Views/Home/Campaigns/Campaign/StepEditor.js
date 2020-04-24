@@ -154,7 +154,10 @@ const StepEditor = props => {
     }
   };
 
-  const errorDialogClose = () => {
+  const dialogClose = () => {
+    if (saveSuccess) {
+      props.onClose();
+    }
     setSaveSuccess(null);
   };
 
@@ -208,7 +211,7 @@ const StepEditor = props => {
       {saveSuccess !== null && (
         <Dialog
           open={true}
-          onClose={errorDialogClose}
+          onClose={dialogClose}
           maxWidth="md"
           className={(classes.root, classes.dialog)}
         >

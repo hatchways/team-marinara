@@ -1,8 +1,11 @@
 {
   "name": "mail-sender",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
-    "start": "nodemon ./server/bin/www",
+    "start": "node ./server/bin/www",
     "predev": "mongod --dbpath=./database &",
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
@@ -11,6 +14,7 @@
     "deploy": "npm run build --prefix ./client && gcloud app deploy"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "bull": "^3.13.0",
     "cookie-parser": "~1.4.4",
@@ -21,6 +25,7 @@
     "express": "~4.16.1",
     "fs": "0.0.1-security",
     "googleapis": "^48.0.0",
+    "handlebars": "^4.7.6",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.6",
@@ -31,6 +36,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "redis": "^3.0.2",
+    "socket.io": "^2.3.0",
     "validator": "^13.0.0"
   }
 }

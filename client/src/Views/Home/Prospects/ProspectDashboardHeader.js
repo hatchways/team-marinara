@@ -1,7 +1,5 @@
 import React from "react";
 import { Grid, Typography, withStyles } from "@material-ui/core";
-import FlashOnIcon from "@material-ui/icons/FlashOn";
-import MailIcon from "@material-ui/icons/Mail";
 import colors from "Components/Styles/Colors";
 import { Link } from "react-router-dom";
 
@@ -58,11 +56,11 @@ const ProspectDashboardHeader = props => {
             </StyledAddProspectButton>
           )}
         </Grid>
+
         <Grid item>
-          <FlashOnIcon className={props.classes.mainHeaderIcon} />
-        </Grid>
-        <Grid item>
-          <MailIcon className={props.classes.mainHeaderIcon} />
+          <StyledImportProspectButtonOutline>
+            Imports
+          </StyledImportProspectButtonOutline>
         </Grid>
 
         <Grid item>

@@ -9,6 +9,7 @@ import { getUser } from "Utils/api";
 
 import AuthUserContext from "./AuthUserContext";
 import axios from "axios";
+import connect from "Utils/socket";
 
 const withAuthentication = Component => {
   const WithAuthentication = props => {
@@ -16,6 +17,7 @@ const withAuthentication = Component => {
 
     const [token, setToken] = useState(prevToken);
     const [user, setUser] = useState(null);
+    const [socket, setSocket] = useState(null);
 
     // When token changes via setToken, save to local storage and
     // fetch the user and put in context
@@ -26,6 +28,7 @@ const withAuthentication = Component => {
           axios.defaults.headers.common["Authorization"] = token;
           const loggedInUser = await getUser();
           setUser(loggedInUser);
+          setSocket(connect(loggedInUser.id));
         }
       };
       getCurrentUser();
@@ -42,7 +45,8 @@ const withAuthentication = Component => {
       token,
       setToken,
       user,
-      logOut
+      logOut,
+      socket
     };
 
     return (

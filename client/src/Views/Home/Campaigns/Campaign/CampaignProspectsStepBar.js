@@ -77,11 +77,10 @@ const defaultStepOptions = ["All", "Pending"];
 
 const CampaignProspectsStepBar = props => {
   const classes = useStyles();
-  const [recentlyFetched, setRecentlyFetched] = useState(false);
   const [selectedButton, setSelectedButton] = useState([]);
 
   useEffect(() => {
-    if (props.steps.length > 0 && !recentlyFetched) {
+    if (props.steps.length > 0) {
       let result = props.steps.map(step => step.name);
       result = defaultStepOptions.concat(result);
       let buttonActiveArray = [];
@@ -97,9 +96,8 @@ const CampaignProspectsStepBar = props => {
         }
       }
       setSelectedButton(buttonActiveArray);
-      setRecentlyFetched(true);
     }
-  }, [props]);
+  }, [props, selectedButton]);
 
   const handleClick = e => {
     const buttonPosition = e.target.getAttribute("buttonposition");
@@ -113,7 +111,6 @@ const CampaignProspectsStepBar = props => {
       }
     }
     setSelectedButton(buttonArray);
-    setRecentlyFetched(false);
     props.handleStepSelect(e.target.getAttribute("value"));
   };
 
