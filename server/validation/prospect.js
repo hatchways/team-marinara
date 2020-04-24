@@ -1,11 +1,11 @@
 const Validator = require("validator");
 
-const { STATUS } = require("../models/Prospect")
+const { STATUS } = require("../models/Prospect");
 
 function validateProspectInput(data) {
   const errors = {};
-  const {firstName, lastName, ownedBy, email, status} = data;
-// Name checks
+  const { firstName, lastName, ownedBy, email, status } = data;
+  // Name checks
   if (!firstName) {
     errors.firstName = "First name is required";
   }
@@ -13,50 +13,45 @@ function validateProspectInput(data) {
     errors.lastName = "Last name is required";
   }
 
-  
-// Email checks
+  // Email checks
   if (!email) {
     errors.email = "Email field is required";
   } else if (!Validator.isEmail(email)) {
     errors.email = "Email is invalid";
   }
 
-// Status checks  
-if (!status) {
+  // Status checks
+  if (!status) {
     errors.status = "Status is required";
-} else if (!Object.values(STATUS).includes(status)) {
+  } else if (!Object.values(STATUS).includes(status)) {
     errors.status = "Invalid Prospect status";
-}
+  }
 
-return {
+  return {
     errors,
     isValid: !Object.keys(errors).length > 0
   };
-};
+}
 
 function validateFile(file) {
-    
   const errors = {};
 
   if (!file) {
-      errors.file = "No file uploaded";
-      return {
-          errors,
-          isValid: false
-      };
-  }
-  
-  if(file.size > 1000000){
-      errors.size = "File size too large";
-  }
-  if(file.mimetype !== 'text/csv') {
-      errors.filetype = "File is not of type .csv";
-  }
-  
-  return {
+    errors.file = "No file uploaded";
+    return {
       errors,
-      isValid: !Object.keys(errors).length > 0
+      isValid: false
+    };
+  }
+
+  if (file.size > 1000000) {
+    errors.size = "File size too large";
+  }
+
+  return {
+    errors,
+    isValid: !Object.keys(errors).length > 0
   };
 }
 
-module.exports = {validateProspectInput, validateFile };
+module.exports = { validateProspectInput, validateFile };
