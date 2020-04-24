@@ -237,7 +237,6 @@ class Prospects extends Component {
           align="center"
         ></TableCell>
         <TableCell className={this.props.classes.email}></TableCell>
-        <TableCell className={this.props.classes.email}></TableCell>
         <TableCell
           className={this.props.classes.status}
           align="center"
@@ -283,7 +282,7 @@ class Prospects extends Component {
                   direction="column"
                   alignContent="center"
                   alignItems="center"
-                  className={this.props.classes.root}
+                  className={this.props.classes.tableContainer}
                 >
                   <Grid
                     item
