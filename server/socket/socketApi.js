@@ -21,4 +21,9 @@ socketApi.emitEmailSent = (userId, sent, total) => {
   socket.emit("email sent", { sent, total });
 };
 
+socketApi.emitReplyReceived = (userId, firstName, lastName, campaignName) => {
+  const socket = socketApi.sockets.find(curr => curr.userId == userId);
+  socket.emit("reply received", { firstName, lastName, campaignName });
+};
+
 module.exports = socketApi;
