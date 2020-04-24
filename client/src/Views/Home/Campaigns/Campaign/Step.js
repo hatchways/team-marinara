@@ -40,6 +40,9 @@ const useStyles = makeStyles({
     "&:hover": {
       color: colors.green
     }
+  },
+  buttonGroup: {
+    marginLeft: "2rem"
   }
 });
 
@@ -89,7 +92,7 @@ const Step = props => {
 
     columns.push(<DataColumn label="Sent" key="Sent" value={sent} />);
 
-    ["Opened", "Clicked", "Replied"].forEach(curr => {
+    ["Replied"].forEach(curr => {
       let value;
 
       if (!sent) {
@@ -107,7 +110,12 @@ const Step = props => {
 
   return (
     <Grid item container alignItems="center" className={classes.root}>
-      <Grid item>
+      <Grid item className={classes.nameContainer}>
+        <Typography className={classes.name}>{props.step.name}</Typography>
+      </Grid>
+      <DataColumn label="Prospects" value={props.step.prospects.length} />
+      {generateColumns(props.step.summary)}
+      <Grid item className={classes.buttonGroup}>
         <EmailTooltip title="Edit Email">
           <IconButton
             className={classes.button}
@@ -130,11 +138,6 @@ const Step = props => {
           </IconButton>
         </EmailTooltip>
       </Grid>
-      <Grid item className={classes.nameContainer}>
-        <Typography className={classes.name}>{props.step.name}</Typography>
-      </Grid>
-      <DataColumn label="Prospects" value={props.step.prospects.length} />
-      {generateColumns(props.step.summary)}
       <Grid item>
         <IconButton onClick={openMenu}>
           <MoreVertIcon />
