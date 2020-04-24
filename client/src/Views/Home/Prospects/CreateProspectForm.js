@@ -97,7 +97,7 @@ export default function CreateProspectForm(props) {
           <Grid
             container
             alignItems="center"
-            direction="row"
+            direction="column"
             justify="center"
             alignItems="center"
             spacing={2}

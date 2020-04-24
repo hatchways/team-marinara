@@ -45,24 +45,22 @@ const ProspectUploadFormTable = props => {
 
   return (
     <Grid item className={classes.root}>
-      <Paper className={classes.tableContainer}>
-        <Table className={classes.table}>
-          <TableHead className={classes.headRow}>
-            <TableRow className={classes.headRow}>
-              <TableCell className={classes.headCell}>
-                Mail Sender Prospect Field
-              </TableCell>
-              <TableCell className={classes.headCell}>
-                Import Data Header
-              </TableCell>
-              <TableCell className={classes.headCellExtend}>
-                Example Data
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{rows}</TableBody>
-        </Table>
-      </Paper>
+      <Table className={classes.table}>
+        <TableHead className={classes.headRow}>
+          <TableRow className={classes.headRow}>
+            <TableCell className={classes.headCell}>
+              Mail Sender Prospect Field
+            </TableCell>
+            <TableCell className={classes.headCell}>
+              Import Data Header
+            </TableCell>
+            <TableCell className={classes.headCellExtend}>
+              Example Data
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{rows}</TableBody>
+      </Table>
     </Grid>
   );
 };

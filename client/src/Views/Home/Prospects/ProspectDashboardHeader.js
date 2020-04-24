@@ -58,12 +58,6 @@ const ProspectDashboardHeader = props => {
         </Grid>
 
         <Grid item>
-          <StyledImportProspectButtonOutline>
-            Imports
-          </StyledImportProspectButtonOutline>
-        </Grid>
-
-        <Grid item>
           <StyledImportProspectButtonOutline
             onClick={props.handleCreateProspectOpen}
           >
