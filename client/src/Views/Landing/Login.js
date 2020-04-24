@@ -75,9 +75,18 @@ class Login extends Component {
         onKeyPress={this.onEnterPress}
       >
         <Grid item>
-          <Typography className={this.props.classes.header}>Login</Typography>
+          <Typography className={this.props.classes.header}>
+            Welcome to mail
+            <span className={this.props.classes.sender}>sender</span>{" "}
+            <span role="img" aria-label="">
+              💌
+            </span>
+          </Typography>
         </Grid>
 
+        <Grid item>
+          <Typography className={this.props.classes.header}>Login</Typography>
+        </Grid>
         <Grid
           item
           container
@@ -112,11 +121,9 @@ class Login extends Component {
             />
           </Grid>
         </Grid>
-
         <Grid item>
           <StyledButton onClick={this.onSubmit}>Login</StyledButton>
         </Grid>
-
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
