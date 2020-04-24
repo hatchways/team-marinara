@@ -18,20 +18,23 @@ const ProspectTableStyles = () => ({
     height: "100vh",
     width: "100%"
   },
+  tableContainer: {
+    padding: "0rem 3rem"
+  },
   list_entire: {
-    width: "auto",
+    width: "100%",
     height: "auto",
     fontSize: "10px",
     color: `${colors.white}`,
     backgroundColor: `${colors.white}`,
     borderRadius: 7,
-    margin: "25px 0px 75px 0px",
-    padding: "15px"
+    margin: "25px 100px 75px 100px",
+    padding: "1rem"
   },
   table: {
     borderCollapse: "separate",
     borderRadius: 7,
-    width: "800px",
+    width: "100%",
     overflow: "auto"
   },
   table_header_cell: {
