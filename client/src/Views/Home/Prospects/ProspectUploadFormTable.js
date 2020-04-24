@@ -31,6 +31,7 @@ const ProspectUploadFormTable = props => {
 
   const rows = props.headerOptions.map((curr, index) => (
     <Row
+      className={classes.tableBody}
       headerOptions={props.headerOptions}
       importedData={props.importedData}
       importedHeaders={props.importedHeaders}

@@ -145,7 +145,8 @@ class Prospects extends Component {
 
   handleFormChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      createFormErrors: {}
     });
   };
 
@@ -159,9 +160,22 @@ class Prospects extends Component {
     try {
       await createProspect(data);
       this.setCreateSuccess(true);
+      this.fetchProspects();
     } catch (error) {
       this.setCreateFormErrors({ ...error.response.data });
       console.log(this.state.errors);
+    }
+  };
+
+  fetchProspects = async () => {
+    try {
+      const res = await getProspectData(this.state.user.id);
+      this.setState({
+        prospects: res.data,
+        filteredProspects: res.data
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 

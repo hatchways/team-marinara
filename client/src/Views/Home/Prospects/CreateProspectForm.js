@@ -38,6 +38,7 @@ const useStyles = makeStyles({
   inputContainer: {
     alignContent: "center",
     alignItems: "center",
+    justifyContent: "center",
     padding: "2rem",
     width: "100%"
   },
@@ -96,12 +97,13 @@ export default function CreateProspectForm(props) {
           <Grid
             container
             alignItems="center"
-            direction="column"
+            direction="row"
+            justify="center"
+            alignItems="center"
             spacing={2}
-            sm={12}
             className={classes.inputContainer}
           >
-            <Grid item sm={12}>
+            <Grid item sm={8}>
               <TextField
                 label="First name"
                 name="createFormFirstName"
@@ -114,7 +116,7 @@ export default function CreateProspectForm(props) {
                 helperText={errors.firstName}
               />
             </Grid>
-            <Grid item sm={12}>
+            <Grid item sm={8}>
               <TextField
                 label="Last name"
                 name="createFormLastName"
@@ -127,19 +129,20 @@ export default function CreateProspectForm(props) {
                 helperText={errors.lastName}
               />
             </Grid>
-            <Grid item sm={12}>
+            <Grid item sm={8}>
               <TextField
                 label="Email"
                 name="createFormEmail"
                 variant="outlined"
                 hintText="Email"
+                fullWidth
                 onChange={handleChange}
                 value={email}
                 error={"email" in errors}
                 helperText={errors.email}
               />
             </Grid>
-            <Grid item sm={12}>
+            <Grid item sm={8}>
               <FormControl component="fieldset">
                 <FormLabel component="legend" className={classes.statusLabel}>
                   Status
@@ -164,7 +167,7 @@ export default function CreateProspectForm(props) {
                 </RadioGroup>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item sm={8}>
               <StyledButton onClick={handleSubmit}>Submit</StyledButton>
             </Grid>
           </Grid>

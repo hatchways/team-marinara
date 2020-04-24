@@ -9,6 +9,13 @@ const useStyles = makeStyles({
   },
   tableContainer: {
     paddingTop: "1rem"
+  },
+  selectedTag: {
+    paddingBottom: "1rem",
+    paddingLeft: "1rem",
+    alignContent: "center",
+    fontWeight: "bold",
+    fontSize: "1.5rem"
   }
 });
 
@@ -22,7 +29,6 @@ const ProspectUploadForm = props => {
     <div className={classes.dialog}>
       <DialogTitle id="simple-dialog-title"></DialogTitle>
       <form method="POST" className={classes.form}>
-        <Typography>{file.name} selected</Typography>
         <Grid
           container
           alignItems="center"

@@ -82,37 +82,33 @@ class ProspectsUpload extends Component {
     let formData = new FormData();
     formData.append("file", file);
     const headers = this.state.requestHeaders;
-    if (!this.findDuplicates(headers)) {
-      console.log("Found a duplicate");
-    }
-    //console.log(dups);
-    console.log(headers);
-    formData.append("clientHeaders", headers);
-    try {
-      const res = await uploadProspectCsv(formData);
-      if (res.status === 200) {
+    if (this.findDuplicates(headers)) {
+      formData.append("clientHeaders", headers);
+      try {
+        const res = await uploadProspectCsv(formData);
+        if (res.status === 200) {
+          this.setState({
+            uploadResultMessage:
+              "Successfully uploaded " +
+              res.data.successCount +
+              " records. \n\n" +
+              "Skipped " +
+              res.data.skippedCount +
+              " records."
+          });
+        }
+      } catch (error) {
         this.setState({
-          uploadResultMessage:
-            "Successfully uploaded " +
-            res.data.successCount +
-            " records. \n\n" +
-            "Skipped " +
-            res.data.skippedCount +
-            " records."
+          uploadResultMessage: "Error occured. File not uploaded."
         });
+        console.log(error);
       }
-    } catch (error) {
-      this.setState({
-        uploadResultMessage: "Error occured. File not uploaded."
-      });
-      console.log(error);
     }
   };
 
   findDuplicates = headerArray => {
-    console.log(headerArray);
-    for (let i = 0; i < headerArray.length - 2; i++) {
-      for (let n = i + 1; n < headerArray.length - 1; n++) {
+    for (let i = 0; i < headerArray.length - 1; i++) {
+      for (let n = i + 1; n < headerArray.length; n++) {
         if (headerArray[i] === headerArray[n]) {
           let errors = this.state.selectErrors;
           errors[i] = "error";
@@ -183,7 +179,7 @@ class ProspectsUpload extends Component {
             importedData: bigArray
           });
         } else {
-          console.log("empty csv");
+          console.log("Empty csv");
         }
       }.bind(this)
     });
@@ -196,7 +192,6 @@ class ProspectsUpload extends Component {
       requestHeaders: headerArray,
       selectErrors: ["", "", "", ""]
     });
-    console.log({ ...this.state });
   };
 
   render() {
@@ -219,19 +214,22 @@ class ProspectsUpload extends Component {
             >
               <main className={classes.layout}>
                 <Paper className={classes.paper}>
-                  <Typography component="h1" variant="h4" align="center">
-                    Prospects Upload
-                  </Typography>
+                  {!this.state.file ? (
+                    <Typography component="h1" variant="h4" align="center">
+                      Prospects Upload
+                    </Typography>
+                  ) : (
+                    <Typography component="h4" variant="h4" align="center">
+                      {'"' + this.state.file.name + '"'} selected
+                    </Typography>
+                  )}
+
                   {this.state.file ? (
                     <ProspectUploadForm
                       importedHeaders={this.state.importedHeaders}
                       importedData={this.state.importedData}
                       file={this.state.file}
                       selectErrors={this.state.selectErrors}
-                      header0={this.state.header0}
-                      header1={this.state.header1}
-                      header2={this.state.header2}
-                      header3={this.state.header3}
                       requestHeaders={this.state.requestHeaders}
                       handleSelectChange={this.handleSelectChange}
                     />

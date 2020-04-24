@@ -9,12 +9,16 @@ const useStyles = makeStyles({
     flexGrow: 1
   },
   headRow: {
-    backgroundColor: `${colors.gray}`
+    backgroundColor: `${colors.gray}`,
+    fontWeight: "bold"
   },
   headCell: {
     width: "150px"
   },
-  headCellExtend: {}
+  row: {
+    backgroundColor: "#FAFAFA",
+    fontWeight: "bold"
+  }
 });
 
 const ProspectUploadFormTableRow = props => {

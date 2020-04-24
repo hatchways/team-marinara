@@ -238,11 +238,9 @@ router.post(
     if (!isValid) {
       return res.status(400).send(errors);
     }
-    console.log(headers);
     fs.createReadStream(file.path)
       .pipe(csv({ headers: headers, skipLines: 1 }))
       .on("data", row => {
-        console.log(row);
         csvData.push(row);
       })
       .on("end", async () => {
