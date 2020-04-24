@@ -1,25 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-import {
-  Grid,
-  Table,
-  TableCell,
-  TableRow,
-  TableHead,
-  makeStyles,
-  InputLabel,
-  FormControl,
-  MenuItem,
-  Select,
-  Paper,
-  TableBody
-} from "@material-ui/core";
-import StyledRadio from "Components/RadioButton/StyledRadio";
-
-import StyledButton from "Components/Button/StyledButton";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
+import { TableCell, TableRow, makeStyles } from "@material-ui/core";
 import colors from "Components/Styles/Colors";
 import ProspectUploadHeaderSelect from "./ProspectUploadHeaderSelect";
 
@@ -39,22 +20,25 @@ const useStyles = makeStyles({
 const ProspectUploadFormTableRow = props => {
   const classes = useStyles();
 
-  const [age, setAge] = useState("");
-
-  const handleChange = event => {
-    setAge(event.target.value);
-  };
-
   return (
     <TableRow className={classes.row}>
       <TableCell className={classes.cell}>
         <ProspectUploadHeaderSelect
           index={props.index}
           selectOptions={props.headerOptions}
+          selectErrors={props.selectErrors}
+          requestHeaders={props.requestHeaders}
+          handleSelectChange={props.handleSelectChange}
         />
       </TableCell>
-      <TableCell className={classes.cell}>Column 2</TableCell>
-      <TableCell className={classes.cell}>Column 3</TableCell>
+      <TableCell className={classes.cell}>
+        {props.importedHeaders[props.index]
+          ? props.importedHeaders[props.index]
+          : "No header found"}
+      </TableCell>
+      <TableCell className={classes.cell}>
+        {props.importedData[props.index]}
+      </TableCell>
     </TableRow>
   );
 };

@@ -227,7 +227,9 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   upload.single("file"),
   async (req, res) => {
-    console.log(req);
+    const myheaders = req.body.clientHeaders;
+    const headers = myheaders.split(",");
+
     const csvData = [];
     const file = req.file;
     const userId = req.user.id;
@@ -236,10 +238,11 @@ router.post(
     if (!isValid) {
       return res.status(400).send(errors);
     }
-
+    console.log(headers);
     fs.createReadStream(file.path)
-      .pipe(csv())
+      .pipe(csv({ headers: headers, skipLines: 1 }))
       .on("data", row => {
+        console.log(row);
         csvData.push(row);
       })
       .on("end", async () => {

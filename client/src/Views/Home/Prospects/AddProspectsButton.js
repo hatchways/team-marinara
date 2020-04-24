@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Menu from "@material-ui/core/Menu";
-import { Grid, Typography, withStyles } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import StyledAddProspectButton from "Components/Button/StyledAddProspectButton";

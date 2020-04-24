@@ -10,13 +10,6 @@ import {
   Paper,
   TableBody
 } from "@material-ui/core";
-import StyledRadio from "Components/RadioButton/StyledRadio";
-
-import StyledButton from "Components/Button/StyledButton";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import colors from "Components/Styles/Colors";
 import Row from "./ProspectUploadFormTableRow";
 
@@ -35,8 +28,18 @@ const useStyles = makeStyles({
 
 const ProspectUploadFormTable = props => {
   const classes = useStyles();
+
   const rows = props.headerOptions.map((curr, index) => (
-    <Row headerOptions={props.headerOptions} index={index} key={index} />
+    <Row
+      headerOptions={props.headerOptions}
+      importedData={props.importedData}
+      importedHeaders={props.importedHeaders}
+      selectErrors={props.selectErrors}
+      index={index}
+      key={index}
+      requestHeaders={props.requestHeaders}
+      handleSelectChange={props.handleSelectChange}
+    />
   ));
 
   return (

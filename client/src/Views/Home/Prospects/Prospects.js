@@ -156,9 +156,8 @@ class Prospects extends Component {
       email: this.state.createFormEmail,
       status: this.state.createFormStatus
     };
-    console.log(data);
     try {
-      const result = await createProspect(data);
+      await createProspect(data);
       this.setCreateSuccess(true);
     } catch (error) {
       this.setCreateFormErrors({ ...error.response.data });
@@ -182,11 +181,7 @@ class Prospects extends Component {
     const { filteredProspects, prospects, user } = this.state;
     const filteredProspectList = filteredProspects.length ? (
       filteredProspects.map((prospect, index) => (
-        <TableRow
-          key={prospect._id}
-          hover
-          // onClick={event => this.handleClick(event, index)}
-        >
+        <TableRow key={prospect._id} hover>
           <TableCell
             className={this.props.classes.prospect_id_cell}
             align="center"

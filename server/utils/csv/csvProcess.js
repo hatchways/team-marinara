@@ -17,7 +17,6 @@ async function processCsvData(data, userId) {
   emailsFromCsv = new Set(emailsFromCsv);
 
   let dbEmails = await Prospect.find({ ownedBy: userId }, { email: 1, _id: 0 });
-  console.log(dbEmails);
   dbEmails = dbEmails.map(dbEmails => dbEmails.email);
   dbEmails = new Set(dbEmails);
 

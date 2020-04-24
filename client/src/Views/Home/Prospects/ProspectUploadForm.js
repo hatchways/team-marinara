@@ -1,24 +1,6 @@
 import React from "react";
 
-import {
-  Grid,
-  DialogTitle,
-  Typography,
-  TextField,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  Divider,
-  makeStyles
-} from "@material-ui/core";
-import StyledRadio from "Components/RadioButton/StyledRadio";
-
-import StyledButton from "Components/Button/StyledButton";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import colors from "Components/Styles/Colors";
+import { Grid, DialogTitle, Typography, makeStyles } from "@material-ui/core";
 import ProspectUploadFormTable from "./ProspectUploadFormTable";
 
 const useStyles = makeStyles({
@@ -45,10 +27,16 @@ const ProspectUploadForm = props => {
           container
           alignItems="center"
           direction="row"
-          lg={12}
           className={classes.tableContainer}
         >
-          <ProspectUploadFormTable headerOptions={headerOptions} />
+          <ProspectUploadFormTable
+            importedHeaders={props.importedHeaders}
+            importedData={props.importedData}
+            headerOptions={headerOptions}
+            selectErrors={props.selectErrors}
+            requestHeaders={props.requestHeaders}
+            handleSelectChange={props.handleSelectChange}
+          />
         </Grid>
       </form>
     </div>

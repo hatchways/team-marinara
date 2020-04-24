@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Grid,
   DialogTitle,
@@ -11,7 +11,6 @@ import {
   makeStyles
 } from "@material-ui/core";
 import StyledButton from "Components/Button/StyledButton";
-import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -35,7 +34,6 @@ const useStyles = makeStyles({
   },
   form: {
     width: "100%"
-    //marginTop: "2rem"
   },
   inputContainer: {
     alignContent: "center",

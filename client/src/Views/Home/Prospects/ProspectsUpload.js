@@ -7,6 +7,7 @@ import colors from "Components/Styles/Colors";
 import { uploadProspectCsv } from "Utils/api";
 import Dropzone from "react-dropzone";
 import ProspectUploadForm from "./ProspectUploadForm";
+import Papa from "papaparse";
 
 const styles = theme => ({
   root: {
@@ -69,14 +70,24 @@ class ProspectsUpload extends Component {
     file: null,
     uploadSuccess: false,
     fileMessage: "",
-    uploadResultMessage: ""
+    uploadResultMessage: "",
+    importedHeaders: [],
+    importedData: [],
+    requestHeaders: ["firstName", "lastName", "email", "status"],
+    selectErrors: ["", "", "", ""]
   };
 
   onsubmit = async e => {
     let file = this.state.file;
     let formData = new FormData();
     formData.append("file", file);
-
+    const headers = this.state.requestHeaders;
+    if (!this.findDuplicates(headers)) {
+      console.log("Found a duplicate");
+    }
+    //console.log(dups);
+    console.log(headers);
+    formData.append("clientHeaders", headers);
     try {
       const res = await uploadProspectCsv(formData);
       if (res.status === 200) {
@@ -98,13 +109,30 @@ class ProspectsUpload extends Component {
     }
   };
 
+  findDuplicates = headerArray => {
+    console.log(headerArray);
+    for (let i = 0; i < headerArray.length - 2; i++) {
+      for (let n = i + 1; n < headerArray.length - 1; n++) {
+        if (headerArray[i] === headerArray[n]) {
+          let errors = this.state.selectErrors;
+          errors[i] = "error";
+          errors[n] = "error";
+          this.setState({ selectErrors: errors });
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
+  handleHeaderChange = async () => {};
+
   handleFileSelect = e => {
     this.setState({
       uploadResultMessage: ""
     });
     let file = e[0];
-    if (file.type !== "text/csv") {
-      console.log(file);
+    if (!this.checkFileType(file.name)) {
       this.setState({
         uploadResultMessage: "File must be of type *.csv"
       });
@@ -114,6 +142,7 @@ class ProspectsUpload extends Component {
         file: file,
         fileMessage: file.name + " selected."
       });
+      this.parseCsvMinimalData();
     } catch (error) {
       this.setState({
         uploadResultMessage: "Error occured. File not uploaded."
@@ -121,7 +150,55 @@ class ProspectsUpload extends Component {
     }
   };
 
-  //classes = useStyles();
+  checkFileType(filename) {
+    const parts = filename.split(".");
+    const ext = parts[parts.length - 1];
+    if (ext.toLowerCase() === "csv") {
+      return true;
+    }
+    return false;
+  }
+
+  parseCsvMinimalData() {
+    Papa.parse(this.state.file, {
+      complete: function (results) {
+        if (results.data.length > 0) {
+          const headerArray = results.data[0];
+          this.setState({
+            importedHeaders: headerArray
+          });
+          let i = 4;
+          if (results.data.length < 4) {
+            i = results.data.length;
+          }
+          let bigArray = [];
+          for (let n = 0; n < i; n++) {
+            let particularArray = [];
+            for (let k = 1; k < i; k++) {
+              particularArray.push(results.data[k][n] + ", ");
+            }
+            bigArray.push(particularArray);
+          }
+          this.setState({
+            importedData: bigArray
+          });
+        } else {
+          console.log("empty csv");
+        }
+      }.bind(this)
+    });
+  }
+
+  handleSelectChange = e => {
+    let headerArray = this.state.requestHeaders;
+    headerArray[e.target.name] = e.target.value;
+    this.setState({
+      requestHeaders: headerArray,
+      selectErrors: ["", "", "", ""]
+    });
+    console.log({ ...this.state });
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -146,7 +223,18 @@ class ProspectsUpload extends Component {
                     Prospects Upload
                   </Typography>
                   {this.state.file ? (
-                    <ProspectUploadForm file={this.state.file} />
+                    <ProspectUploadForm
+                      importedHeaders={this.state.importedHeaders}
+                      importedData={this.state.importedData}
+                      file={this.state.file}
+                      selectErrors={this.state.selectErrors}
+                      header0={this.state.header0}
+                      header1={this.state.header1}
+                      header2={this.state.header2}
+                      header3={this.state.header3}
+                      requestHeaders={this.state.requestHeaders}
+                      handleSelectChange={this.handleSelectChange}
+                    />
                   ) : (
                     ""
                   )}
