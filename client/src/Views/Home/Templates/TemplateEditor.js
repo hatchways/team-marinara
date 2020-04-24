@@ -5,8 +5,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  makeStyles,
-  Modal
+  makeStyles
 } from "@material-ui/core";
 import { EditorState, convertToRaw, Modifier, convertFromRaw } from "draft-js";
 
@@ -172,62 +171,60 @@ const TemplateEditor = props => {
   };
 
   return (
-    <Modal open={props.open} className={classes.modal}>
-      <Dialog
-        open={true}
-        onClose={handleClose}
-        fullWidth={false}
-        maxWidth="md"
-        className={classes.root}
-      >
-        <DialogContent className={classes.dialogContent}>
-          <Grid container spacing={2}>
-            <Grid container className={classes.emailContainer}>
-              <TemplateEditorHeader
-                handleClose={handleClose}
-                title={title}
-                editMode={editMode}
-                setTitle={setTitle}
-                type={type}
-                setType={setType}
-                subject={subject}
-                setSubject={setSubject}
-              />
-
-              <Grid item xs={12}>
-                <TextEditor
-                  editorState={editorState}
-                  setEditorState={setEditorState}
-                />
-              </Grid>
-            </Grid>
-
-            <TemplateEditorFooter
-              handleVariableValueClick={handleVariableValueClick}
+    <Dialog
+      open={props.open}
+      onClose={handleClose}
+      fullWidth={false}
+      maxWidth="md"
+      className={classes.root}
+    >
+      <DialogContent className={classes.dialogContent}>
+        <Grid container spacing={2}>
+          <Grid container className={classes.emailContainer}>
+            <TemplateEditorHeader
               handleClose={handleClose}
-              handleSave={handleSave}
+              title={title}
+              editMode={editMode}
+              setTitle={setTitle}
+              type={type}
+              setType={setType}
+              subject={subject}
+              setSubject={setSubject}
             />
-          </Grid>
-        </DialogContent>
 
-        {/* Success or Failure Dialog */}
-        {saveSuccess !== null && (
-          <Dialog
-            open={true}
-            onClose={dialogClose}
-            maxWidth="md"
-            className={(classes.root, classes.dialog)}
-          >
-            <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {saveSuccess ? "Template saved" : errorMessage}
-              </DialogContentText>
-            </DialogContent>
-          </Dialog>
-        )}
-      </Dialog>
-    </Modal>
+            <Grid item xs={12}>
+              <TextEditor
+                editorState={editorState}
+                setEditorState={setEditorState}
+              />
+            </Grid>
+          </Grid>
+
+          <TemplateEditorFooter
+            handleVariableValueClick={handleVariableValueClick}
+            handleClose={handleClose}
+            handleSave={handleSave}
+          />
+        </Grid>
+      </DialogContent>
+
+      {/* Success or Failure Dialog */}
+      {saveSuccess !== null && (
+        <Dialog
+          open={true}
+          onClose={dialogClose}
+          maxWidth="md"
+          className={(classes.root, classes.dialog)}
+        >
+          <DialogTitle>{saveSuccess ? "Success" : "Failed"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {saveSuccess ? "Template saved" : errorMessage}
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      )}
+    </Dialog>
   );
 };
 

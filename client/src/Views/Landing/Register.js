@@ -81,6 +81,16 @@ class Register extends Component {
             Create an account
           </Typography>
         </Grid>
+        <Grid item>
+          <Typography className={this.props.classes.subtitle}>
+            You'll be a mail
+            <span className={this.props.classes.sender}>sending</span> ninja in
+            no time{" "}
+            <span role="img" aria-label="">
+              🏄‍♀
+            </span>
+          </Typography>
+        </Grid>
 
         <Grid
           item

@@ -4,7 +4,8 @@ import {
   ListItem,
   ListItemText,
   DialogTitle,
-  Dialog
+  Dialog,
+  Divider
 } from "@material-ui/core";
 import { getCampaigns } from "Utils/api";
 
@@ -36,6 +37,7 @@ const CampaignSelectDialog = props => {
       open={open}
     >
       <DialogTitle id="simple-dialog-title">Select Campaign</DialogTitle>
+      <Divider />
       <List>
         {campaigns.map(campaign => (
           <ListItem

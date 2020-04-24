@@ -49,7 +49,6 @@ const CampaignsTableRow = props => {
       <TableCell className={classes.cell} align="center">
         {props.campaign.steps.length}
       </TableCell>
-      <TableCell className={classes.cell}></TableCell>
     </TableRow>
   );
 };

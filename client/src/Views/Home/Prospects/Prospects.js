@@ -13,7 +13,6 @@ import {
 import { getProspectData } from "Utils/api";
 import AuthUserContext from "Components/Session/AuthUserContext";
 import styles from "Components/Table/ProspectTableStyles";
-import CloudIcon from "@material-ui/icons/Cloud";
 import ProspectTableCheckbox from "Components/Checkbox/ProspectTableCheckbox";
 
 import ProspectSidebar from "./ProspectSidebar";
@@ -146,11 +145,6 @@ class Prospects extends Component {
           <TableCell className={this.props.classes.email_cell}>
             {prospect.email}
           </TableCell>
-          <TableCell className={this.props.classes.cloud_cell}>
-            <CloudIcon
-              className={this.props.classes.cloud_icon_table}
-            ></CloudIcon>
-          </TableCell>
           <TableCell className={this.props.classes.status_cell} align="center">
             {prospect.status}
           </TableCell>
@@ -255,14 +249,6 @@ class Prospects extends Component {
                               className={this.props.classes.table_header_cell}
                             >
                               Email
-                            </TableCell>
-                            <TableCell
-                              className={this.props.classes.table_header_cell}
-                              align="center"
-                            >
-                              <CloudIcon
-                                className={this.props.classes.cloud_icon}
-                              ></CloudIcon>
                             </TableCell>
                             <TableCell
                               className={this.props.classes.table_header_cell}
