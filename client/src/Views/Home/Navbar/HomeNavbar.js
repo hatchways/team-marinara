@@ -15,18 +15,20 @@ const styles = () => ({
     height: 100,
     borderBottom: `2px solid ${colors.midGray}`
   },
-  logo: {
-    flexGrow: 1
-  },
   tabs: {
-    height: "100%",
-    paddingRight: "10rem"
+    height: "100%"
   }
 });
 
 const HomeNavbar = props => (
-  <Grid item container alignItems="center" className={props.classes.root}>
-    <Grid item className={props.classes.logo}>
+  <Grid
+    container
+    direction="row"
+    alignItems="center"
+    justify="space-between"
+    className={props.classes.root}
+  >
+    <Grid item>
       <Link to="/home">
         <img src={logo} alt="logo" />
       </Link>
@@ -35,8 +37,9 @@ const HomeNavbar = props => (
     <Grid item className={props.classes.tabs}>
       <Tabs />
     </Grid>
-
-    <Profile />
+    <Grid item>
+      <Profile />
+    </Grid>
   </Grid>
 );
 
