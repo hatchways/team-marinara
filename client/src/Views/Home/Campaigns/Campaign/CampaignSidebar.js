@@ -5,10 +5,11 @@ import { Link, useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
-    width: "21rem",
+    minWidth: "15rem",
+    width: "25vw",
     backgroundColor: `${colors.white}`,
     height: "100%",
-    padding: "3rem"
+    padding: "3rem 1rem 3rem 3rem"
   }
 });
 
