@@ -3,10 +3,12 @@
 ## Features
 
 - Login/sign up flow with e-mail address
-- Create new email template
-- Upload a sales list
+- Authorize with Gmail
+- Create new email template with variables
+- Upload a sales list in csv or input via form
 - Review emails before they get sent
 - Hit a button to send out all of the emails
+- Track replies in dashboard
 
 ## Installation
 
