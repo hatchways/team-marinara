@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Grid, DialogTitle, Typography, makeStyles } from "@material-ui/core";
+import { Grid, DialogTitle, makeStyles } from "@material-ui/core";
 import ProspectUploadFormTable from "./ProspectUploadFormTable";
 
 const useStyles = makeStyles({
@@ -21,7 +21,6 @@ const useStyles = makeStyles({
 
 const ProspectUploadForm = props => {
   const classes = useStyles();
-  const { file } = props;
 
   const headerOptions = ["firstName", "lastName", "email", "status"];
 

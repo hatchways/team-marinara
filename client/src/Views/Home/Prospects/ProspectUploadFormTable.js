@@ -7,7 +7,6 @@ import {
   TableRow,
   TableHead,
   makeStyles,
-  Paper,
   TableBody
 } from "@material-ui/core";
 import colors from "Components/Styles/Colors";

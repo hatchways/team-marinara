@@ -20,46 +20,65 @@ const styles = () => ({
   },
   toggle: {
     width: "auto"
+  },
+  orSeparator: {
+    margin: "0px 0px 0px 15px"
   }
 });
 
-const LandingNavbar = props => (
-  <Grid
-    item
-    container
-    alignItems="center"
-    justify="space-between"
-    className={props.classes.root}
-  >
-    <Grid item>
-      <img src={logo} alt="logo" />
-    </Grid>
-
+const LandingNavbar = props => {
+  return (
     <Grid
       item
       container
       alignItems="center"
-      spacing={4}
-      className={props.classes.toggle}
+      justify="space-between"
+      className={props.classes.root}
     >
       <Grid item>
-        <Typography className={props.classes.bold}>
-          {props.variant === "login"
-            ? "Don't have an account?"
-            : "Already have an account?"}
-        </Typography>
+        <img src={logo} alt="logo" />
       </Grid>
 
-      <Grid item>
-        <StyledButtonOutline
-          component={Link}
-          to={props.variant === "login" ? "/register" : "/login"}
-        >
-          {props.variant === "login" ? "Create" : "Login"}
-        </StyledButtonOutline>
+      <Grid
+        item
+        container
+        alignItems="center"
+        spacing={4}
+        className={props.classes.toggle}
+      >
+        <Grid item>
+          <Typography className={props.classes.bold}>
+            {props.variant === "login"
+              ? "Don't have an account?"
+              : "Already have an account?"}
+          </Typography>
+        </Grid>
+        {props.variant === "login" ? (
+          <div style={{ display: "inline-flex", alignItems: "center" }}>
+            <Grid item>
+              <StyledButtonOutline onClick={props.handleDemoModeSubmit}>
+                Demo
+              </StyledButtonOutline>
+            </Grid>
+            <Grid item>
+              <Typography className={props.classes.orSeparator}>Or</Typography>
+            </Grid>
+          </div>
+        ) : (
+          ""
+        )}
+
+        <Grid item>
+          <StyledButtonOutline
+            component={Link}
+            to={props.variant === "login" ? "/register" : "/login"}
+          >
+            {props.variant === "login" ? "Create" : "Login"}
+          </StyledButtonOutline>
+        </Grid>
       </Grid>
     </Grid>
-  </Grid>
-);
+  );
+};
 
 export default withStyles(styles)(LandingNavbar);
