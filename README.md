@@ -1,4 +1,8 @@
-# Sales CRM Platform
+# Sales Email CRM Platform
+
+### Live at: https://mailsender.dev
+
+A web app that allows people to manage email contact lists, send bulk, customised emails from their own Gmail account, track responses and send follow-up emails.
 
 ## Features
 
@@ -9,6 +13,7 @@
 - Review emails before they get sent
 - Hit a button to send out all of the emails
 - Track replies in dashboard
+- Send follow-up emails
 
 ## Installation
 
