@@ -1,4 +1,4 @@
-# Sales Email CRM Platform
+# MailSender
 
 ### Live at: https://mailsender.dev
 
