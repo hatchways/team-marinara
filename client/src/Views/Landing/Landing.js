@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Grid, withStyles } from "@material-ui/core";
 import { Route, Switch } from "react-router-dom";
 
@@ -17,26 +17,44 @@ const styles = () => ({
   }
 });
 
-const Landing = props => (
-  <Grid
-    className={props.classes.root}
-    container
-    direction="column"
-    alignItems="center"
-    wrap="nowrap"
-  >
-    <Switch>
-      <Route path="/register">
-        <Navbar variant="register"></Navbar>
-        <Register />
-      </Route>
+const demoUser = {
+  email: "demo@email.com",
+  password: "testPass"
+};
 
-      <Route path={["/", "/login"]}>
-        <Navbar variant="login"></Navbar>
-        <Login />
-      </Route>
-    </Switch>
-  </Grid>
-);
+const Landing = props => {
+  const demoUserRef = useRef();
 
+  const handleDemoModeSubmit = () => {
+    demoUserRef.current.setDemoUser(demoUser);
+  };
+
+  return (
+    <Grid
+      className={props.classes.root}
+      container
+      direction="column"
+      alignItems="center"
+      wrap="nowrap"
+    >
+      <Switch>
+        <Route path="/register">
+          <Navbar
+            handleDemoModeSubmit={handleDemoModeSubmit}
+            variant="register"
+          ></Navbar>
+          <Register />
+        </Route>
+
+        <Route path={["/", "/login"]}>
+          <Navbar
+            handleDemoModeSubmit={handleDemoModeSubmit}
+            variant="login"
+          ></Navbar>
+          <Login ref={demoUserRef} />
+        </Route>
+      </Switch>
+    </Grid>
+  );
+};
 export default withStyles(styles)(Landing);

@@ -24,6 +24,13 @@ class Login extends Component {
     loggedIn: localStorage.getItem("token") ? true : false
   };
 
+  setDemoUser = demo => {
+    this.setState({
+      email: demo.email,
+      password: demo.password
+    });
+  };
+
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -115,7 +122,9 @@ class Login extends Component {
               variant="outlined"
               fullWidth
               onChange={this.onChange}
-              value={this.state.password}
+              value={
+                this.props.demoMode ? this.demoPassword : this.state.password
+              }
               error={"password" in this.state.errors}
               helperText={this.state.errors.password}
             />

@@ -96,7 +96,6 @@ export default function CreateProspectForm(props) {
         <form method="POST" onSubmit={handleSubmit} className={classes.form}>
           <Grid
             container
-            alignItems="center"
             direction="column"
             justify="center"
             alignItems="center"
