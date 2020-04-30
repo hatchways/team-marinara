@@ -17,7 +17,7 @@ A web app that allows people to manage email contact lists, send bulk, customise
 
 ## Contributors
 
-[airensurzyn](https://github.com/airensurzyn), [Disquietude](https://github.com/Disquietude), [Darren Greenfield](https://github.com/umbauk)
+[Airen Surzyn](https://github.com/airensurzyn), [Danny Ngo](https://github.com/Disquietude), [Darren Greenfield](https://github.com/umbauk)
 
 ## Installation
 
