@@ -4,6 +4,7 @@
 
 A web app that allows people to manage email contact lists, send bulk, customised emails from their own Gmail account, track responses and send follow-up emails.
 
+
 ## Features
 
 - Login/sign up flow with e-mail address
@@ -14,6 +15,22 @@ A web app that allows people to manage email contact lists, send bulk, customise
 - Hit a button to send out all of the emails
 - Track replies in dashboard
 - Send follow-up emails
+
+## Login
+
+![](/.readme/login.gif)
+
+## Upload Prospect Emails via CSV
+
+![](/.readme/prospects_upload.gif)
+
+## Create Marketing Campaign Steps
+
+![](/.readme/saveStep.gif)
+
+## Automate Emailing Process
+
+![](/.readme/email_send.gif)
 
 ## Contributors
 
