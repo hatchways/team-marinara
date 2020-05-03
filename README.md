@@ -28,6 +28,10 @@ A web app that allows people to manage email contact lists, send bulk, customise
 
 ![](/.readme/saveStep.gif)
 
+## Automate Emailing Process
+
+![](/.readme/email_send.gif)
+
 ## Contributors
 
 [Airen Surzyn](https://github.com/airensurzyn), [Danny Ngo](https://github.com/Disquietude), [Darren Greenfield](https://github.com/umbauk)
